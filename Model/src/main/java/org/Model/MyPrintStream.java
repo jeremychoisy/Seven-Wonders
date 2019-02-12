@@ -20,8 +20,14 @@ public class MyPrintStream extends PrintStream {
 	
     @Override
     public void println(String string) {
-        Calendar c = new GregorianCalendar();
-        super.println("[" + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + "] " + string);
+    	String heure,minute,seconde;
+        Calendar c = new GregorianCalendar(); 
+        
+        if(c.get(Calendar.HOUR_OF_DAY)< 10) { heure = "0" + c.get(Calendar.HOUR_OF_DAY); } else { heure = "" + c.get(Calendar.HOUR_OF_DAY); }
+        if(c.get(Calendar.MINUTE)< 10) { minute = "0" + c.get(Calendar.MINUTE); } else { minute = "" + c.get(Calendar.MINUTE); }
+        if(c.get(Calendar.SECOND)< 10) { seconde = "0" + c.get(Calendar.SECOND); } else { seconde = "" + c.get(Calendar.SECOND); }
+
+        super.println("[" + heure + ":" + minute + ":" + seconde + "] " + string);
     }
 
 
