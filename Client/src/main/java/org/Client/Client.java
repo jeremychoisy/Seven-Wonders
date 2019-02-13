@@ -1,12 +1,13 @@
 package org.Client;
 
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
-import org.Model.Carte;
-import org.Model.Id;
-import org.Model.MyPrintStream;
+import org.Model.assets.Carte;
+import org.Model.assets.Id;
+import org.Model.assets.Main;
+import org.Model.tools.MyPrintStream;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +22,8 @@ public class Client {
 	private Socket connexion;
 	private Id id;
 	final Object attenteDeconnexion = new Object();
+	
+	private Main m;
 	
 	public Client(String url) {
 		try {
@@ -51,18 +54,26 @@ public class Client {
 					}
 				}
 			});
-			connexion.on("Carte",new Emitter.Listener() {
+			connexion.on("main",new Emitter.Listener() {
 
 				@Override
 				public void call(Object... args) {
-					JSONObject cJson = (JSONObject) args[0];
-					try {
-						System.out.println("Client : la carte reçue par " + id.getNom() + " est : " + cJson.get("nom"));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					connexion.emit("reponse", cJson);
+					Carte c =null;
+					m = new Main();
+					JSONArray cJson = (JSONArray) args[0];
+
+				    for(int i=0;i<7;i++) {
+						try {
+							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("couleur")));
+						}
+						catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						m.add(c);
+				    }
+				    System.out.println("Client :" + m);
+					connexion.emit("reponse", "Prêt");
 				}
 				
 			});

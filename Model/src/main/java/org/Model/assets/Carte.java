@@ -1,4 +1,4 @@
-package org.Model;
+package org.Model.assets;
 
 import java.util.HashMap;
 import java.util.Iterator;
