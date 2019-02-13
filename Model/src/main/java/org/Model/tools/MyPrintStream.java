@@ -1,4 +1,4 @@
-package org.Model;
+package org.Model.tools;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

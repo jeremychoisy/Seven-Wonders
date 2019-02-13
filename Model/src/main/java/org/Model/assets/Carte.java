@@ -1,4 +1,4 @@
-package org.Model;
+package org.Model.assets;
 
 public class Carte {
 	private String nom;

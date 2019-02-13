@@ -7,32 +7,30 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import org.Model.Carte;
-import org.Model.Id;
-import org.Model.Joueur;
-import org.Model.Main;
-import org.Model.MyPrintStream;
+import org.Model.assets.Carte;
+import org.Model.assets.Id;
+import org.Model.assets.Joueur;
+import org.Model.tools.MyPrintStream;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class Serveur {
 	private SocketIOServer serveur;
 	private final Object attenteConnexion = new Object(); 
 	private ArrayList<Joueur> listeJoueur;
 	private final int nbJoueur = 1;
-	private final int nbCartes = 3;
+	private final int nbCartes = 7;
 	private int idJoueur = 1;
 	private Carte[] c; 
 
 	public Serveur(Configuration config){
-		test();
 		serveur = new SocketIOServer(config);
 		listeJoueur = new ArrayList<Joueur>();
 		c = new Carte[nbCartes];
@@ -61,10 +59,11 @@ public class Serveur {
 			
 		});
 		
-		serveur.addEventListener("reponse", Carte.class, new DataListener<Carte>(){
+		serveur.addEventListener("reponse", String.class, new DataListener<String>(){
 
 			@Override
-			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+				System.out.println("Serveur : statut du client :" + data);
 				synchronized(attenteConnexion) {
 					attenteConnexion.notify();
 				}
@@ -74,29 +73,13 @@ public class Serveur {
 		});
 		
 	}
-	public void test() {
-		Gson gson = new Gson();
-		FileWriter writer = null;
-		try {
-			writer = new FileWriter("/home/jeremy/eclipse-workspace/seven-wonders/carte.json");
-			Carte[] c = new Carte[nbCartes];
-			c[0] = new Carte("Marché","vert");
-			c[1] = new Carte("Tour","marron");
-			c[2] = new Carte("Champs","vert");
-			gson.toJson(c, writer);
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}			
-	}
+
 	
 	public void recupererDonnees() {
 		FileReader reader = null;
 		Gson gson = new Gson();
 		try {
-			reader = new FileReader("/home/jeremy/eclipse-workspace/seven-wonders/carte.json");
+			reader = new FileReader("/home/jeremy/eclipse-workspace/seven-wonders/Assets/cartes.json");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -107,11 +90,12 @@ public class Serveur {
 	public void initPartie() {
 		for(int i=0;i<listeJoueur.size();i++) {
 			// Opération de préparation de la partie
-			Main m = new Main();
-			m.add(c[0]);
-			m.add(c[1]);
-			m.add(c[2]);
-			listeJoueur.get(i).getSocket().sendEvent("main", m);
+			ArrayList<Carte> main = new ArrayList<Carte>();
+			for(int j=0;j<7;j++) {
+				main.add(c[j]);
+			}
+			
+			listeJoueur.get(i).getSocket().sendEvent("main", main);
 		}
 	}
 	
@@ -141,6 +125,9 @@ public class Serveur {
         Configuration config = new Configuration();
         config.setHostname("127.0.0.1");
         config.setPort(10101);
+        SocketConfig s = config.getSocketConfig();
+        s.setReuseAddress(true);
+        
         
         Serveur serveur = new Serveur(config);
         serveur.demarrer();

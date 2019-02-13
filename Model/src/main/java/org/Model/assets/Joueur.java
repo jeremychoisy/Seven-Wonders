@@ -1,4 +1,4 @@
-package org.Model;
+package org.Model.assets;
 
 import com.corundumstudio.socketio.SocketIOClient;
 
