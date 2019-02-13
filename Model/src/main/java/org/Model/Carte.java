@@ -61,7 +61,7 @@ public class Carte {
 	}
 
 	public void addCout(String ressource, int valeur) {
-		this.cout.put(ressource, valeur);
+		cout.put(ressource, valeur);
 	}
 
 	public String getNom() {
