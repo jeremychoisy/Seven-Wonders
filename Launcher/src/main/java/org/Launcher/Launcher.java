@@ -23,7 +23,7 @@ public class Launcher
 			public void run() {
 				// TODO Auto-generated method stub
 		        Serveur.main(null);
-			}
+			} 
         	
         });
         

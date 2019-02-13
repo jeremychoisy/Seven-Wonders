@@ -2,6 +2,7 @@ package org.Serveur;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 import org.Model.Carte;
 import org.Model.Id;
@@ -37,7 +38,7 @@ public class Serveur {
 			public void onData(SocketIOClient client, Id data, AckRequest ackSender) throws Exception {
 				System.out.println("Server : le client " + client.getRemoteAddress() + " s'est identifié en tant que : " + data.getNom());
 				joueurID = new Id(data.getNom());
-				Carte c = new Carte("Marché","rouge");
+				Carte c = new Carte("Marché","rouge",new HashMap<String,Integer>());
 				client.sendEvent("Carte",c);
 			}
 			

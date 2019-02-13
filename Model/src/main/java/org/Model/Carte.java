@@ -15,8 +15,13 @@ public class Carte {
 
 	public Carte() {
 	}
-
-	public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
+	
+	public Carte(String nom, String type, HashMap<String, Integer> cout) {
+		this.nom = nom;
+		this.type = type;
+		this.cout = cout;
+	}
+	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
 			int configurationNumber) {
 		this.nom = nom;
 		this.type = type;
@@ -24,7 +29,7 @@ public class Carte {
 		this.age = age;
 		this.pose = pose;
 		this.configurationNumber = configurationNumber;
-	}
+	}*/
 
 	public boolean isPose() {
 		return pose;
@@ -42,8 +47,9 @@ public class Carte {
 		this.age = age;
 	}
 
-	public HashMap<String, Integer> getCout() {
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
+	public int getCout(String ressource) {
+		return cout.get(ressource);
+		/*HashMap<String, Integer> ret = new HashMap<String, Integer>();
 		Set set = cout.entrySet();
 		Iterator iterator = set.iterator();
 		while (iterator.hasNext()) {
@@ -51,7 +57,7 @@ public class Carte {
 			ret.put((String) mentry.getKey(), (Integer) mentry.getValue());
 		}
 
-		return ret;
+		return ret;*/
 	}
 
 	public void addCout(String ressource, int valeur) {
