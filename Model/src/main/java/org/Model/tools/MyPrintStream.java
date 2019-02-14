@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class MyPrintStream extends PrintStream {
-
 	public MyPrintStream(OutputStream out) {
 		super(out);
 		// TODO Auto-generated constructor stub
@@ -27,7 +26,7 @@ public class MyPrintStream extends PrintStream {
         if(c.get(Calendar.MINUTE)< 10) { minute = "0" + c.get(Calendar.MINUTE); } else { minute = "" + c.get(Calendar.MINUTE); }
         if(c.get(Calendar.SECOND)< 10) { seconde = "0" + c.get(Calendar.SECOND); } else { seconde = "" + c.get(Calendar.SECOND); }
 
-        super.println("[" + heure + ":" + minute + ":" + seconde + "] " + string);
+        super.println("[" + heure + ":" + minute + ":" + seconde + "] "  +  string);
     }
 
 
