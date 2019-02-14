@@ -17,17 +17,12 @@ public class Carte {
 	public Carte() {
 	}
 	
-<<<<<<< HEAD
-	public Carte(String nom, String type) {
-		this.nom = nom;
-		this.type = type;
-		
-=======
+
 	public Carte(String nom, String type, int pointsVictoire) {
 		this.nom = nom;
 		this.type = type;
 		this.pointsVictoire = pointsVictoire;
->>>>>>> Jeremy
+
 	}
 	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
 			int configurationNumber) {
