@@ -8,18 +8,26 @@ import java.util.Set;
 public class Carte {
 	private String nom;
 	private String type;
-	private HashMap<String, Integer> cout;
-	private int configurationNumber;
+	// Itération suivante :
+	//private HashMap<String, Integer> cout;
+	//private int configurationNumber;
 	private int age;
-	private boolean pose;
+	private int pointsVictoire;
 
 	public Carte() {
 	}
 	
+<<<<<<< HEAD
 	public Carte(String nom, String type) {
 		this.nom = nom;
 		this.type = type;
 		
+=======
+	public Carte(String nom, String type, int pointsVictoire) {
+		this.nom = nom;
+		this.type = type;
+		this.pointsVictoire = pointsVictoire;
+>>>>>>> Jeremy
 	}
 	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
 			int configurationNumber) {
@@ -31,13 +39,6 @@ public class Carte {
 		this.configurationNumber = configurationNumber;
 	}*/
 
-	public boolean isPose() {
-		return pose;
-	}
-
-	public void pose() {
-		pose = true;
-	}
 
 	public int getAge() {
 		return age;
@@ -47,9 +48,9 @@ public class Carte {
 		this.age = age;
 	}
 
-	public int getCout(String ressource) {
+	/*public int getCout(String ressource) {
 		return cout.get(ressource);
-		/*HashMap<String, Integer> ret = new HashMap<String, Integer>();
+		HashMap<String, Integer> ret = new HashMap<String, Integer>();
 		Set set = cout.entrySet();
 		Iterator iterator = set.iterator();
 		while (iterator.hasNext()) {
@@ -57,12 +58,12 @@ public class Carte {
 			ret.put((String) mentry.getKey(), (Integer) mentry.getValue());
 		}
 
-		return ret;*/
+		return ret;
 	}
 
 	public void addCout(String ressource, int valeur) {
 		cout.put(ressource, valeur);
-	}
+	}*/
 
 	public String getNom() {
 		return nom;
@@ -72,11 +73,19 @@ public class Carte {
 		this.nom = nom;
 	}
 
-	public String gettype() {
+	public String getType() {
 		return type;
 	}
 
-	public void settype(String type) {
+	public void setType(String type) {
 		this.type = type;
+	}
+
+	public int getPointsVictoire() {
+		return pointsVictoire;
+	}
+
+	public void setPointsVictoire(int pointsVictoire) {
+		this.pointsVictoire = pointsVictoire;
 	}
 }

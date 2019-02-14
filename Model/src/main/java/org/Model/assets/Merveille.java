@@ -1,4 +1,4 @@
-package org.Model;
+package org.Model.assets;
 
 public class Merveille {
 	private String nom;
