@@ -34,7 +34,7 @@ public class Client {
 				@Override
 				public void call(Object... args) {
 					System.out.println("Client : connecté");
-					id = new Id("WUTED");
+					id = new Id("Joueur 1");
 					JSONObject idJson = new JSONObject(id);
 					connexion.emit("id", idJson);
 					
@@ -72,7 +72,6 @@ public class Client {
 						}
 						m.add(c);
 				    }
-				    System.out.println("Client :" + m);
 					connexion.emit("readyCheck", "Prêt");
 				}
 				

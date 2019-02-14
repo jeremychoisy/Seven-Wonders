@@ -47,7 +47,7 @@ public class Serveur {
 		tour = 1;
 		// Récupération des cartes/merveilles via les fichiers Json
 		recupererDonnees();
-		System.out.println("Serveur : Attente de connexion du joueur...");
+		System.out.println("Serveur : Attente de connexion des joueur...");
 		// Ajout de l'écouteur gérant la connexion d'un client
 		serveur.addConnectListener(new ConnectListener() {
 			public void onConnect(SocketIOClient socketIOClient) {
@@ -80,14 +80,45 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				if(data.equals("Prêt")) {
-					if(tour == 1) {
-						System.out.println("Serveur : Tous les joueurs sont prêts !");
-						System.out.println("Serveur : Début de la partie :");
+						for(int i =0;i<listeJoueur.size();i++) {
+							if(listeJoueur.get(i).getSocket().equals(client)) {
+								listeJoueur.get(i).setRdy(true);
+								System.out.println("Serveur : " + listeJoueur.get(i).getNom() + " est prêt !");
+								break;
+							}
+						}
+						if(everyoneIsRdy()) {
+							System.out.println("Serveur : Tous les joueurs sont prêts.");
+							System.out.println("Serveur : Début du tour " + tour + " !");
+						}					
+				}
+			}
+			
+		});
+		
+		serveur.addEventListener("Carte Jouée", Carte.class, new DataListener<Carte>(){
+
+			@Override
+			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+				String name = getNameFromSocket(client);
+				System.out.println("Serveur : " + name + " a joué " + data.getNom());
+				System.out.println("Serveur : gain de " + data.getPointsVictoire() + " pour " + name + ".");
+				addPointsVictoire(client,data.getPointsVictoire());
+				if(getScoreFromSocket(client) >= 6) {
+					System.out.println("Serveur : Victoire de " + name + "!");
+					synchronized(attenteConnexion) {
+						attenteConnexion.notify();
 					}
 				}
-				synchronized(attenteConnexion) {
-					attenteConnexion.notify();
+				else if(tour == 7) {
+					System.out.println("Serveur : Défaite de " + name + "!");
+					synchronized(attenteConnexion) {
+						attenteConnexion.notify();
+					}
 				}
+				tour += 1;
+				System.out.println("Serveur : Début du tour " + tour + " !");
+				client.sendEvent("Ton tour");
 				
 			}
 			
@@ -150,8 +181,50 @@ public class Serveur {
 			}
 			
 			// Envoi de la main au joueur 
+			System.out.println("Serveur : la main est distribuée à " + listeJoueur.get(i).getNom() + ".");
 			listeJoueur.get(i).getSocket().sendEvent("main", main);
 		}
+	}
+	
+	// Fonction qui vérifie si tous les joueurs sont prêts
+	public boolean everyoneIsRdy() {
+		boolean ret = true;
+		for(int i =0;i<listeJoueur.size();i++) {
+			if(!listeJoueur.get(i).isRdy()) {
+				ret = false;
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	// Fonction qui récupère le nom du joueur à partir de son socket
+	public String getNameFromSocket(SocketIOClient socket) {
+		for(int i =0;i<listeJoueur.size();i++) {
+			if(listeJoueur.get(i).getSocket().equals(socket)) {
+				return listeJoueur.get(i).getNom();
+			}
+		}
+		return "John Doe";
+	}
+	
+	// Fonction qui ajoute des points de victoires au socket concerné
+	public void addPointsVictoire(SocketIOClient socket, int score) {
+		for(int i =0;i<listeJoueur.size();i++) {
+			if(listeJoueur.get(i).getSocket().equals(socket)) {
+				listeJoueur.get(i).setScore(listeJoueur.get(i).getScore() + score);
+			}
+		}
+	}
+	
+	// Fonction qui retourne le nombre de points d'un joueur depuis son socket
+	public int getScoreFromSocket(SocketIOClient socket) {
+		for(int i =0;i<listeJoueur.size();i++) {
+			if(listeJoueur.get(i).getSocket().equals(socket)) {
+				return listeJoueur.get(i).getScore();
+			}
+		}
+		return -1;
 	}
 	
 	public void demarrer() {

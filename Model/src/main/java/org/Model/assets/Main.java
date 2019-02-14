@@ -19,6 +19,10 @@ public class Main {
 		main.remove(c);
 	}
 	
+	public Carte get(int index) {
+		return main.get(index);
+	}
+	
 	public String toString() {
 		String buffer ="Contenu de la main :";
 		
