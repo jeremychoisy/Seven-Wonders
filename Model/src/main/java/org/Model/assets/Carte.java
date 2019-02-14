@@ -16,10 +16,10 @@ public class Carte {
 	public Carte() {
 	}
 	
-	public Carte(String nom, String type, HashMap<String, Integer> cout) {
+	public Carte(String nom, String type) {
 		this.nom = nom;
 		this.type = type;
-		this.cout = cout;
+		
 	}
 	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
 			int configurationNumber) {

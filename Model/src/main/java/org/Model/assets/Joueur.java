@@ -10,13 +10,15 @@ public class Joueur {
 	private SocketIOClient socket;
 	private Main main;
 	private HashMap<String,Integer> ressource;
+	private int score;
 	
 	
-	public Joueur(String name, SocketIOClient socket, Main main, HashMap<String,Integer> ressource ) {
+	public Joueur(String name, SocketIOClient socket, Main main, HashMap<String,Integer> ressource, int score) {
 		this.name = name;
 		this.socket =socket;
 		this.main = main;
-		this.setRessource(ressource);
+		this.ressource = ressource;
+		this.setScore(score);
 	}
 	
 	public String getName() {
@@ -47,6 +49,14 @@ public class Joueur {
 
 	public void setRessource(HashMap<String,Integer> ressource) {
 		this.ressource = ressource;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 	
 
