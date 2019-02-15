@@ -6,6 +6,7 @@ public class Joueur {
 	private SocketIOClient socket;
 	private String nom;
 	private int score;
+	private Main m;
 	private boolean isRdy;
 	
 	
@@ -43,5 +44,13 @@ public class Joueur {
 
 	public void setRdy(boolean isRdy) {
 		this.isRdy = isRdy;
+	}
+
+	public Main getM() {
+		return m;
+	}
+
+	public void setM(Main m) {
+		this.m = m;
 	}
 }

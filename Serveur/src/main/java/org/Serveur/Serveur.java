@@ -10,6 +10,7 @@ import java.util.Random;
 import org.Model.assets.Carte;
 import org.Model.assets.Id;
 import org.Model.assets.Joueur;
+import org.Model.assets.Main;
 import org.Model.assets.Merveille;
 import org.Model.tools.MyPrintStream;
 
@@ -21,6 +22,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.google.gson.Gson;
+
 
 public class Serveur {
 	// Déclaration
@@ -80,13 +82,10 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				if(data.equals("Prêt")) {
-						for(int i =0;i<listeJoueur.size();i++) {
-							if(listeJoueur.get(i).getSocket().equals(client)) {
-								listeJoueur.get(i).setRdy(true);
-								System.out.println("Serveur : " + listeJoueur.get(i).getNom() + " est prêt !");
-								break;
-							}
-						}
+						int index = getIndexFromSocket(client);
+						listeJoueur.get(index).setRdy(true);
+						System.out.println("Serveur : " + listeJoueur.get(index).getNom() + " est prêt !");
+
 						if(everyoneIsRdy()) {
 							System.out.println("Serveur : Tous les joueurs sont prêts.");
 							System.out.println("Serveur : Début du tour " + tour + " !");
@@ -100,11 +99,12 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
-				String name = getNameFromSocket(client);
+				int index = getIndexFromSocket(client);
+				String name = listeJoueur.get(index).getNom();
 				System.out.println("Serveur : " + name + " a joué " + data.getNom());
 				System.out.println("Serveur : gain de " + data.getPointsVictoire() + " pour " + name + ".");
-				addPointsVictoire(client,data.getPointsVictoire());
-				if(getScoreFromSocket(client) >= 6) {
+				listeJoueur.get(index).setScore(listeJoueur.get(index).getScore() + data.getPointsVictoire());
+				if(listeJoueur.get(index).getScore() >= 6) {
 					System.out.println("Serveur : Victoire de " + name + "!");
 					synchronized(attenteConnexion) {
 						attenteConnexion.notify();
@@ -163,7 +163,8 @@ public class Serveur {
 	
 	//Fonction responsable de de la distribution des ressources aux joueurs
 	public void initPartie() {
-		ArrayList<Carte> main = new ArrayList<Carte>();
+		ArrayList<Carte> listeMain = new ArrayList<Carte>();
+		Main main = new Main();
 		// Construction d'une liste avec toutes les cartes
 		ArrayList<Carte> listeCartes = new ArrayList<Carte>();
 		for(int i=0;i<nbCartes;i++) {
@@ -176,13 +177,14 @@ public class Serveur {
 
 			for(int j=0;j<7;j++) {
 				int rdm = new Random().nextInt((listeCartes.size()));
+				listeMain.add(listeCartes.get(rdm));
 				main.add(listeCartes.get(rdm));
 				listeCartes.remove(rdm);
 			}
-			
+			listeJoueur.get(i).setM(main);
 			// Envoi de la main au joueur 
 			System.out.println("Serveur : la main est distribuée à " + listeJoueur.get(i).getNom() + ".");
-			listeJoueur.get(i).getSocket().sendEvent("main", main);
+			listeJoueur.get(i).getSocket().sendEvent("main", listeMain);
 		}
 	}
 	
@@ -199,33 +201,15 @@ public class Serveur {
 	}
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket
-	public String getNameFromSocket(SocketIOClient socket) {
+	public int getIndexFromSocket(SocketIOClient socket) {
 		for(int i =0;i<listeJoueur.size();i++) {
 			if(listeJoueur.get(i).getSocket().equals(socket)) {
-				return listeJoueur.get(i).getNom();
-			}
-		}
-		return "John Doe";
-	}
-	
-	// Fonction qui ajoute des points de victoires au socket concerné
-	public void addPointsVictoire(SocketIOClient socket, int score) {
-		for(int i =0;i<listeJoueur.size();i++) {
-			if(listeJoueur.get(i).getSocket().equals(socket)) {
-				listeJoueur.get(i).setScore(listeJoueur.get(i).getScore() + score);
-			}
-		}
-	}
-	
-	// Fonction qui retourne le nombre de points d'un joueur depuis son socket
-	public int getScoreFromSocket(SocketIOClient socket) {
-		for(int i =0;i<listeJoueur.size();i++) {
-			if(listeJoueur.get(i).getSocket().equals(socket)) {
-				return listeJoueur.get(i).getScore();
+				return i;
 			}
 		}
 		return -1;
 	}
+
 	
 	public void demarrer() {
 		serveur.start();
