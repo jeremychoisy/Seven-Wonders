@@ -21,8 +21,10 @@ public class GestionPersistance {
     	Gson gson = new Gson();
 		FileWriter writer = null;
 		try {
+
 			writer = new FileWriter("./../Assets/cartes.json");
 			Carte[] c = new Carte[15];
+
 			c[0] = new Carte("Prêteur sur Gage","Bâtiment Civil",3);
 			c[1] = new Carte("Bains","Bâtiment Civil",3);
 			c[2] = new Carte("Autel","Bâtiment Civil",2);
