@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.Model.assets.Carte;
 
-import org.junit.jupiter.*;
+
 import org.junit.jupiter.api.Test;
 
 // Test des methodes de la classe Carte 
