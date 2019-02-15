@@ -77,6 +77,18 @@ public class Client {
 				}
 				
 			});
+			//méthode pour cartes
+			connexion.on("Ton tour",new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					Carte c = null;
+					c = m.get(0);
+					m.remove(c);
+					JSONObject carteJouéeJSON = new JSONObject(c);
+					connexion.emit("Carte Jouée", carteJouéeJSON);
+				}
+			});
+			//fin méthode cartes
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

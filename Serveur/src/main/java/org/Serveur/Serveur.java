@@ -89,6 +89,7 @@ public class Serveur {
 						if(everyoneIsRdy()) {
 							System.out.println("Serveur : Tous les joueurs sont prêts.");
 							System.out.println("Serveur : Début du tour " + tour + " !");
+							client.sendEvent("Ton tour");
 						}					
 				}
 			}
@@ -133,7 +134,7 @@ public class Serveur {
 		
 		// Stockage des cartes du jeu dans un tableau depuis le fichier JSON correspondant
 		try {
-			reader = new FileReader("/home/jeremy/eclipse-workspace/seven-wonders/Assets/cartes.json");
+			reader = new FileReader("./../Assets/cartes.json");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
