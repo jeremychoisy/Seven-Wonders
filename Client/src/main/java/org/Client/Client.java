@@ -3,10 +3,10 @@ package org.Client;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
-import org.Model.assets.Carte;
 import org.Model.assets.Id;
 import org.Model.assets.Main;
 import org.Model.tools.MyPrintStream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
