@@ -83,7 +83,7 @@ public class Client {
 				public void call(Object... args) {
 					Carte c = null;
 					c = m.get(0);
-					m.remove(c);
+					m.remove(0);
 					JSONObject carteJouéeJSON = new JSONObject(c);
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}

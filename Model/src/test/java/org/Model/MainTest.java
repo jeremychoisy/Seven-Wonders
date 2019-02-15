@@ -44,7 +44,7 @@ public class MainTest{
 		main.add(c);
 		main.add(c);
 		assertEquals(2,main.size());
-		main.remove(c);
+		main.remove(0);
 		assertEquals(1,main.size());
 	}
 

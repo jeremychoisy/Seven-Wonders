@@ -105,21 +105,25 @@ public class Serveur {
 				System.out.println("Serveur : " + name + " a joué " + data.getNom());
 				System.out.println("Serveur : gain de " + data.getPointsVictoire() + " pour " + name + ".");
 				listeJoueur.get(index).setScore(listeJoueur.get(index).getScore() + data.getPointsVictoire());
-				if(listeJoueur.get(index).getScore() >= 6) {
-					System.out.println("Serveur : Victoire de " + name + "!");
+				if(listeJoueur.get(index).getScore() >= 6 || tour == 7) {
+					if(listeJoueur.get(index).getScore() >= 6) {
+						System.out.println("Serveur : Victoire de " + name + "!");
+					}
+					else
+					{
+						System.out.println("Serveur : Défaite de " + name + "!");
+					}
+					
 					synchronized(attenteConnexion) {
 						attenteConnexion.notify();
 					}
 				}
-				else if(tour == 7) {
-					System.out.println("Serveur : Défaite de " + name + "!");
-					synchronized(attenteConnexion) {
-						attenteConnexion.notify();
-					}
-				}
+				else
+				{
 				tour += 1;
 				System.out.println("Serveur : Début du tour " + tour + " !");
 				client.sendEvent("Ton tour");
+				}
 				
 			}
 			

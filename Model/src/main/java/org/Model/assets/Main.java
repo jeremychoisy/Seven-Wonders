@@ -18,8 +18,8 @@ public class Main {
 	public int size() {
 		return main.size();
 	}
-	public void remove(Carte c) {
-		main.remove(c);
+	public void remove(int i) {
+		main.remove(i);
 	}
 	
 	public Carte get(int index) {
