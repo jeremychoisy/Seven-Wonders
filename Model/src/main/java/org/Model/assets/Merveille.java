@@ -35,6 +35,9 @@ public class Merveille {
 	}
 
 	public void changeEtape() {
-		etapeCourante++;
+		if(etapeCourante<3) {
+			etapeCourante++;
+		}
+		
 	}
 }
