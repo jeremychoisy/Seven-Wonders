@@ -65,7 +65,7 @@ public class Client {
 
 				    for(int i=0;i<7;i++) {
 						try {
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(int)(cJson.getJSONObject(i).get("pointsVictoire")));
+							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(Integer)(cJson.getJSONObject(i).get("pointsVictoire")));
 						}
 						catch (JSONException e) {
 							// TODO Auto-generated catch block
