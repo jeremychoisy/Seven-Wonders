@@ -28,9 +28,9 @@
 	</build>
 	
 	<modules>
+		<module>Model</module>
 		<module>Serveur</module>
 		<module>Client</module>
-		<module>Model</module>
 		<module>Launcher</module>
 	</modules>
 </project>
