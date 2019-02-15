@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import org.Model.assets.Id;
 import org.Model.assets.Main;
 import org.Model.tools.MyPrintStream;
+import org.Model.assets.Carte;
 
 import org.json.JSONArray;
 import org.json.JSONException;

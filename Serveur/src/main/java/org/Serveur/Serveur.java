@@ -146,7 +146,7 @@ public class Serveur {
 		}
 		// Stockage des merveilles du jeu dans un tableau depuis le fichier JSON correspondant
 		try {
-			reader = new FileReader("/home/jeremy/eclipse-workspace/seven-wonders/Assets/merveilles.json");
+			reader = new FileReader("./../Assets/merveilles.json");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

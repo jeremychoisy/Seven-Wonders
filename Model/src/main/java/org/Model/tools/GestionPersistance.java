@@ -12,8 +12,8 @@ import com.google.gson.Gson;
 public class GestionPersistance {
 	
     public static boolean isData() {
-    	File fileCarte = new File("/home/jeremy/eclipse-workspace/seven-wonders/Assets/cartes.json");
-    	File fileMerveille = new File("/home/jeremy/eclipse-workspace/seven-wonders/Assets/merveilles.json");
+    	File fileCarte = new File("./../Assets/cartes.json");
+    	File fileMerveille = new File("./../Assets/merveilles.json");
     	return (fileCarte.exists() && fileMerveille.exists());
     }
     
@@ -21,7 +21,7 @@ public class GestionPersistance {
     	Gson gson = new Gson();
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter("/home/jeremy/eclipse-workspace/seven-wonders/Assets/cartes.json");
+			writer = new FileWriter("./../Assets/cartes.json");
 			Carte[] c = new Carte[15];
 			c[0] = new Carte("Prêteur sur Gage","Bâtiment Civil",3);
 			c[1] = new Carte("Bains","Bâtiment Civil",3);
@@ -63,7 +63,7 @@ public class GestionPersistance {
 			writer.flush();
 			writer.close();
 			
-			writer = new FileWriter("/home/jeremy/eclipse-workspace/seven-wonders/Assets/merveilles.json");
+			writer = new FileWriter("./../Assets/merveilles.json");
 			Merveille[] m = new Merveille[3];
 			m[0] = new Merveille("Olympia","bois");
 			m[1] = new Merveille("Gizah","pierre");
