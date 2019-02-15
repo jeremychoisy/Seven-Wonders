@@ -15,6 +15,9 @@ public class Main {
 		}
 	}
 	
+	public int size() {
+		return main.size();
+	}
 	public void remove(Carte c) {
 		main.remove(c);
 	}
