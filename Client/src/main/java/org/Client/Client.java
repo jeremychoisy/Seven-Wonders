@@ -34,7 +34,7 @@ public class Client {
 
 				@Override
 				public void call(Object... args) {
-					System.out.println("Client : connecté");
+					log("connecté");
 					id = new Id("Joueur 1");
 					JSONObject idJson = new JSONObject(id);
 					connexion.emit("id", idJson);
@@ -47,7 +47,7 @@ public class Client {
 				
 				@Override
 				public void call(Object... args) {
-					System.out.println("Client : deconnecté");
+					log("deconnecté");
 					connexion.disconnect();
 					connexion.close();
 					synchronized(attenteDeconnexion) {
@@ -107,6 +107,10 @@ public class Client {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void log(String s) {
+		System.out.println("Client : " + s);
 	}
 	
 	public static void main(String[] args) {

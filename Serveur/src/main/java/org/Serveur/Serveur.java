@@ -49,12 +49,12 @@ public class Serveur {
 		tour = 1;
 		// Récupération des cartes/merveilles via les fichiers Json
 		recupererDonnees();
-		System.out.println("Serveur : Attente de connexion des joueur...");
+		log("Attente de connexion des joueur...");
 		// Ajout de l'écouteur gérant la connexion d'un client
 		serveur.addConnectListener(new ConnectListener() {
 			public void onConnect(SocketIOClient socketIOClient) {
-				System.out.println("Serveur : Connexion de " + socketIOClient.getRemoteAddress());
-				System.out.println("Serveur : Attente de l'authentification de : " + socketIOClient.getRemoteAddress());
+				log("Connexion de " + socketIOClient.getRemoteAddress());
+				log("Attente de l'authentification de : " + socketIOClient.getRemoteAddress());
 			}	
 		});
 		// Ajout de l'écouteur traitant le message d'identification du client
@@ -64,11 +64,11 @@ public class Serveur {
 			public void onData(SocketIOClient client, Id data, AckRequest ackSender) throws Exception {
 				// On crée un joueur avec les caractéristiques du client connecté et on l'ajoute à la liste des joueurs
 				Joueur j = new Joueur(data.getNom(),client);
-				System.out.println("Serveur : le joueur : " + client.getRemoteAddress() + " s'est identifié en tant que : " + data.getNom() + ".");
+				log("le joueur : " + client.getRemoteAddress() + " s'est identifié en tant que : " + data.getNom() + ".");
 				listeJoueur.add(j);
 				// Si le nombre de joueurs correspond au nombre de joueurs attendu
 				if(listeJoueur.size() == nbJoueur) {
-					System.out.println("Serveur : le lobby est complet, préparation de la partie en cours...");
+					log("le lobby est complet, préparation de la partie en cours...");
 					// Initialisation de la partie : distribution des ressources aux joueurs
 					initPartie();
 				}
@@ -84,11 +84,11 @@ public class Serveur {
 				if(data.equals("Prêt")) {
 						int index = getIndexFromSocket(client);
 						listeJoueur.get(index).setRdy(true);
-						System.out.println("Serveur : " + listeJoueur.get(index).getNom() + " est prêt !");
+						log(listeJoueur.get(index).getNom() + " est prêt !");
 
 						if(everyoneIsRdy()) {
-							System.out.println("Serveur : Tous les joueurs sont prêts.");
-							System.out.println("Serveur : Début du tour " + tour + " !");
+							log("Tous les joueurs sont prêts.");
+							log("Début du tour " + tour + " !");
 							client.sendEvent("Ton tour");
 						}					
 				}
@@ -102,16 +102,16 @@ public class Serveur {
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
 				int index = getIndexFromSocket(client);
 				String name = listeJoueur.get(index).getNom();
-				System.out.println("Serveur : " + name + " a joué " + data.getNom());
-				System.out.println("Serveur : gain de " + data.getPointsVictoire() + " pour " + name + ".");
+				log(name + " a joué " + data.getNom());
 				listeJoueur.get(index).setScore(listeJoueur.get(index).getScore() + data.getPointsVictoire());
-				if(listeJoueur.get(index).getScore() >= 6 || tour == 7) {
+				log("gain de " + data.getPointsVictoire() + " pour " + name + " score actuel : " + listeJoueur.get(index).getScore()  +").");
+				if(listeJoueur.get(index).getScore() >= 10 || tour == 7) {
 					if(listeJoueur.get(index).getScore() >= 6) {
-						System.out.println("Serveur : Victoire de " + name + "!");
+						log("Victoire de " + name + "!");
 					}
 					else
 					{
-						System.out.println("Serveur : Défaite de " + name + "!");
+						log("Défaite de " + name + "!");
 					}
 					
 					synchronized(attenteConnexion) {
@@ -121,7 +121,7 @@ public class Serveur {
 				else
 				{
 				tour += 1;
-				System.out.println("Serveur : Début du tour " + tour + " !");
+				log("Début du tour " + tour + " !");
 				client.sendEvent("Ton tour");
 				}
 				
@@ -142,7 +142,7 @@ public class Serveur {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Serveur : Chargement des cartes...");
+		log("Chargement des cartes...");
 		c = gson.fromJson(reader, Carte[].class);
 		try {
 			reader.close();
@@ -155,7 +155,7 @@ public class Serveur {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Serveur : Chargement des merveilles...");
+		log("Chargement des merveilles...");
 		m = gson.fromJson(reader, Merveille[].class);
 		try {
 			reader.close();
@@ -188,7 +188,7 @@ public class Serveur {
 			}
 			listeJoueur.get(i).setM(main);
 			// Envoi de la main au joueur 
-			System.out.println("Serveur : la main est distribuée à " + listeJoueur.get(i).getNom() + ".");
+			log("la main est distribuée à " + listeJoueur.get(i).getNom() + ".");
 			listeJoueur.get(i).getSocket().sendEvent("main", listeMain);
 		}
 	}
@@ -213,6 +213,10 @@ public class Serveur {
 			}
 		}
 		return -1;
+	}
+	
+	public void log(String s) {
+		System.out.println("Serveur : " + s);
 	}
 
 	
