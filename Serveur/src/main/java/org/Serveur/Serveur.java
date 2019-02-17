@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import org.Model.assets.Carte;
@@ -25,28 +26,31 @@ import com.google.gson.Gson;
 
 
 public class Serveur {
-	// Déclaration
+	// variables client/serveur
 	private SocketIOServer serveur;
 	private final Object attenteConnexion = new Object(); 
-	private ArrayList<Joueur> listeJoueur;
+	private ArrayList<Joueur> listeJoueurs;
 	
-	private final int nbJoueur = 1;
-	private final int nbCartes = 14;
-	private final int nbMerveilles = 3;
+	// variables constantes de configuration d'une partie
+	private final int NB_JOUEURS = 3;
+	private final int NB_CARTES = 34;
+	private final int NB_MERVEILLES = 3;
 	
-	
+	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;
 	
+	// variables utiles pour un tour de jeu
 	private int tour;
+	private int nbCartesJouées;
 
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
-		listeJoueur = new ArrayList<Joueur>();
-		c = new Carte[nbCartes];
-		m = new Merveille[nbMerveilles];
-		tour = 1;
+		listeJoueurs = new ArrayList<Joueur>();
+		c = new Carte[NB_CARTES];
+		m = new Merveille[NB_MERVEILLES];
+		tour = 0;
 		// Récupération des cartes/merveilles via les fichiers Json
 		recupererDonnees();
 		log("Attente de connexion des joueur...");
@@ -65,9 +69,9 @@ public class Serveur {
 				// On crée un joueur avec les caractéristiques du client connecté et on l'ajoute à la liste des joueurs
 				Joueur j = new Joueur(data.getNom(),client);
 				log("le joueur : " + client.getRemoteAddress() + " s'est identifié en tant que : " + data.getNom() + ".");
-				listeJoueur.add(j);
+				listeJoueurs.add(j);
 				// Si le nombre de joueurs correspond au nombre de joueurs attendu
-				if(listeJoueur.size() == nbJoueur) {
+				if(listeJoueurs.size() == NB_JOUEURS) {
 					log("le lobby est complet, préparation de la partie en cours...");
 					// Initialisation de la partie : distribution des ressources aux joueurs
 					initPartie();
@@ -83,13 +87,12 @@ public class Serveur {
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				if(data.equals("Prêt")) {
 						int index = getIndexFromSocket(client);
-						listeJoueur.get(index).setRdy(true);
-						log(listeJoueur.get(index).getNom() + " est prêt !");
+						listeJoueurs.get(index).setRdy(true);
+						log(listeJoueurs.get(index).getNom() + " est prêt !");
 
 						if(everyoneIsRdy()) {
 							log("Tous les joueurs sont prêts.");
-							log("Début du tour " + tour + " !");
-							client.sendEvent("Ton tour");
+							demarrerTourSuivant();
 						}					
 				}
 			}
@@ -101,28 +104,30 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
 				int index = getIndexFromSocket(client);
-				String name = listeJoueur.get(index).getNom();
-				log(name + " a joué " + data.getNom());
-				listeJoueur.get(index).setScore(listeJoueur.get(index).getScore() + data.getPointsVictoire());
-				log("gain de " + data.getPointsVictoire() + " pour " + name + " score actuel : " + listeJoueur.get(index).getScore()  +").");
-				if(listeJoueur.get(index).getScore() >= 10 || tour == 7) {
-					if(listeJoueur.get(index).getScore() >= 6) {
+				String name = listeJoueurs.get(index).getNom();
+				listeJoueurs.get(index).setScore(listeJoueurs.get(index).getScore() + data.getPointsVictoire());
+				log(name + " a joué " + data.getNom() + " [gain de " + data.getPointsVictoire() + " (score actuel : " + listeJoueurs.get(index).getScore()  +")].");
+				if(listeJoueurs.get(index).getScore() >= 10 || tour == 6) {
+					if(listeJoueurs.get(index).getScore() >= 10) {
 						log("Victoire de " + name + "!");
 					}
 					else
 					{
-						log("Défaite de " + name + "!");
+						nbCartesJouées += 1;
+						if(nbCartesJouées == NB_JOUEURS) {
+							displayWinner();
+						}
+							
 					}
-					
 					synchronized(attenteConnexion) {
 						attenteConnexion.notify();
 					}
 				}
 				else
 				{
-				tour += 1;
-				log("Début du tour " + tour + " !");
-				client.sendEvent("Ton tour");
+					nbCartesJouées += 1;
+					if(nbCartesJouées == NB_JOUEURS)
+						demarrerTourSuivant();
 				}
 				
 			}
@@ -130,7 +135,28 @@ public class Serveur {
 		});
 		
 	}
+	
+	public void displayWinner() {
+		int indexMax = 0;
+		int max = listeJoueurs.get(0).getScore();
+		for(int i=1;i < listeJoueurs.size();i++) {
+			if(listeJoueurs.get(i).getScore() > max) {
+				indexMax = i;
+				max = listeJoueurs.get(i).getScore();
+			}
+		}
+		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points.");
+	}
+	
+	public void demarrerTourSuivant() {
+		nbCartesJouées = 0;
+		tour += 1;
+		log("Début du tour " + tour + " !");
+		for(int i = 0; i < listeJoueurs.size();i++) {
+			listeJoueurs.get(i).getSocket().sendEvent("Ton tour");
+		}
 
+	}
 	// Fonction responsable de la récupération des données depuis les fichiers JSON
 	public void recupererDonnees() {
 		FileReader reader = null;
@@ -168,36 +194,37 @@ public class Serveur {
 	
 	//Fonction responsable de de la distribution des ressources aux joueurs
 	public void initPartie() {
-		ArrayList<Carte> listeMain = new ArrayList<Carte>();
-		Main main = new Main();
+		ArrayList<Carte> listeMain;
+		Main main;
 		// Construction d'une liste avec toutes les cartes
 		ArrayList<Carte> listeCartes = new ArrayList<Carte>();
-		for(int i=0;i<nbCartes;i++) {
+		for(int i=0;i<NB_CARTES;i++) {
 			listeCartes.add(c[i]);
 		}
+		Collections.shuffle(listeCartes);
 		
 		// Pour chaque joueur
-		for(int i=0;i<listeJoueur.size();i++) {
+		for(int i=0;i<listeJoueurs.size();i++) {
+			listeMain = new ArrayList<Carte>();
+			main = new Main();
 			// Construction de la main
-
 			for(int j=0;j<7;j++) {
-				int rdm = new Random().nextInt((listeCartes.size()));
-				listeMain.add(listeCartes.get(rdm));
-				main.add(listeCartes.get(rdm));
-				listeCartes.remove(rdm);
+				listeMain.add(listeCartes.get(0));
+				main.add(listeCartes.get(0));
+				listeCartes.remove(0);
 			}
-			listeJoueur.get(i).setM(main);
+			listeJoueurs.get(i).setM(main);
 			// Envoi de la main au joueur 
-			log("la main est distribuée à " + listeJoueur.get(i).getNom() + ".");
-			listeJoueur.get(i).getSocket().sendEvent("main", listeMain);
+			log("la main est distribuée à " + listeJoueurs.get(i).getNom() + ".");
+			listeJoueurs.get(i).getSocket().sendEvent("main", listeMain);
 		}
 	}
 	
 	// Fonction qui vérifie si tous les joueurs sont prêts
 	public boolean everyoneIsRdy() {
 		boolean ret = true;
-		for(int i =0;i<listeJoueur.size();i++) {
-			if(!listeJoueur.get(i).isRdy()) {
+		for(int i =0;i<listeJoueurs.size();i++) {
+			if(!listeJoueurs.get(i).isRdy()) {
 				ret = false;
 				break;
 			}
@@ -207,8 +234,8 @@ public class Serveur {
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket
 	public int getIndexFromSocket(SocketIOClient socket) {
-		for(int i =0;i<listeJoueur.size();i++) {
-			if(listeJoueur.get(i).getSocket().equals(socket)) {
+		for(int i =0;i<listeJoueurs.size();i++) {
+			if(listeJoueurs.get(i).getSocket().equals(socket)) {
 				return i;
 			}
 		}

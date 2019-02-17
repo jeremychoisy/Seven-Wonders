@@ -19,23 +19,27 @@ import io.socket.emitter.Emitter;
 
 
 
-public class Client {
+public class Client{
 	private Socket connexion;
 	private Id id;
 	final Object attenteDeconnexion = new Object();
 	
 	private Main m;
+	private String name;
 	
-	public Client(String url) {
+	public Client(String url, final String name) {
+		this.name = name;
 		try {
-			connexion = IO.socket(url);
+			IO.Options opts = new IO.Options();
+			opts.forceNew = true;
+			connexion = IO.socket(url, opts);
 			
 			connexion.on("connect",new Emitter.Listener() {
 
 				@Override
 				public void call(Object... args) {
 					log("connecté");
-					id = new Id("Joueur 1");
+					id = new Id(name);
 					JSONObject idJson = new JSONObject(id);
 					connexion.emit("id", idJson);
 					
@@ -107,10 +111,11 @@ public class Client {
 				e.printStackTrace();
 			}
 		}
+
 	}
 	
 	public void log(String s) {
-		System.out.println("Client : " + s);
+		System.out.println("Client [" + this.name + "] : " + s);
 	}
 	
 	public static void main(String[] args) {
@@ -121,7 +126,7 @@ public class Client {
             e.printStackTrace();
         }
         
-        Client client = new Client("http://127.0.0.1:10101");
+        Client client = new Client("http://127.0.0.1:10101",args[0]);
         client.demarrer();
 	}
 }
