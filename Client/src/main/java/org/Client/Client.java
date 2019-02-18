@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import org.Model.assets.Id;
 import org.Model.assets.Main;
+import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 import org.Model.assets.Carte;
 
@@ -59,8 +60,8 @@ public class Client{
 					}
 				}
 			});
+			// Traitement de l'événement "voici ta main" venant du serveur
 			connexion.on("main",new Emitter.Listener() {
-
 				@Override
 				public void call(Object... args) {
 					Carte c =null;
@@ -81,7 +82,8 @@ public class Client{
 				}
 				
 			});
-			//méthode pour cartes
+			
+			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
 			connexion.on("Ton tour",new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
@@ -92,30 +94,28 @@ public class Client{
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}
 			});
-			//fin méthode cartes
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public void demarrer() {
-		System.out.println("Tentative de connexion");
+		log("Tentative de connexion");
 		connexion.connect();
 
 		synchronized(attenteDeconnexion) {
 			try {
 				attenteDeconnexion.wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 	}
 	
+	// Formatage des sorties textes
 	public void log(String s) {
-		System.out.println("Client [" + this.name + "] : " + s);
+		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + this.name + "] : " + s + CouleurSorties.ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {
