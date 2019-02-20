@@ -9,7 +9,7 @@ public class Carte {
 	private String nom;
 	private String type;
 	private HashMap<String, Integer> cout;
-	//private int configurationNumber;
+	private int configurationNumber;
 	private int age;
 	private int pointsVictoire;
 
@@ -31,15 +31,13 @@ public class Carte {
 
 	}
 	
-	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
-			int configurationNumber) {
+	public Carte(String nom, String type, HashMap<String, Integer> cout, int age, int configurationNumber) {
 		this.nom = nom;
 		this.type = type;
 		this.cout = cout;
 		this.age = age;
-		this.pose = pose;
 		this.configurationNumber = configurationNumber;
-	}*/
+	}
 
 
 	public int getAge() {
@@ -89,5 +87,13 @@ public class Carte {
 
 	public void setPointsVictoire(int pointsVictoire) {
 		this.pointsVictoire = pointsVictoire;
+	}
+
+	public int getConfigurationNumber() {
+		return configurationNumber;
+	}
+
+	public void setConfigurationNumber(int configurationNumber) {
+		this.configurationNumber = configurationNumber;
 	}
 }
