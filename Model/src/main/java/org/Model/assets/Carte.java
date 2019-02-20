@@ -8,8 +8,7 @@ import java.util.Set;
 public class Carte {
 	private String nom;
 	private String type;
-	// Itération suivante :
-	//private HashMap<String, Integer> cout;
+	private HashMap<String, Integer> cout;
 	//private int configurationNumber;
 	private int age;
 	private int pointsVictoire;
@@ -17,13 +16,21 @@ public class Carte {
 	public Carte() {
 	}
 	
-
 	public Carte(String nom, String type, int pointsVictoire) {
 		this.nom = nom;
 		this.type = type;
 		this.pointsVictoire = pointsVictoire;
+	}
+	
+
+	public Carte(String nom, String type, int pointsVictoire,HashMap<String, Integer> cout) {
+		this.nom = nom;
+		this.type = type;
+		this.pointsVictoire = pointsVictoire;
+		this.cout = cout;
 
 	}
+	
 	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
 			int configurationNumber) {
 		this.nom = nom;
@@ -43,8 +50,8 @@ public class Carte {
 		this.age = age;
 	}
 
-	/*public int getCout(String ressource) {
-		return cout.get(ressource);
+	public HashMap<String, Integer> getCout(String ressource) {
+		//return cout.get(ressource);
 		HashMap<String, Integer> ret = new HashMap<String, Integer>();
 		Set set = cout.entrySet();
 		Iterator iterator = set.iterator();
@@ -58,7 +65,7 @@ public class Carte {
 
 	public void addCout(String ressource, int valeur) {
 		cout.put(ressource, valeur);
-	}*/
+	}
 
 	public String getNom() {
 		return nom;
