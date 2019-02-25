@@ -11,12 +11,12 @@ public class Joueur {
 	private Merveille merveille;
 	
 	
-	public Joueur(String nom, SocketIOClient socket, Merveille merveille) {
+	public Joueur(String nom, SocketIOClient socket) {
 		this.nom = nom;
 		this.socket = socket;
 		this.score = 0;
 		this.isRdy = false;
-		this.setMerveille(merveille);
+	
 	}
 	
 	public SocketIOClient getSocket() {

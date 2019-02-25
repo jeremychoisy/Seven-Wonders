@@ -18,9 +18,9 @@ public class Merveille {
 		this.nom = nom;
 		this.ressource = ressource;
 		etapeCourante = 1;
-		this.ressourceEtape1=ressourceEtape1;
-		this.ressourceEtape2=ressourceEtape2;
-		this.ressourceEtape3=ressourceEtape3;
+		this.setRessourceEtape1(ressourceEtape1);
+		this.setRessourceEtape2(ressourceEtape2);
+		this.setRessourceEtape3(ressourceEtape3);
 	}
 
 	public String getNom() {
@@ -48,5 +48,29 @@ public class Merveille {
 			etapeCourante++;
 		}
 		
+	}
+
+	public HashMap<String,Integer> getRessourceEtape1() {
+		return ressourceEtape1;
+	}
+
+	public void setRessourceEtape1(HashMap<String,Integer> ressourceEtape1) {
+		this.ressourceEtape1 = ressourceEtape1;
+	}
+
+	public HashMap<String,Integer> getRessourceEtape2() {
+		return ressourceEtape2;
+	}
+
+	public void setRessourceEtape2(HashMap<String,Integer> ressourceEtape2) {
+		this.ressourceEtape2 = ressourceEtape2;
+	}
+
+	public HashMap<String,Integer> getRessourceEtape3() {
+		return ressourceEtape3;
+	}
+
+	public void setRessourceEtape3(HashMap<String,Integer> ressourceEtape3) {
+		this.ressourceEtape3 = ressourceEtape3;
 	}
 }
