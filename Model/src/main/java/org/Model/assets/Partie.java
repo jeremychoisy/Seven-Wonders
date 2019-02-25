@@ -15,7 +15,7 @@ public class Partie {
 	private ArrayList<Joueur> listeJoueurs;
 	
 	// variables constantes de configuration d'une partie
-	private final int NB_JOUEURS = 3;
+	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 34;
 	private final int NB_MERVEILLES = 3;
 	private final int POINTS_TO_SCORE = 10;
