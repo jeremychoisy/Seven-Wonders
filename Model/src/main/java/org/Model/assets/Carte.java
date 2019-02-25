@@ -5,41 +5,28 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.Model.tools.GestionEffets;
+
 public class Carte {
 	private String nom;
 	private String type;
-	private HashMap<String, Integer> cout;
+	//private HashMap<String, Integer> cout;
 	private int configurationNumber;
 	private int age;
-	private int pointsVictoire;
+	private String nomEffet;
+	private Effet effet;
 
 	public Carte() {
 	}
 	
-	public Carte(String nom, String type, int pointsVictoire) {
+	public Carte(String nom, String type, String nomEffet, int configurationNumber) {
 		this.nom = nom;
 		this.type = type;
-		this.pointsVictoire = pointsVictoire;
+		this.nomEffet = nomEffet;
+		//this.cout = cout;
+		this.configurationNumber= configurationNumber;
 	}
 	
-
-	public Carte(String nom, String type, int pointsVictoire,HashMap<String, Integer> cout) {
-		this.nom = nom;
-		this.type = type;
-		this.pointsVictoire = pointsVictoire;
-		this.cout = cout;
-
-	}
-	
-	public Carte(String nom, String type, HashMap<String, Integer> cout, int age, int configurationNumber) {
-		this.nom = nom;
-		this.type = type;
-		this.cout = cout;
-		this.age = age;
-		this.configurationNumber = configurationNumber;
-	}
-
-
 	public int getAge() {
 		return age;
 	}
@@ -48,22 +35,14 @@ public class Carte {
 		this.age = age;
 	}
 
-	public HashMap<String, Integer> getCout(String ressource) {
-		//return cout.get(ressource);
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
-		Set set = cout.entrySet();
-		Iterator iterator = set.iterator();
-		while (iterator.hasNext()) {
-			Map.Entry mentry = (Map.Entry) iterator.next();
-			ret.put((String) mentry.getKey(), (Integer) mentry.getValue());
-		}
-
-		return ret;
+	/*public int getCout(String ressource) {
+		return cout.get(ressource);
 	}
+
 
 	public void addCout(String ressource, int valeur) {
 		cout.put(ressource, valeur);
-	}
+	}*/
 
 	public String getNom() {
 		return nom;
@@ -81,19 +60,32 @@ public class Carte {
 		this.type = type;
 	}
 
-	public int getPointsVictoire() {
-		return pointsVictoire;
-	}
-
-	public void setPointsVictoire(int pointsVictoire) {
-		this.pointsVictoire = pointsVictoire;
-	}
-
 	public int getConfigurationNumber() {
 		return configurationNumber;
 	}
 
 	public void setConfigurationNumber(int configurationNumber) {
 		this.configurationNumber = configurationNumber;
+	}
+
+	public Effet getEffet() {
+		return effet;
+	}
+
+	public void setEffet(Effet effet) {
+		this.effet = effet;
+	}
+
+	public String getNomEffet() {
+		return nomEffet;
+	}
+
+	public void setNomEffet(String nomEffet) {
+		this.nomEffet = nomEffet;
+		this.effet = GestionEffets.FabriquerEffet(this, nomEffet);
+	}
+	
+	public String toString() {
+		return "" + this.nom + " " + this.nomEffet; 
 	}
 }

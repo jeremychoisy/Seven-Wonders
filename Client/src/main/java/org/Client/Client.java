@@ -8,7 +8,7 @@ import org.Model.assets.Main;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 import org.Model.assets.Carte;
-
+import org.Model.assets.Effet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,8 +69,9 @@ public class Client{
 					JSONArray cJson = (JSONArray) args[0];
 
 				    for(int i=0;i<7;i++) {
+			
 						try {
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(Integer)(cJson.getJSONObject(i).get("pointsVictoire")));
+							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(String)(cJson.getJSONObject(i).get("nomEffet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
 						}
 						catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -91,6 +92,7 @@ public class Client{
 					c = m.get(0);
 					m.remove(0);
 					JSONObject carteJouéeJSON = new JSONObject(c);
+					System.out.println(carteJouéeJSON.toString());
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}
 			});

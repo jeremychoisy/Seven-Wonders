@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.Model.tools.CouleurSorties;
+import org.Model.tools.GestionEffets;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.gson.Gson;
@@ -16,7 +17,7 @@ public class Partie {
 	
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 3;
-	private final int NB_CARTES = 34;
+	private final int NB_CARTES = 29;
 	private final int NB_MERVEILLES = 3;
 	private final int POINTS_TO_SCORE = 10;
 	// variables nécessaires au chargements des ressources
@@ -59,7 +60,6 @@ public class Partie {
 			listeCartes.add(c[i]);
 		}
 		Collections.shuffle(listeCartes);
-		
 		// Pour chaque joueur
 		for(int i=0;i<listeJoueurs.size();i++) {
 			listeMain = new ArrayList<Carte>();
@@ -92,7 +92,7 @@ public class Partie {
 	// Fonction qui détermine si le joueur correspondant au socket a gagné la partie.
 	public boolean estGagnant(SocketIOClient socket) {
 		int index = getIndexFromSocket(socket);
-		if(listeJoueurs.get(index).getScore() >= POINTS_TO_SCORE) {
+		if(listeJoueurs.get(index).getPièces() >= POINTS_TO_SCORE) {
 			return true;
 		}
 		return false;
@@ -123,10 +123,12 @@ public class Partie {
 	
 	// Fonction qui traite la carte joué par un joueur
 	public void jouerCarte(SocketIOClient socket, Carte c) {
+		//System.out.println(c.toString());
+		//c.setEffet(GestionEffets.FabriquerEffet(c, c.getNomEffet()));
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
-		listeJoueurs.get(index).setScore(listeJoueurs.get(index).getScore() + c.getPointsVictoire());
-		log(name + " a joué " + c.getNom() + " [gain de " + c.getPointsVictoire() + " (score actuel : " + listeJoueurs.get(index).getScore()  +")].");
+		GestionEffets.AppliquerEffet(c, listeJoueurs.get(index));
+		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPièces()  +" pièce(s).");
 		nbCartesJouées += 1;
 	}
 	
@@ -162,11 +164,11 @@ public class Partie {
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public void afficherGagnant() {
 		int indexMax = 0;
-		int max = listeJoueurs.get(0).getScore();
+		int max = listeJoueurs.get(0).getPièces();
 		for(int i=1;i < listeJoueurs.size();i++) {
-			if(listeJoueurs.get(i).getScore() > max) {
+			if(listeJoueurs.get(i).getPièces() > max) {
 				indexMax = i;
-				max = listeJoueurs.get(i).getScore();
+				max = listeJoueurs.get(i).getPièces();
 			}
 		}
 		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points.");
