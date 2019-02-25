@@ -8,13 +8,15 @@ public class Joueur {
 	private int score;
 	private Main m;
 	private boolean isRdy;
+	private Merveille merveille;
 	
 	
-	public Joueur(String nom, SocketIOClient socket) {
+	public Joueur(String nom, SocketIOClient socket, Merveille merveille) {
 		this.nom = nom;
 		this.socket = socket;
 		this.score = 0;
 		this.isRdy = false;
+		this.setMerveille(merveille);
 	}
 	
 	public SocketIOClient getSocket() {
@@ -52,5 +54,13 @@ public class Joueur {
 
 	public void setM(Main m) {
 		this.m = m;
+	}
+
+	public Merveille getMerveille() {
+		return merveille;
+	}
+
+	public void setMerveille(Merveille merveille) {
+		this.merveille = merveille;
 	}
 }

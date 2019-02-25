@@ -3,6 +3,7 @@ package org.Model.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.Model.assets.Carte;
 import org.Model.assets.Merveille;
@@ -67,9 +68,35 @@ public class GestionPersistance {
 			
 			writer = new FileWriter("./../Assets/merveilles.json");
 			Merveille[] m = new Merveille[3];
-			m[0] = new Merveille("Olympia","bois");
-			m[1] = new Merveille("Gizah","pierre");
-			m[2] = new Merveille("Rhodos","minerai");
+			HashMap<String,Integer> e1 = new HashMap<String,Integer>();
+			e1.put("bois", 2);
+			HashMap<String,Integer> e2 = new HashMap<String,Integer>();
+			e2.put("pierre", 2);
+			HashMap<String,Integer> e3 = new HashMap<String,Integer>();
+			e3.put("minerai", 2);
+			m[0] = new Merveille("Olympia","bois",e1,e2,e3);
+			e1.clear();
+			e2.clear();
+			e3.clear();
+			e1.put("pierre",2);
+			e2.put("bois",3);
+			e3.put("pierre",4);
+			m[1] = new Merveille("Gizah","pierre",e1,e2,e3);
+			e1.clear();
+			e2.clear();
+			e3.clear();
+			e1.put("bois",2);
+			e2.put("argile",3);
+			e3.put("minerai",4);
+			m[2] = new Merveille("Rhodos","minerai",e1,e2,e3);
+			e1.clear();
+			e2.clear();
+			e3.clear();
+			e1.put("pierre",2);
+			e2.put("bois",2);
+			e3.put("papyrus",2);
+			m[2] = new Merveille("Ephesos","papyrus",e1,e2,e3);
+			
 			gson.toJson(m,writer);
 			writer.flush();
 			writer.close();
