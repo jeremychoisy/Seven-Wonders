@@ -67,7 +67,7 @@ public class GestionPersistance {
 			writer.close();
 			
 			writer = new FileWriter("./../Assets/merveilles.json");
-			Merveille[] m = new Merveille[3];
+			Merveille[] m = new Merveille[4];
 			HashMap<String,Integer> e1 = new HashMap<String,Integer>();
 			e1.put("bois", 2);
 			HashMap<String,Integer> e2 = new HashMap<String,Integer>();
@@ -95,7 +95,7 @@ public class GestionPersistance {
 			e1.put("pierre",2);
 			e2.put("bois",2);
 			e3.put("papyrus",2);
-			m[2] = new Merveille("Ephesos","papyrus",e1,e2,e3);
+			m[3] = new Merveille("Ephesos","papyrus",e1,e2,e3);
 			
 			gson.toJson(m,writer);
 			writer.flush();
