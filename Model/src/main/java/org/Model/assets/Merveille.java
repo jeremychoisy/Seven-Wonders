@@ -6,9 +6,16 @@ public class Merveille {
 	private String nom;
 	private String ressource;
 	private int etapeCourante;
+	
+	//Ressources nécessaires à la réalisation de l'étape de Merveille
 	private HashMap<String,Integer> ressourceEtape1;
 	private HashMap<String,Integer> ressourceEtape2;
 	private HashMap<String,Integer> ressourceEtape3;
+	
+	//Effets associés à chaque étape de la marveille (face A uniquement)
+	private Effet effet1;
+	private Effet effet2;
+	private Effet effet3;
 	
 
 	public Merveille() {
@@ -72,5 +79,29 @@ public class Merveille {
 
 	public void setRessourceEtape3(HashMap<String,Integer> ressourceEtape3) {
 		this.ressourceEtape3 = ressourceEtape3;
+	}
+
+	public Effet getEffet1() {
+		return effet1;
+	}
+
+	public void setEffet1(Effet effet1) {
+		this.effet1 = effet1;
+	}
+
+	public Effet getEffet2() {
+		return effet2;
+	}
+
+	public void setEffet2(Effet effet2) {
+		this.effet2 = effet2;
+	}
+
+	public Effet getEffet3() {
+		return effet3;
+	}
+
+	public void setEffet3(Effet effet3) {
+		this.effet3 = effet3;
 	}
 }

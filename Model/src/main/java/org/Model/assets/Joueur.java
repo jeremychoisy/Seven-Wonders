@@ -8,6 +8,7 @@ public class Joueur {
 	private String nom;
 	private Main m;
 	private boolean isRdy;
+	private Merveille merveille; 
 
 	private boolean commerce_ressources_primaires;
 	private boolean commerce_ressources_secondaires;
