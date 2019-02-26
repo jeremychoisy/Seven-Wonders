@@ -16,8 +16,8 @@ public class Partie {
 	private ArrayList<Joueur> listeJoueurs;
 	
 	// variables constantes de configuration d'une partie
-	private final int NB_JOUEURS = 1;
-	private final int NB_CARTES = 8;
+	private final int NB_JOUEURS = 4;
+	private final int NB_CARTES = 29;
 	private final int NB_MERVEILLES = 3;
 	private final int POINTS_TO_SCORE = 10;
 	// variables nécessaires au chargements des ressources
@@ -92,7 +92,7 @@ public class Partie {
 	// Fonction qui détermine si le joueur correspondant au socket a gagné la partie.
 	public boolean estGagnant(SocketIOClient socket) {
 		int index = getIndexFromSocket(socket);
-		if(listeJoueurs.get(index).getPièces() >= POINTS_TO_SCORE) {
+		if(listeJoueurs.get(index).getPoints_victoire() >= POINTS_TO_SCORE) {
 			return true;
 		}
 		return false;
@@ -123,12 +123,11 @@ public class Partie {
 	
 	// Fonction qui traite la carte joué par un joueur
 	public void jouerCarte(SocketIOClient socket, Carte c) {
-		System.out.println(c.toString());
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
-		c.setEffet(GestionEffets.FabriquerEffet(c, c.getNomEffet()));
-		GestionEffets.AppliquerEffet(c, listeJoueurs.get(index));
-		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" pièce(s).");
+		Effet e = GestionEffets.FabriquerEffet(c, c.getNomEffet());
+		GestionEffets.AppliquerEffet(e, listeJoueurs.get(index));
+		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire.");
 		nbCartesJouées += 1;
 	}
 	
@@ -164,11 +163,11 @@ public class Partie {
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public void afficherGagnant() {
 		int indexMax = 0;
-		int max = listeJoueurs.get(0).getPièces();
+		int max = listeJoueurs.get(0).getPoints_victoire();
 		for(int i=1;i < listeJoueurs.size();i++) {
-			if(listeJoueurs.get(i).getPièces() > max) {
+			if(listeJoueurs.get(i).getPoints_victoire() > max) {
 				indexMax = i;
-				max = listeJoueurs.get(i).getPièces();
+				max = listeJoueurs.get(i).getPoints_victoire();
 			}
 		}
 		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points.");
@@ -201,10 +200,6 @@ public class Partie {
 			reader.close();
 		} catch (IOException e) {		
 			e.printStackTrace();
-		}
-		System.out.println(c.length);
-		for(int i =0;i<c.length;i++) {
-			c[i].setEffet(GestionEffets.FabriquerEffet(c[i], c[i].getNomEffet()));
 		}
 		// Stockage des merveilles du jeu dans un tableau depuis le fichier JSON correspondant
 		try {

@@ -61,14 +61,6 @@ public class Carte {
 		this.configurationNumber = configurationNumber;
 	}
 
-	public Effet getEffet() {
-		return effet;
-	}
-
-	public void setEffet(Effet effet) {
-		this.effet = effet;
-	}
-
 	public String getNomEffet() {
 		return nomEffet;
 	}

@@ -6,8 +6,8 @@ import org.Model.assets.Joueur;
 
 public abstract class GestionEffets
 {
-	public static void  AppliquerEffet(Carte c, Joueur j) {
-		Effet effet = c.getEffet();
+	public static void  AppliquerEffet(Effet effet, Joueur j) {
+
 		if(effet.getNom().equals("commerce_ressources_primaires")) {
 			j.setCommerce_ressources_primaires(true);
 		}
@@ -103,7 +103,7 @@ public abstract class GestionEffets
 			if(c.getNom().equals("Théâtre")) {
 				return new Effet(name,null,null,2);
 			}
-			if(c.getNom().equals("Prêteur sur gages")) {
+			if(c.getNom().equals("Prêteur sur gage")) {
 				return new Effet(name,null,null,3);
 			}
 		}
