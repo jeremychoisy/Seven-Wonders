@@ -67,12 +67,20 @@ public class Launcher
         	
         });
         
+        Thread bot_4 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Client.main(new String[] {"bot_4"});
+			}        	
+        });
+        
         
 
         serveur.start();
         bot_1.start();
         bot_2.start();
         bot_3.start();
+        bot_4.start();
         
     }
 }

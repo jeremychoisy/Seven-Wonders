@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 
 // Test des methodes de la classe Carte 
 public class CarteTest  {
-
-	
+/*
 	Carte test = new Carte();
 	@Test
 	public void testGetNom() {
@@ -43,5 +42,5 @@ public class CarteTest  {
 	public void testSetPointsVictoire() {
 		test.setPointsVictoire(2);
 		assertEquals(2,test.getPointsVictoire());
-	}
+	}*/
 }

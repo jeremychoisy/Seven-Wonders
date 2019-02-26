@@ -1,24 +1,104 @@
 package org.Model.assets;
 
 import com.corundumstudio.socketio.SocketIOClient;
+import java.util.HashMap;
 
 public class Joueur {
 	private SocketIOClient socket;
 	private String nom;
-	private int score;
 	private Main m;
 	private boolean isRdy;
-	private Merveille merveille;
+
+	private boolean commerce_ressources_primaires;
+	private boolean commerce_ressources_secondaires;
+
+	private int pièces;
+	private int points_victoire;
+	private int boucliers;
 	
-	
+	private HashMap<String,Integer> ressources;
+
+
+
+
 	public Joueur(String nom, SocketIOClient socket) {
 		this.nom = nom;
 		this.socket = socket;
-		this.score = 0;
 		this.isRdy = false;
-	
+		this.setCommerce_ressources_primaires(false);
+		this.setCommerce_ressources_secondaires(false);
+		this.pièces = 0;
+		this.points_victoire = 0;
+		this.boucliers = 0;
+
+		ressources = new HashMap<String,Integer>();
+		ressources.put("bois", 0);
+		ressources.put("pierre", 0);
+		ressources.put("minerai", 0);
+		ressources.put("argile", 0);
+		ressources.put("tissu", 0);
+		ressources.put("verre", 0);
+		ressources.put("parchemin", 0);
+
 	}
-	
+	public void ajouterRessources(String nomRessource, int quantité) {
+		int qtéInitial = ressources.get(nomRessource);
+		ressources.put(nomRessource, qtéInitial + quantité);
+	}
+
+	public int getQuantitéRessource(String nomRessource) {
+		return ressources.get(nomRessource);
+	}
+
+	// Setters & Getters
+	public boolean isCommerce_ressources_primaires() {
+		return commerce_ressources_primaires;
+	}
+
+	public void setCommerce_ressources_primaires(boolean commerce_ressources_primaires) {
+		this.commerce_ressources_primaires = commerce_ressources_primaires;
+	}
+
+	public boolean isCommerce_ressources_secondaires() {
+		return commerce_ressources_secondaires;
+	}
+
+	public void setCommerce_ressources_secondaires(boolean commerce_ressources_secondaires) {
+		this.commerce_ressources_secondaires = commerce_ressources_secondaires;
+	}
+
+	public int getPièces() {
+		return pièces;
+	}
+
+	public void setPièces(int gain_pièces) {
+		this.pièces = gain_pièces;
+	}
+
+	public int getPoints_victoire() {
+		return points_victoire;
+	}
+
+	public void setPoints_victoire(int gain_points_victoire) {
+		this.points_victoire = gain_points_victoire;
+	}
+
+	public int getBouclier() {
+		return boucliers;
+	}
+
+	public void setBouclier(int gain_bouclier) {
+		this.boucliers = gain_bouclier;
+	}
+
+	public void setRessources(HashMap<String, Integer> gain_ressources) {
+		this.ressources = gain_ressources;
+	}
+
+	public HashMap<String, Integer> GetRessources() {
+		return ressources;
+	}
+
 	public SocketIOClient getSocket() {
 		return socket;
 	}
@@ -30,14 +110,6 @@ public class Joueur {
 	}
 	public void setNom(String nom) {
 		this.nom = nom;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
 	}
 
 	public boolean isRdy() {
