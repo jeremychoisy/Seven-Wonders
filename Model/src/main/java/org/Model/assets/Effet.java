@@ -1,7 +1,5 @@
 package org.Model.assets;
 
-import java.util.HashMap;
-
 public class Effet {
 	private String nom;
 	private String orientation;

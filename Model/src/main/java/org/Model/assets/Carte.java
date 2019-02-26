@@ -1,11 +1,5 @@
 package org.Model.assets;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.Model.tools.GestionEffets;
 
 public class Carte {
 	private String nom;
@@ -16,8 +10,7 @@ public class Carte {
 	private String nomEffet;
 	private Effet effet;
 
-	public Carte() {
-	}
+	public Carte() {}
 	
 	public Carte(String nom, String type, String nomEffet, int configurationNumber) {
 		this.nom = nom;
@@ -82,10 +75,9 @@ public class Carte {
 
 	public void setNomEffet(String nomEffet) {
 		this.nomEffet = nomEffet;
-		this.effet = GestionEffets.FabriquerEffet(this, nomEffet);
 	}
 	
 	public String toString() {
-		return "" + this.nom + " " + this.nomEffet; 
+		return "" + this.nom + " " + this.nomEffet + " " + this.effet; 
 	}
 }

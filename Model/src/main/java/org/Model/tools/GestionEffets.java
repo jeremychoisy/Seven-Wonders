@@ -30,7 +30,6 @@ public abstract class GestionEffets
 	}
 	
 	public static Effet FabriquerEffet(Carte c,String name) {
-		System.out.println(c);
 		if(name.equals("commerce_ressources_primaires")){
 			if(c.getNom().equals("Comptoir Est")) {
 				return new Effet(name,null,"droite",0);
@@ -99,7 +98,6 @@ public abstract class GestionEffets
 				return new Effet(name,null,null,2);
 			}
 			if(c.getNom().equals("Bains")) {
-				System.out.println("DONE");
 				return new Effet(name,null,null,3);
 			}
 			if(c.getNom().equals("Théâtre")) {

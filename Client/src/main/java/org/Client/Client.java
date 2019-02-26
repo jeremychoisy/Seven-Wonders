@@ -8,7 +8,6 @@ import org.Model.assets.Main;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 import org.Model.assets.Carte;
-import org.Model.assets.Effet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +66,6 @@ public class Client{
 					Carte c =null;
 					m = new Main();
 					JSONArray cJson = (JSONArray) args[0];
-
 				    for(int i=0;i<7;i++) {
 			
 						try {
@@ -92,7 +90,6 @@ public class Client{
 					c = m.get(0);
 					m.remove(0);
 					JSONObject carteJouéeJSON = new JSONObject(c);
-					System.out.println(carteJouéeJSON.toString());
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}
 			});

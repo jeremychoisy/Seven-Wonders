@@ -71,8 +71,8 @@ public class Launcher
 
         serveur.start();
         bot_1.start();
-        bot_2.start();
-        bot_3.start();
+       /* bot_2.start();
+        bot_3.start();*/
         
     }
 }

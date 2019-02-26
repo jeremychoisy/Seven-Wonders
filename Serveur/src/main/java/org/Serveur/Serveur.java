@@ -63,7 +63,6 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
-				System.out.println(data.getNom());
 				p.jouerCarte(client, data);
 				if(p.estGagnant(client) || p.estFinie()) {
 					p.afficherResultats(client);

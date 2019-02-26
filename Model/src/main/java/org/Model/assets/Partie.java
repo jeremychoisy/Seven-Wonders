@@ -16,8 +16,8 @@ public class Partie {
 	private ArrayList<Joueur> listeJoueurs;
 	
 	// variables constantes de configuration d'une partie
-	private final int NB_JOUEURS = 3;
-	private final int NB_CARTES = 29;
+	private final int NB_JOUEURS = 1;
+	private final int NB_CARTES = 8;
 	private final int NB_MERVEILLES = 3;
 	private final int POINTS_TO_SCORE = 10;
 	// variables nécessaires au chargements des ressources
@@ -123,12 +123,12 @@ public class Partie {
 	
 	// Fonction qui traite la carte joué par un joueur
 	public void jouerCarte(SocketIOClient socket, Carte c) {
-		//System.out.println(c.toString());
-		//c.setEffet(GestionEffets.FabriquerEffet(c, c.getNomEffet()));
+		System.out.println(c.toString());
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
+		c.setEffet(GestionEffets.FabriquerEffet(c, c.getNomEffet()));
 		GestionEffets.AppliquerEffet(c, listeJoueurs.get(index));
-		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPièces()  +" pièce(s).");
+		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" pièce(s).");
 		nbCartesJouées += 1;
 	}
 	
@@ -201,6 +201,10 @@ public class Partie {
 			reader.close();
 		} catch (IOException e) {		
 			e.printStackTrace();
+		}
+		System.out.println(c.length);
+		for(int i =0;i<c.length;i++) {
+			c[i].setEffet(GestionEffets.FabriquerEffet(c[i], c[i].getNomEffet()));
 		}
 		// Stockage des merveilles du jeu dans un tableau depuis le fichier JSON correspondant
 		try {
