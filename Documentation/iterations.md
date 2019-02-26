@@ -1,39 +1,35 @@
-Itération 1 :
-- Un bot peut rejoindre une partie :
-    - préparation de la partie (cartes et pièces)
-    - mise en place du bot
-- Un bot peut jouer une partie :
-    - distribution des ressources en début de partie (cartes et pièces)
-    - le bot joue selon des règles établies à l'avance.
-    - le bot gagne quand il obtient un nombre de pièces définies.
+				Itérations
 
-Itération 2 :
+Itération 2 :
+- Implémentation :
+	- certaines merveilles
+	- Pièces d’or
+- 4 bots peuvent rejoindre la partie.
+- Cartes Age I
+- Amélioration du modèle d’une carte afin qu’il plus en adéquation avec la réalité.
+- Le gagnant est le joueur avec le plus de PO à la fin de l’âge I.
 
-- 3 bots peuvent rejoindre la partie.
-- Ajout et implémentation des ressources de l'âge I. 
-- Gestion des Merveilles.
+Itération 3 :
+- Cartes Age 2.
+- Gestion de la vente d’une carte contre 3 PO.
+- Le joueur joue maintenant la première carte en partant de la gauche qu’il peut jouer en tenant compte des ressources, si aucune n'est jouable, il vend une carte contre 3 PO.
+- Le gagnant est le joueur avec le plus de points de civilisation à la fin de l’âge II. ( calcul avec points de victoire + pièce d’or pour l’instant).
 
-Itération 3 : 
-- Ajout et implémentation des ressources de l'âge II.
-- Ajout des pièces.
-- Gestion de la défausse à face cachée.
+Itération 4 :
+- Implémentation :
+	- jetons militaires.
+	- conflits militaires en fin d’âges.
+- Le joueur débloque maintenant une étape de sa merveille si c’est possible, s'il ne peut jouer aucune carte, avant d’envisager de la vendre.
+- Les points militaires sont ajoutés aux calculs permettant de déterminer le gagnant à la fin de l’âge II.
 
-Itération 4 : 
-- Ajout des jetons conflits
-- Gestion des conflits militaires
-- Gestion du passage à la main suivante
+Itération 5 :
+- Cartes Age III
+- Ajout de l’intéraction entre joueurs :
+	- passage de mains entre les joueurs
+	- Gestion du commerce entre les joueurs
 
-Itération 5 : 
-- Ajout de la notion de coût.
-- Gestion du commerce entre les joueurs
-
-Itération 6 :
-- Ajout et implémentation des ressources de l'âge III.
-- Gestion des guildes.
-- Développement de l'intelligence des bots.
-
-Itération 7 :
-- Plus de 3 bots peuvent rejoindre la partie.
-- Développement des sorties textes
+Itération 6 :
+- Gestion des guildes
+- Le joueur joue maintenant en fonction de autres joueurs, il les contre si c'est possible.
 
 
