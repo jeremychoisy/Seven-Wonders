@@ -50,7 +50,7 @@ public class Merveille {
 		return etapeCourante;
 	}
 
-	public void changeEtape() {
+	public void etapeSuivante(Joueur J) { 
 		if(etapeCourante<3) {
 			etapeCourante++;
 		}

@@ -19,8 +19,8 @@ public class Joueur {
 	
 	private HashMap<String,Integer> ressources;
 
-
-
+	
+	public Joueur() {}
 
 	public Joueur(String nom, SocketIOClient socket) {
 		this.nom = nom;

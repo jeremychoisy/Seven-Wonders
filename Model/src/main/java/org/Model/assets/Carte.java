@@ -8,7 +8,7 @@ public class Carte {
 	private int configurationNumber;
 	private int age;
 	private String nomEffet;
-	private Effet effet;
+	
 
 	public Carte() {}
 	
@@ -69,7 +69,5 @@ public class Carte {
 		this.nomEffet = nomEffet;
 	}
 	
-	public String toString() {
-		return "" + this.nom + " " + this.nomEffet + " " + this.effet; 
-	}
+	
 }
