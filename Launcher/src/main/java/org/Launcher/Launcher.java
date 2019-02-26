@@ -68,10 +68,10 @@ public class Launcher
         });
         
         Thread bot_4 = new Thread(new Runnable() {
-        	@Override
-        	public void run() {
-        		Client.main(new String[] {"bot_4"});
-        	}
+			@Override
+			public void run() {
+				Client.main(new String[] {"bot_4"});
+			}        	
         });
         
         
