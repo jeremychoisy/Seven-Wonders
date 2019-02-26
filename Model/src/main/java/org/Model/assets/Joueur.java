@@ -21,9 +21,29 @@ public class Joueur {
 
 	
 	public Joueur() {}
+	
+	public Joueur(String nom) {
+		this.nom = nom;
+		this.m = new Main();
+		this.isRdy = false;
+		this.setCommerce_ressources_primaires(false);
+		this.setCommerce_ressources_secondaires(false);
+		this.pièces = 0;
+		this.points_victoire = 0;
+		this.boucliers = 0;
 
+		ressources = new HashMap<String,Integer>();
+		ressources.put("bois", 0);
+		ressources.put("pierre", 0);
+		ressources.put("minerai", 0);
+		ressources.put("argile", 0);
+		ressources.put("tissu", 0);
+		ressources.put("verre", 0);
+		ressources.put("parchemin", 0);
+	}
 	public Joueur(String nom, SocketIOClient socket) {
 		this.nom = nom;
+		this.m = new Main();
 		this.socket = socket;
 		this.isRdy = false;
 		this.setCommerce_ressources_primaires(false);

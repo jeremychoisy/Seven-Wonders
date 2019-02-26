@@ -72,9 +72,13 @@ public class Partie {
 				listeCartes.remove(0);
 			}
 			listeJoueurs.get(i).setM(main);
+			listeJoueurs.get(i).setPièces(3);
 			// Envoi de la main au joueur 
 			log("la main est distribuée à " + listeJoueurs.get(i).getNom() + ".");
 			listeJoueurs.get(i).getSocket().sendEvent("main", listeMain);
+			// Envoi des 3 PO au joueur
+			listeJoueurs.get(i).getSocket().sendEvent("pièces", 3);
+			
 		}
 	}
 	
@@ -126,9 +130,9 @@ public class Partie {
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
-		Effet e = GestionEffets.FabriquerEffet(c, c.getNomEffet());
-		GestionEffets.AppliquerEffet(e, listeJoueurs.get(index));
-		log(name + " a joué " + c.getNom() + "(score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire.");
+		//Effet e = GestionEffets.FabriquerEffet(c, c.getNomEffet());
+		GestionEffets.appliquerEffetCarte(c, listeJoueurs.get(index));
+		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		nbCartesJouées += 1;
 	}
 	

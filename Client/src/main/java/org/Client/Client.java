@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
 import org.Model.assets.Id;
-import org.Model.assets.Main;
+import org.Model.assets.Joueur;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 import org.Model.assets.Carte;
@@ -24,11 +24,11 @@ public class Client{
 	private Id id;
 	final Object attenteDeconnexion = new Object();
 	
-	private Main m;
-	private String name;
+	private Joueur j;
+
 	
 	public Client(String url, final String name) {
-		this.name = name;
+		this.j = new Joueur(name);
 		try {
 			IO.Options opts = new IO.Options();
 			opts.forceNew = true;
@@ -64,22 +64,32 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					Carte c =null;
-					m = new Main();
 					JSONArray cJson = (JSONArray) args[0];
 				    for(int i=0;i<7;i++) {
 			
 						try {
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(String)(cJson.getJSONObject(i).get("nomEffet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
+							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(String)(cJson.getJSONObject(i).get("nomEffet")),(Integer)(cJson.getJSONObject(i).get("valeurEffet")),(String)(cJson.getJSONObject(i).get("orientationEffet")),(String)(cJson.getJSONObject(i).get("ressourceEffet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
 						}
 						catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						m.add(c);
+						j.getM().add(c);
 				    }
 					connexion.emit("readyCheck", "Prêt");
 				}
 				
+			});
+			
+			// traitement de l'événement "voici tes pièces" venant du serveur
+			connexion.on("pièces", new Emitter.Listener() {
+				
+				@Override
+				public void call(Object... args) {
+					int valeur = (Integer) args[0];
+					j.setPièces(j.getPièces() + valeur);
+					
+				}
 			});
 			
 			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
@@ -87,8 +97,8 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					Carte c = null;
-					c = m.get(0);
-					m.remove(0);
+					c = j.getM().get(0);
+					j.getM().remove(0);
 					JSONObject carteJouéeJSON = new JSONObject(c);
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}
@@ -114,7 +124,7 @@ public class Client{
 	
 	// Formatage des sorties textes
 	public void log(String s) {
-		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + this.name + "] : " + s + CouleurSorties.ANSI_RESET);
+		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + j.getNom() + "] : " + s + CouleurSorties.ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {

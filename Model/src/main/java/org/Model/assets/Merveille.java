@@ -2,6 +2,8 @@ package org.Model.assets;
 
 import java.util.HashMap;
 
+import org.Model.tools.GestionEffets;
+
 public class Merveille {
 	private String nom;
 	private String ressource;
@@ -13,21 +15,26 @@ public class Merveille {
 	private HashMap<String,Integer> ressourceEtape3;
 	
 	//Effets associés à chaque étape de la marveille (face A uniquement)
-	private Effet effet1;
-	private Effet effet2;
-	private Effet effet3;
+	private HashMap<String,String> effetEtapeUne;
+	private HashMap<String,String> effetEtapeDeux;
+	private HashMap<String,String> effetEtapeTrois;
 	
 
 	public Merveille() {
 	}
 
-	public Merveille(String nom, String ressource,HashMap<String,Integer> ressourceEtape1,HashMap<String,Integer> ressourceEtape2,HashMap<String,Integer> ressourceEtape3) {
+	public Merveille(String nom, String ressource,HashMap<String,Integer> ressourceEtape1,HashMap<String,Integer> ressourceEtape2,HashMap<String,Integer> ressourceEtape3, HashMap<String,String> effetEtapeUne, HashMap<String,String> effetEtapeDeux, HashMap<String,String> effetEtapeTrois) {
 		this.nom = nom;
 		this.ressource = ressource;
-		etapeCourante = 1;
+		this.etapeCourante = 0;
+		
 		this.setRessourceEtape1(ressourceEtape1);
 		this.setRessourceEtape2(ressourceEtape2);
 		this.setRessourceEtape3(ressourceEtape3);
+		
+		this.effetEtapeUne = effetEtapeUne;
+		this.effetEtapeDeux = effetEtapeDeux;
+		this.effetEtapeTrois = effetEtapeTrois;
 	}
 
 	public String getNom() {
@@ -50,9 +57,20 @@ public class Merveille {
 		return etapeCourante;
 	}
 
-	public void etapeSuivante(Joueur J) { 
-		if(etapeCourante<3) {
-			etapeCourante++;
+	public void etapeSuivante(Joueur j) { 
+		if(this.etapeCourante < 3) {
+			switch(this.etapeCourante) {
+				case 0:
+					GestionEffets.appliquerEffetMerveille(this.effetEtapeUne, j);
+					break;
+				case 1:
+					GestionEffets.appliquerEffetMerveille(this.effetEtapeDeux, j);
+					break;
+				case 2:
+					GestionEffets.appliquerEffetMerveille(this.effetEtapeTrois, j);
+					break;
+			}
+			this.etapeCourante++;
 		}
 		
 	}
@@ -81,27 +99,27 @@ public class Merveille {
 		this.ressourceEtape3 = ressourceEtape3;
 	}
 
-	public Effet getEffet1() {
-		return effet1;
+	public HashMap<String,String> getEffetEtapeTrois() {
+		return effetEtapeTrois;
 	}
 
-	public void setEffet1(Effet effet1) {
-		this.effet1 = effet1;
+	public void setEffetEtapeTrois(HashMap<String,String> effetEtapeTrois) {
+		this.effetEtapeTrois = effetEtapeTrois;
 	}
 
-	public Effet getEffet2() {
-		return effet2;
+	public HashMap<String,String> getEffetEtapeDeux() {
+		return effetEtapeDeux;
 	}
 
-	public void setEffet2(Effet effet2) {
-		this.effet2 = effet2;
+	public void setEffetEtapeDeux(HashMap<String,String> effetEtapeDeux) {
+		this.effetEtapeDeux = effetEtapeDeux;
 	}
 
-	public Effet getEffet3() {
-		return effet3;
+	public HashMap<String,String> getEffetEtapeUne() {
+		return effetEtapeUne;
 	}
 
-	public void setEffet3(Effet effet3) {
-		this.effet3 = effet3;
+	public void setEffetEtapeUne(HashMap<String,String> effetEtapeUne) {
+		this.effetEtapeUne = effetEtapeUne;
 	}
 }

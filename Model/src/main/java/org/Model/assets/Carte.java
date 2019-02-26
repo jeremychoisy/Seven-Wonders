@@ -7,17 +7,25 @@ public class Carte {
 	//private HashMap<String, Integer> cout;
 	private int configurationNumber;
 	private int age;
+	
+	// effet
 	private String nomEffet;
+	private int ValeurEffet;
+	private String orientationEffet;
+	private String ressourceEffet;
 	
 
 	public Carte() {}
 	
-	public Carte(String nom, String type, String nomEffet, int configurationNumber) {
+	public Carte(String nom, String type, String nomEffet,int ValeurEffet, String orientationEffet, String ressourceEffet, int configurationNumber) {
 		this.nom = nom;
 		this.type = type;
 		this.nomEffet = nomEffet;
 		//this.cout = cout;
 		this.configurationNumber= configurationNumber;
+		this.ValeurEffet = ValeurEffet;
+		this.orientationEffet = orientationEffet;
+		this.ressourceEffet = ressourceEffet;
 	}
 	
 	public int getAge() {
@@ -67,6 +75,30 @@ public class Carte {
 
 	public void setNomEffet(String nomEffet) {
 		this.nomEffet = nomEffet;
+	}
+
+	public String getOrientationEffet() {
+		return orientationEffet;
+	}
+
+	public void setOrientationEffet(String orientationEffet) {
+		this.orientationEffet = orientationEffet;
+	}
+
+	public int getValeurEffet() {
+		return ValeurEffet;
+	}
+
+	public void setValeurEffet(int valeurEffet) {
+		ValeurEffet = valeurEffet;
+	}
+
+	public String getRessourceEffet() {
+		return ressourceEffet;
+	}
+
+	public void setRessourceEffet(String ressourceEffet) {
+		this.ressourceEffet = ressourceEffet;
 	}
 	
 	

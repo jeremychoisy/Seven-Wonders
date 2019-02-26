@@ -1,112 +1,53 @@
 package org.Model.tools;
 
+import java.util.HashMap;
+
 import org.Model.assets.Carte;
-import org.Model.assets.Effet;
 import org.Model.assets.Joueur;
+import org.Model.assets.Merveille;
 
 public abstract class GestionEffets
 {
-	public static void  AppliquerEffet(Effet effet, Joueur j) {
-
-		if(effet.getNom().equals("commerce_ressources_primaires")) {
+	public static void  appliquerEffetCarte(Carte c, Joueur j) {
+		if(c.getNomEffet().equals("commerce_ressources_primaires")) {
 			j.setCommerce_ressources_primaires(true);
 		}
-		if(effet.getNom().equals("commerce_ressources_secondaires")) {
+		if(c.getNomEffet().equals("commerce_ressources_secondaires")) {
 			j.setCommerce_ressources_secondaires(true);
 		}
-		if(effet.getNom().equals("gain_pièces")) {
-			j.setPièces(j.getPièces() + effet.getValeur());
+		if(c.getNomEffet().equals("gain_pièces")) {
+			j.setPièces(j.getPièces() + c.getValeurEffet());
 		}
-		if(effet.getNom().equals("gain_points_victoire")) {
-			j.setPoints_victoire(j.getPoints_victoire() + effet.getValeur());
+		if(c.getNomEffet().equals("gain_points_victoire")) {
+			j.setPoints_victoire(j.getPoints_victoire() + c.getValeurEffet());
 		}
-		if(effet.getNom().equals("gain_boucliers")) {
-			j.setBouclier(j.getBouclier() + effet.getValeur());
+		if(c.getNomEffet().equals("gain_boucliers")) {
+			j.setBouclier(j.getBouclier() + c.getValeurEffet());
 		}
-		if(effet.getNom().equals("gain_ressources")) {
-			j.ajouterRessources(effet.getRessource(), effet.getValeur());
+		if(c.getNomEffet().equals("gain_ressources")) {
+			j.ajouterRessources(c.getRessourceEffet(), c.getValeurEffet());
 		}	
 
 	}
 	
-	public static Effet FabriquerEffet(Carte c,String name) {
-		if(name.equals("commerce_ressources_primaires")){
-			if(c.getNom().equals("Comptoir Est")) {
-				return new Effet(name,null,"droite",0);
-			}else {
-				return new Effet(name,null,"gauche",0);
-			}
+	public static void appliquerEffetMerveille(HashMap<String,String> effetEtape, Joueur j) {
+		if(effetEtape.get("nomEffet").equals("commerce_ressources_primaires")) {
+			j.setCommerce_ressources_primaires(true);
 		}
-		if(name.equals("commerce_ressources_secondaires")){
-				return new Effet(name,null,"tous",0);
+		if(effetEtape.get("nomEffet").equals("commerce_ressources_secondaires")) {
+			j.setCommerce_ressources_secondaires(true);
 		}
-		if(name.equals("gain_pièces")){
-			return new Effet(name,null,null, 5);
+		if(effetEtape.get("nomEffet").equals("gain_pièces")) {
+			j.setPièces(j.getPièces() + Integer.parseInt(effetEtape.get("valeurEffet")));
 		}
-		if(name.equals("gain_boucliers")) {
-			return new Effet(name,null,null,1);
+		if(effetEtape.get("nomEffet").equals("gain_points_victoire")) {
+			j.setPoints_victoire(j.getPoints_victoire() + Integer.parseInt(effetEtape.get("valeurEffet")));
 		}
-		if(name.equals("gain_ressources")){
-			if(c.getNom().equals("Chantier")) {
-				return new Effet(name,"bois",null,1);
-			}
-			if(c.getNom().equals("Cavité")) {
-				return new Effet(name,"pierre",null,1);
-			}
-			if(c.getNom().equals("Bassin argileux")) {
-				return new Effet(name,"argile",null,0);
-			}
-			if(c.getNom().equals("Filon")) {
-				return new Effet(name,"minerai",null,0);
-			}
-			if(c.getNom().equals("Exploitation forestière")) {
-				//ressources.put("pierre", 1);
-				return new Effet(name,"bois",null,1);
-			}
-			if(c.getNom().equals("Excavation")) {
-				//ressources.put("argile", 1);
-				return new Effet(name,"pierre",null,1);
-			}
-			if(c.getNom().equals("Friche")) {
-				//ressources.put("argile",1);
-				return new Effet(name,"bois",null,1);
-			}
-			if(c.getNom().equals("Fosse argileuse")) {
-				//ressources.put("argile", 1);
-				return new Effet(name,"minerai",null,1);
-			}		
-			if(c.getNom().equals("Mine")) {
-				//ressources.put("pierre",1);
-				return new Effet(name,"minerai",null,1);
-			}
-			if(c.getNom().equals("Gisement")) {
-				//ressources.put("bois", 1);
-				return new Effet(name,"minerai",null,1);
-			}
-			if(c.getNom().equals("Métier à tisser")) {
-				return new Effet(name,"tissu",null,1);
-			}
-			if(c.getNom().equals("Verrerie")) {
-				return new Effet(name,"verre",null,1);
-			}
-			if(c.getNom().equals("Presse")) {
-				return new Effet(name,"parchemin",null,1);
-			}
+		if(effetEtape.get("nomEffet").equals("gain_boucliers")) {
+			j.setBouclier(j.getBouclier() + Integer.parseInt(effetEtape.get("valeurEffet")));
 		}
-		if(name.equals("gain_points_victoire")) {
-			if(c.getNom().equals("Autel")) {
-				return new Effet(name,null,null,2);
-			}
-			if(c.getNom().equals("Bains")) {
-				return new Effet(name,null,null,3);
-			}
-			if(c.getNom().equals("Théâtre")) {
-				return new Effet(name,null,null,2);
-			}
-			if(c.getNom().equals("Prêteur sur gage")) {
-				return new Effet(name,null,null,3);
-			}
+		if(effetEtape.get("nomEffet").equals("batiment_gratuit")) {
+			// TODO
 		}
-		return null;
 	}
 }
