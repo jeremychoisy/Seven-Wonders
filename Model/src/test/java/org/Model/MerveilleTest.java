@@ -1,19 +1,25 @@
 
 package org.Model;
 
+import org.Model.assets.Joueur;
 import org.Model.assets.Merveille;
 
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
 public class MerveilleTest{
 
 
 	Merveille merveille = new Merveille();
-	Merveille test = new Merveille("Gizah", "pierre");
-	
+	HashMap<String,Integer> e1 = new HashMap<String,Integer>();
+	HashMap<String,Integer> e2 = new HashMap<String,Integer>();
+	HashMap<String,Integer> e3 = new HashMap<String,Integer>();
+	Merveille test = new Merveille("Gizah", "pierre",e1,e2,e3);
+	Joueur j = new Joueur();
 	@Test
 	public void testGetNom() {
 		assertEquals("Gizah",test.getNom());
@@ -44,11 +50,11 @@ public class MerveilleTest{
 	@Test
 	public void testChangeEtape() {
 		assertEquals(1,test.getEtapeCourante());
-		test.changeEtape();
+		test.etapeSuivante(j);
 		assertEquals(2,test.getEtapeCourante());
-		test.changeEtape();
+		test.etapeSuivante(j);
 		assertEquals(3,test.getEtapeCourante());
-		test.changeEtape();
+		test.etapeSuivante(j);
 		assertEquals(3,test.getEtapeCourante());
 	}
 	
