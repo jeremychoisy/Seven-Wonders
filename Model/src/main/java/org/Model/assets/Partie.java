@@ -17,13 +17,10 @@ public class Partie {
 	
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
-<<<<<<< HEAD
-	private final int NB_CARTES = 34;
-=======
 	private final int NB_CARTES = 29;
->>>>>>> upClasseCarte
 	private final int NB_MERVEILLES = 3;
 	private final int POINTS_TO_SCORE = 10;
+	
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;
