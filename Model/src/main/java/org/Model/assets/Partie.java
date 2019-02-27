@@ -115,7 +115,7 @@ public class Partie {
 	public void afficherResultats(SocketIOClient socket) {
 		int index = getIndexFromSocket(socket);
 		if(estGagnant(socket)) {
-			log("Victoire de " + listeJoueurs.get(index).getNom() + "!");
+			log("Victoire de " + listeJoueurs.get(index).getNom() + " avec " + listeJoueurs.get(index).getPoints_victoire() + " points de victoire.");
 		}
 		else
 		{
@@ -175,7 +175,7 @@ public class Partie {
 				max = listeJoueurs.get(i).getPoints_victoire();
 			}
 		}
-		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points.");
+		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points de victoire.");
 	}
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket
