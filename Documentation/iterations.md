@@ -30,9 +30,10 @@ Itération 5 :
 
 Itération 6 :
 - Gestion des guildes
-- Calculs des scores  à la fin de la partie.
+- Calculs des scores à la fin de la partie.
 
 Itération 7 :
 - Le joueur joue maintenant en prenant en compte ses adversaires, il essaye de les contrer quand c’est possible, de développer sa puissance militaire en fonction de celles des ses voisins.
 - 7 Joueurs peuvent se connecter.
+
 
