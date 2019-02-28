@@ -18,7 +18,7 @@ public class Partie {
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 29;
-	private final int NB_MERVEILLES = 3;
+	private final int NB_MERVEILLES = 4;
 	private final int POINTS_TO_SCORE = 10;
 	
 	// variables nécessaires au chargements des ressources
@@ -28,6 +28,7 @@ public class Partie {
 	// variables utiles pour un tour de jeu
 	private int tourCourant;
 	private int nbCartesJouées;
+	private boolean isEveryoneReadyStated = false;
 
 	
 	public Partie() {
@@ -55,12 +56,20 @@ public class Partie {
 	public void initPartie() {
 		ArrayList<Carte> listeMain;
 		Main main;
+		Merveille merveille;
 		// Construction d'une liste avec toutes les cartes
 		ArrayList<Carte> listeCartes = new ArrayList<Carte>();
 		for(int i=0;i<NB_CARTES;i++) {
 			listeCartes.add(c[i]);
 		}
+		//Construction d'une liste avec toutes les merveilles
+		ArrayList<Merveille> listeMerveilles = new ArrayList<Merveille>();
+		for(int i=0;i<NB_MERVEILLES;i++) {
+			listeMerveilles.add(m[i]);
+		}
+		// Mélange des listes
 		Collections.shuffle(listeCartes);
+		Collections.shuffle(listeMerveilles);
 		// Pour chaque joueur
 		for(int i=0;i<listeJoueurs.size();i++) {
 			listeMain = new ArrayList<Carte>();
@@ -71,13 +80,23 @@ public class Partie {
 				main.add(listeCartes.get(0));
 				listeCartes.remove(0);
 			}
+			// Pioche de la merveille
+			merveille = listeMerveilles.get(0);
+			listeMerveilles.remove(0);
+			
+			// Mise à jour du joueur côté serveur
 			listeJoueurs.get(i).setM(main);
+			listeJoueurs.get(i).setMerveille(merveille);
 			listeJoueurs.get(i).setPièces(3);
+			
 			// Envoi de la main au joueur 
-			log("la main est distribuée à " + listeJoueurs.get(i).getNom() + ".");
 			listeJoueurs.get(i).getSocket().sendEvent("main", listeMain);
+			// Envoi de la merveille au joueur
+			listeJoueurs.get(i).getSocket().sendEvent("merveille", merveille);
 			// Envoi des 3 PO au joueur
 			listeJoueurs.get(i).getSocket().sendEvent("pièces", 3);
+			
+			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
 			
 		}
 	}
@@ -88,7 +107,8 @@ public class Partie {
 		listeJoueurs.get(index).setRdy(true);
 		log(listeJoueurs.get(index).getNom() + " est prêt !");
 
-		if(everyoneIsRdy()) {
+		if(everyoneIsRdy() && isEveryoneReadyStated == false) {
+			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
 			demarrerTourSuivant();
 		}
@@ -130,8 +150,7 @@ public class Partie {
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
-		//Effet e = GestionEffets.FabriquerEffet(c, c.getNomEffet());
-		GestionEffets.appliquerEffetCarte(c, listeJoueurs.get(index));
+		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		nbCartesJouées += 1;
 	}

@@ -2,17 +2,16 @@ package org.Client;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-
 import org.Model.assets.Id;
 import org.Model.assets.Joueur;
+import org.Model.assets.Merveille;
 import org.Model.tools.CouleurSorties;
+import org.Model.tools.GestionPersistance;
 import org.Model.tools.MyPrintStream;
 import org.Model.assets.Carte;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -63,12 +62,11 @@ public class Client{
 			connexion.on("main",new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
-					Carte c =null;
-					JSONArray cJson = (JSONArray) args[0];
 				    for(int i=0;i<7;i++) {
-			
+				    	Carte c = null;
 						try {
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(String)(cJson.getJSONObject(i).get("nomEffet")),(Integer)(cJson.getJSONObject(i).get("valeurEffet")),(String)(cJson.getJSONObject(i).get("orientationEffet")),(String)(cJson.getJSONObject(i).get("ressourceEffet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
+							JSONArray cJson = (JSONArray) args[0];
+							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),GestionPersistance.JSONToMapEffet((JSONObject)cJson.getJSONObject(i).get("effet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
 						}
 						catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -92,14 +90,43 @@ public class Client{
 				}
 			});
 			
+			// traitement de l'événement "voici ta merveille" venant du serveur
+			connexion.on("merveille", new Emitter.Listener() {
+				
+				@Override
+				public void call(Object... args) {
+					Merveille m = null;
+					JSONObject JSon = (JSONObject)args[0];
+					
+					try {
+						m = new Merveille(JSon.getString("nom"),JSon.getString("ressource"),GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeUne")),
+								GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeDeux")),GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeTrois")),
+								GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeUne")),GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeDeux")),
+								GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeTrois")));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					j.setMerveille(m);		
+				}
+			});
+			
 			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
-			connexion.on("Ton tour",new Emitter.Listener() {
+			connexion.on("Ton tour", new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
 					Carte c = null;
+					JSONObject carteJouéeJSON=null;
+				
 					c = j.getM().get(0);
 					j.getM().remove(0);
-					JSONObject carteJouéeJSON = new JSONObject(c);
+
+					try {
+						carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					connexion.emit("Carte Jouée", carteJouéeJSON);
 				}
 			});

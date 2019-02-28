@@ -62,7 +62,7 @@ public class Serveur {
 		serveur.addEventListener("Carte Jouée", Carte.class, new DataListener<Carte>(){
 
 			@Override
-			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
 				p.jouerCarte(client, data);
 				if(p.estGagnant(client) || p.estFinie()) {
 					p.afficherResultats(client);
