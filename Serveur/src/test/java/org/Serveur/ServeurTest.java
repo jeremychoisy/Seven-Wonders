@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 
-public class ServeurTests {
+public class ServeurTest {
 	@DisplayName("Tests pour la classe Serveur.")
 	@Test
 	void Test() {

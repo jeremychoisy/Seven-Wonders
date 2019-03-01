@@ -62,11 +62,11 @@ public class Client{
 			connexion.on("main",new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
+					JSONArray cJson = (JSONArray) args[0];
 				    for(int i=0;i<7;i++) {
 				    	Carte c = null;
 						try {
-							JSONArray cJson = (JSONArray) args[0];
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),GestionPersistance.JSONToMapEffet((JSONObject)cJson.getJSONObject(i).get("effet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
+							c = new Carte(cJson.getJSONObject(i).getString("nom"),cJson.getJSONObject(i).getString("type"),GestionPersistance.JSONToMapEffet((JSONObject)cJson.getJSONObject(i).get("effet")),GestionPersistance.JSONToMapRessource((JSONObject)cJson.getJSONObject(i).get("cout")),cJson.getJSONObject(i).getInt("configurationNumber"),cJson.getJSONObject(i).getInt("age"));
 						}
 						catch (JSONException e) {
 							// TODO Auto-generated catch block

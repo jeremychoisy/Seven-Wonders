@@ -5,7 +5,7 @@ import java.util.Map;
 public class Carte {
 	private String nom;
 	private String type;
-	//private Map<String, Integer> cout;
+	private Map<String, Integer> cout;
 	private int configurationNumber;
 	private int age;
 
@@ -15,13 +15,13 @@ public class Carte {
 
 	public Carte() {}
 	
-	public Carte(String nom, String type, Map<String,String> effet , int configurationNumber) {
+	public Carte(String nom, String type, Map<String,String> effet ,Map<String,Integer> cout, int configurationNumber, int age) {
 		this.nom = nom;
 		this.type = type;
 		this.effet=effet;
-		//this.cout = cout;
+		this.cout = cout;
 		this.configurationNumber= configurationNumber;
-
+		this.age = age;
 	}
 	
 	public int getAge() {
@@ -32,14 +32,14 @@ public class Carte {
 		this.age = age;
 	}
 
-	/*public int getCout(String ressource) {
-		return cout.get(ressource);
+	public Map<String,Integer> getCout() {
+		return cout;
 	}
 
 
-	public void addCout(String ressource, int valeur) {
-		cout.put(ressource, valeur);
-	}*/						
+	public void setCout(Map<String,Integer> cout) {
+		this.cout = cout;
+	}					
 
 	public String getNom() {
 		return nom;
