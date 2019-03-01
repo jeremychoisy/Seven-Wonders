@@ -24,8 +24,12 @@ public class Partie {
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;
+	private ArrayList<Carte> cartesAgeI;
+	private ArrayList<Carte> cartesAgeII;
+	private ArrayList<Carte> cartesAgeIII;
 	
-	// variables utiles pour un tour de jeu
+	// variables utiles pour le déroulement du jeu
+	private ArrayList<Carte> défausse;
 	private int tourCourant;
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated = false;
@@ -35,6 +39,10 @@ public class Partie {
 		listeJoueurs = new ArrayList<Joueur>();
 		c = new Carte[NB_CARTES];
 		m = new Merveille[NB_MERVEILLES];
+		cartesAgeI = new ArrayList<Carte>();
+		cartesAgeII = new ArrayList<Carte>();
+		cartesAgeIII = new ArrayList<Carte>();
+		défausse = new ArrayList<Carte>();
 		// Récupération des cartes/merveilles via les fichiers Json
 		recupererDonnees();
 		tourCourant = 0;
@@ -54,31 +62,43 @@ public class Partie {
 	
 	//Fonction responsable de de la distribution des ressources aux joueurs
 	public void initPartie() {
-		ArrayList<Carte> listeMain;
 		Main main;
 		Merveille merveille;
+		
 		// Construction d'une liste avec toutes les cartes
-		ArrayList<Carte> listeCartes = new ArrayList<Carte>();
 		for(int i=0;i<NB_CARTES;i++) {
-			listeCartes.add(c[i]);
+			switch(c[i].getAge()) {
+				case 1:
+					cartesAgeI.add(c[i]);
+					break;
+				case 2:
+					cartesAgeII.add(c[i]);
+					break;
+				case 3:
+					cartesAgeIII.add(c[i]);
+					break;
+			}
 		}
+		
 		//Construction d'une liste avec toutes les merveilles
 		ArrayList<Merveille> listeMerveilles = new ArrayList<Merveille>();
 		for(int i=0;i<NB_MERVEILLES;i++) {
 			listeMerveilles.add(m[i]);
 		}
+		
 		// Mélange des listes
-		Collections.shuffle(listeCartes);
+		Collections.shuffle(cartesAgeI);
+		Collections.shuffle(cartesAgeII);
+		Collections.shuffle(cartesAgeIII);
 		Collections.shuffle(listeMerveilles);
+		
 		// Pour chaque joueur
 		for(int i=0;i<listeJoueurs.size();i++) {
-			listeMain = new ArrayList<Carte>();
 			main = new Main();
 			// Construction de la main
 			for(int j=0;j<7;j++) {
-				listeMain.add(listeCartes.get(0));
-				main.add(listeCartes.get(0));
-				listeCartes.remove(0);
+				main.add(cartesAgeI.get(0));
+				cartesAgeI.remove(0);
 			}
 			// Pioche de la merveille
 			merveille = listeMerveilles.get(0);
@@ -90,11 +110,11 @@ public class Partie {
 			listeJoueurs.get(i).setPièces(3);
 			
 			// Envoi de la main au joueur 
-			listeJoueurs.get(i).getSocket().sendEvent("main", listeMain);
+			listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
 			// Envoi de la merveille au joueur
-			listeJoueurs.get(i).getSocket().sendEvent("merveille", merveille);
+			listeJoueurs.get(i).getSocket().sendEvent("Merveille", merveille);
 			// Envoi des 3 PO au joueur
-			listeJoueurs.get(i).getSocket().sendEvent("pièces", 3);
+			listeJoueurs.get(i).getSocket().sendEvent("Pièces", 3);
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
 			
@@ -123,8 +143,8 @@ public class Partie {
 		return false;
 	}
 	
-	// Fonction qui retourne l'état de la partie (en cours ou finie).
-	public boolean estFinie() {
+	// Fonction qui retourne l'état de l'Age (en cours ou finie).
+	public boolean AgeEstFini() {
 		if(tourCourant == 6) {
 			return true;
 		}
@@ -146,16 +166,32 @@ public class Partie {
 		}
 	}
 	
-	// Fonction qui traite la carte joué par un joueur
+	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
+		// MaJ de la main du joueur côté serveur
+		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		nbCartesJouées += 1;
 	}
 	
-	// Fonction qui permet de passer au tour suivant 
+	// Fonction qui traite la carte défaussée par un joueur.
+	public void défausserCarte(SocketIOClient socket,Carte c) {
+		int index = getIndexFromSocket(socket);
+		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
+		défausse.add(c);
+		if(AgeEstFini()) {
+			// fonction qui démarre l'age suivant
+		} 
+		else
+		{
+			listeJoueurs.get(index).getSocket().sendEvent("Pièces", 3);
+		}
+	}
+	
+	// Fonction qui permet de passer au tour suivant.
 	public void demarrerTourSuivant() {
 		nbCartesJouées = 0;
 		tourCourant += 1;

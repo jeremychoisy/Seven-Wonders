@@ -22,8 +22,16 @@ public class Main {
 		main.remove(i);
 	}
 	
-	public Carte get(int index) {
-		return main.get(index);
+	public ArrayList<Carte> getMain() {
+		return main;
+	}
+	
+	public void RemoveCardFromName(String nomCarte) {
+		for(int i = 0;i < main.size();i++) {
+			if(main.get(i).getNom().equals(nomCarte)) {
+				main.remove(i);
+			}
+		}
 	}
 	
 	public String toString() {

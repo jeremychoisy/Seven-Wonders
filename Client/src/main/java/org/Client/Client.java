@@ -59,7 +59,7 @@ public class Client{
 				}
 			});
 			// Traitement de l'événement "voici ta main" venant du serveur
-			connexion.on("main",new Emitter.Listener() {
+			connexion.on("Main",new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
 					JSONArray cJson = (JSONArray) args[0];
@@ -74,13 +74,13 @@ public class Client{
 						}
 						j.getM().add(c);
 				    }
-					connexion.emit("readyCheck", "Prêt");
+					connexion.emit("ReadyCheck", "Prêt");
 				}
 				
 			});
 			
 			// traitement de l'événement "voici tes pièces" venant du serveur
-			connexion.on("pièces", new Emitter.Listener() {
+			connexion.on("Pièces", new Emitter.Listener() {
 				
 				@Override
 				public void call(Object... args) {
@@ -91,7 +91,7 @@ public class Client{
 			});
 			
 			// traitement de l'événement "voici ta merveille" venant du serveur
-			connexion.on("merveille", new Emitter.Listener() {
+			connexion.on("Merveille", new Emitter.Listener() {
 				
 				@Override
 				public void call(Object... args) {
@@ -118,7 +118,7 @@ public class Client{
 					Carte c = null;
 					JSONObject carteJouéeJSON=null;
 				
-					c = j.getM().get(0);
+					c = j.getM().getMain().get(0);
 					j.getM().remove(0);
 
 					try {

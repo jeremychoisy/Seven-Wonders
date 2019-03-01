@@ -48,7 +48,7 @@ public class Serveur {
 			
 		});
 		// Ajout de l'écouteur traitant le message "Prêt" de la part d'un joueur
-		serveur.addEventListener("readyCheck", String.class, new DataListener<String>(){
+		serveur.addEventListener("ReadyCheck", String.class, new DataListener<String>(){
 
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
@@ -58,13 +58,13 @@ public class Serveur {
 			}
 			
 		});
-		// Ajout de l'écouteur traitant l'événement d'une carte jouée de la part d'un joueur
+		// Ajout de l'écouteur traitant l'événement d'une carte jouée de la part d'un joueur.
 		serveur.addEventListener("Carte Jouée", Carte.class, new DataListener<Carte>(){
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
 				p.jouerCarte(client, data);
-				if(p.estGagnant(client) || p.estFinie()) {
+				if(p.estGagnant(client) || p.AgeEstFini()) {
 					p.afficherResultats(client);
 					synchronized(attenteConnexion) {
 						attenteConnexion.notify();
@@ -76,6 +76,16 @@ public class Serveur {
 						p.demarrerTourSuivant();
 				}
 				
+			}
+			
+		});
+		
+		// Ajout de l'écouteur traitant de l'événement de la défausse d'une carte.
+		serveur.addEventListener("Carte défaussé", Carte.class, new DataListener<Carte>(){
+
+			@Override
+			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+				p.défausserCarte(client,data);
 			}
 			
 		});
