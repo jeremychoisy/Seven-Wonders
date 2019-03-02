@@ -2,7 +2,6 @@ package org.Serveur;
 
 import java.io.UnsupportedEncodingException;
 import org.Model.assets.Carte;
-import org.Model.assets.Id;
 import org.Model.assets.Partie;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
@@ -37,12 +36,12 @@ public class Serveur {
 			}	
 		});
 		// Ajout de l'écouteur traitant le message d'identification du client
-		serveur.addEventListener("id", Id.class, new DataListener<Id>(){
+		serveur.addEventListener("id", String.class, new DataListener<String>(){
 
 			@Override
-			public void onData(SocketIOClient client, Id data, AckRequest ackSender) throws Exception {
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				// On ajoute le joueur à la partie
-				p.ajouterJoueur(data.getNom(), client);
+				p.ajouterJoueur(data, client);
 
 			}
 			

@@ -2,16 +2,13 @@ package org.Client;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import org.Model.assets.Id;
-import org.Model.assets.Joueur;
-import org.Model.assets.Merveille;
+
 import org.Model.tools.CouleurSorties;
-import org.Model.tools.GestionPersistance;
 import org.Model.tools.MyPrintStream;
-import org.Model.assets.Carte;
+import org.Model.assets.Bot;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -20,14 +17,13 @@ import io.socket.emitter.Emitter;
 
 public class Client{
 	private Socket connexion;
-	private Id id;
 	final Object attenteDeconnexion = new Object();
 	
-	private Joueur j;
+	private Bot b;
 
 	
 	public Client(String url, final String name) {
-		this.j = new Joueur(name);
+		this.b = new Bot(name);
 		try {
 			IO.Options opts = new IO.Options();
 			opts.forceNew = true;
@@ -38,9 +34,7 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					log("connecté");
-					id = new Id(name);
-					JSONObject idJson = new JSONObject(id);
-					connexion.emit("id", idJson);
+					connexion.emit("id", name);
 					
 				}
 				
@@ -63,17 +57,9 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					JSONArray cJson = (JSONArray) args[0];
-				    for(int i=0;i<7;i++) {
-				    	Carte c = null;
-						try {
-							c = new Carte(cJson.getJSONObject(i).getString("nom"),cJson.getJSONObject(i).getString("type"),GestionPersistance.JSONToMapEffet((JSONObject)cJson.getJSONObject(i).get("effet")),GestionPersistance.JSONToMapRessource((JSONObject)cJson.getJSONObject(i).get("cout")),cJson.getJSONObject(i).getInt("configurationNumber"),cJson.getJSONObject(i).getInt("age"));
-						}
-						catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						j.getM().add(c);
-				    }
+				    
+					b.setMain(cJson);
+					
 					connexion.emit("ReadyCheck", "Prêt");
 				}
 				
@@ -85,7 +71,8 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					int valeur = (Integer) args[0];
-					j.setPièces(j.getPièces() + valeur);
+					
+					b.addPièces(valeur);
 					
 				}
 			});
@@ -95,19 +82,10 @@ public class Client{
 				
 				@Override
 				public void call(Object... args) {
-					Merveille m = null;
-					JSONObject JSon = (JSONObject)args[0];
+
+					JSONObject Json = (JSONObject)args[0];
 					
-					try {
-						m = new Merveille(JSon.getString("nom"),JSon.getString("ressource"),GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeUne")),
-								GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeDeux")),GestionPersistance.JSONToMapRessource(JSon.getJSONObject("ressourceEtapeTrois")),
-								GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeUne")),GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeDeux")),
-								GestionPersistance.JSONToMapEffet(JSon.getJSONObject("effetEtapeTrois")));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					j.setMerveille(m);		
+					b.setMerveille(Json);	
 				}
 			});
 			
@@ -115,19 +93,8 @@ public class Client{
 			connexion.on("Ton tour", new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
-					Carte c = null;
-					JSONObject carteJouéeJSON=null;
-				
-					c = j.getM().getMain().get(0);
-					j.getM().remove(0);
-
-					try {
-						carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					connexion.emit("Carte Jouée", carteJouéeJSON);
+					
+					b.jouerTour(connexion);
 				}
 			});
 		} catch (URISyntaxException e) {
@@ -151,7 +118,7 @@ public class Client{
 	
 	// Formatage des sorties textes
 	public void log(String s) {
-		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + j.getNom() + "] : " + s + CouleurSorties.ANSI_RESET);
+		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + b.getJ().getNom() + "] : " + s + CouleurSorties.ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {

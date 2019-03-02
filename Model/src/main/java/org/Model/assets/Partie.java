@@ -17,7 +17,7 @@ public class Partie {
 	
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
-	private final int NB_CARTES = 29;
+	private final int NB_CARTES = 98;
 	private final int NB_MERVEILLES = 4;
 	private final int POINTS_TO_SCORE = 10;
 	
@@ -67,16 +67,18 @@ public class Partie {
 		
 		// Construction d'une liste avec toutes les cartes
 		for(int i=0;i<NB_CARTES;i++) {
-			switch(c[i].getAge()) {
-				case 1:
-					cartesAgeI.add(c[i]);
-					break;
-				case 2:
-					cartesAgeII.add(c[i]);
-					break;
-				case 3:
-					cartesAgeIII.add(c[i]);
-					break;
+			if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
+				switch(c[i].getAge()) {
+					case 1:
+						cartesAgeI.add(c[i]);
+						break;
+					case 2:
+						cartesAgeII.add(c[i]);
+						break;
+					case 3:
+						cartesAgeIII.add(c[i]);
+						break;
+				}
 			}
 		}
 		
@@ -103,7 +105,6 @@ public class Partie {
 			// Pioche de la merveille
 			merveille = listeMerveilles.get(0);
 			listeMerveilles.remove(0);
-			
 			// Mise à jour du joueur côté serveur
 			listeJoueurs.get(i).setM(main);
 			listeJoueurs.get(i).setMerveille(merveille);
