@@ -63,17 +63,7 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
 				p.jouerCarte(client, data);
-				if(p.estGagnant(client) || p.AgeEstFini()) {
-					p.afficherResultats(client);
-					synchronized(attenteConnexion) {
-						attenteConnexion.notify();
-					}
-				}
-				else
-				{
-					if(p.tourEstFini())
-						p.demarrerTourSuivant();
-				}
+				goNext();
 				
 			}
 			
@@ -85,25 +75,30 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
 				p.défausserCarte(client,data);
+				goNext();
 				
-				if(p.estGagnant(client) || p.AgeEstFini()) {
-					p.afficherResultats(client);
-					synchronized(attenteConnexion) {
-						attenteConnexion.notify();
-					}
-				}
-				else
-				{
-					if(p.tourEstFini())
-						p.demarrerTourSuivant();
-				}
+
 				
 			}
 			
 		});
 		
 	}
-	
+	public void goNext() {
+		if(p.AgeEstFini()) {
+			if(p.tourEstFini()) {
+				p.afficherGagnant();
+				synchronized(attenteConnexion) {
+					attenteConnexion.notify();
+				}
+			}
+		}
+		else
+		{
+			if(p.tourEstFini())
+				p.demarrerTourSuivant();
+		}
+	}
 	// Formatage des sorties textes
 	public void log(String s) {
 		System.out.println(CouleurSorties.ANSI_BLUE + "Serveur : " + s + CouleurSorties.ANSI_RESET);

@@ -19,7 +19,6 @@ public class Partie {
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 98;
 	private final int NB_MERVEILLES = 4;
-	private final int POINTS_TO_SCORE = 10;
 	
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
@@ -127,23 +126,13 @@ public class Partie {
 		int index = getIndexFromSocket(socket);
 		listeJoueurs.get(index).setRdy(true);
 		log(listeJoueurs.get(index).getNom() + " est prêt !");
-		log(listeJoueurs.get(index).getMerveille().getNom());
 		if(everyoneIsRdy() && isEveryoneReadyStated == false) {
 			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
 			demarrerTourSuivant();
 		}
 	}
-	
-	// Fonction qui détermine si le joueur correspondant au socket a gagné la partie.
-	public boolean estGagnant(SocketIOClient socket) {
-		int index = getIndexFromSocket(socket);
-		if(listeJoueurs.get(index).getPoints_victoire() >= POINTS_TO_SCORE) {
-			return true;
-		}
-		return false;
-	}
-	
+		
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
 	public boolean AgeEstFini() {
 		if(tourCourant == 6) {
@@ -151,22 +140,7 @@ public class Partie {
 		}
 		return false;
 	}
-	
-	// Fonction qui afficher les résultats quand la partie est finie.
-	public void afficherResultats(SocketIOClient socket) {
-		int index = getIndexFromSocket(socket);
-		if(estGagnant(socket)) {
-			log("Victoire de " + listeJoueurs.get(index).getNom() + " avec " + listeJoueurs.get(index).getPoints_victoire() + " points de victoire.");
-		}
-		else
-		{
-			if(tourEstFini()) {
-				afficherGagnant();
-			}
-				
-		}
-	}
-	
+		
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
@@ -231,14 +205,14 @@ public class Partie {
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public void afficherGagnant() {
 		int indexMax = 0;
-		int max = listeJoueurs.get(0).getPoints_victoire();
+		int max = listeJoueurs.get(0).getPoints_victoire() + listeJoueurs.get(0).getPièces();
 		for(int i=1;i < listeJoueurs.size();i++) {
-			if(listeJoueurs.get(i).getPoints_victoire() > max) {
+			if(listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces() > max) {
 				indexMax = i;
-				max = listeJoueurs.get(i).getPoints_victoire();
+				max = listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces();
 			}
 		}
-		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points de victoire.");
+		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points de civilisation.");
 	}
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket
