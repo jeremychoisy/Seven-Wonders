@@ -14,7 +14,6 @@ public class Joueur {
 	private boolean commerce_ressources_primaires;
 	private boolean commerce_ressources_secondaires;
 
-	private int pièces;
 	private int points_victoire;
 	private int boucliers;
 	
@@ -39,18 +38,18 @@ public class Joueur {
 		this.isRdy = false;
 		this.setCommerce_ressources_primaires(false);
 		this.setCommerce_ressources_secondaires(false);
-		this.pièces = 0;
 		this.points_victoire = 0;
 		this.boucliers = 0;
 		
 		ressources = new HashMap<String,Integer>();
+		ressources.put("pièces", 0);
 		ressources.put("bois", 0);
 		ressources.put("pierre", 0);
 		ressources.put("minerai", 0);
 		ressources.put("argile", 0);
 		ressources.put("tissu", 0);
 		ressources.put("verre", 0);
-		ressources.put("parchemin", 0);
+		ressources.put("papier", 0);
 	}
 	
 	public void ajouterRessources(String nomRessource, int quantité) {
@@ -79,11 +78,11 @@ public class Joueur {
 	}
 
 	public int getPièces() {
-		return pièces;
+		return ressources.get("pièces");
 	}
 
 	public void setPièces(int gain_pièces) {
-		this.pièces = gain_pièces;
+		ressources.put("pièces",gain_pièces);
 	}
 
 	public int getPoints_victoire() {

@@ -78,11 +78,13 @@ public class Bot {
 					isPlayable = false;
 				}
 			}
-			
 			// Si isPlayable est true à ce moment là, les ressources du joueur ont été comparées à toutes les ressources
 			// nécessaires pour jouer la carte et le résultat est positif.
 			if(isPlayable == true) {
 				c = j.getM().get(i);
+				if(c.getCout().get("pièces") != null) {
+					j.setPièces(j.getPièces() - c.getCout().get("pièces"));
+				}
 				j.getM().remove(i); // pour remove de la main la carte (c) jouée
 				break;
 			}

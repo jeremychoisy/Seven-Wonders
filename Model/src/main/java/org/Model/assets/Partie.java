@@ -127,7 +127,7 @@ public class Partie {
 		int index = getIndexFromSocket(socket);
 		listeJoueurs.get(index).setRdy(true);
 		log(listeJoueurs.get(index).getNom() + " est prêt !");
-
+		log(listeJoueurs.get(index).getMerveille().getNom());
 		if(everyoneIsRdy() && isEveryoneReadyStated == false) {
 			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
@@ -172,7 +172,10 @@ public class Partie {
 		int index = getIndexFromSocket(socket);
 		String name = listeJoueurs.get(index).getNom();
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
-		// MaJ de la main du joueur côté serveur
+		// MaJ du joueur côté serveur
+		if(c.getCout().get("pièces") != null) {
+			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() - c.getCout().get("pièces"));
+		}
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		nbCartesJouées += 1;

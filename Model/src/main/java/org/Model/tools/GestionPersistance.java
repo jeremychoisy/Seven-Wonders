@@ -46,9 +46,7 @@ public class GestionPersistance {
 			
 			Map<String,String> effet = new HashMap<String,String>();
 			Map<String,Integer> ressources = new HashMap<String,Integer>();
-			
-			ressources.put("pierre",1);
-			
+						
 			effet.put("nomEffet", "gain_points_victoire");
 			effet.put("valeurEffet","3");
 			
