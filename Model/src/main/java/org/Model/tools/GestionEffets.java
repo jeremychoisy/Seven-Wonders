@@ -7,7 +7,6 @@ import org.Model.assets.Joueur;
 public abstract class GestionEffets
 {
 	public static void appliquerEffet(Map<String,String> effet, Joueur j) {
-		System.out.println(effet.get("nomEffet"));
 		if(effet.get("nomEffet").equals("commerce_ressources_primaires")) {
 			j.setCommerce_ressources_primaires(true);
 		}
@@ -18,7 +17,6 @@ public abstract class GestionEffets
 			j.setPièces(j.getPièces() + Integer.parseInt(effet.get("valeurEffet")));
 		}
 		if(effet.get("nomEffet").equals("gain_points_victoire")) {
-			System.out.println("OK");
 			j.setPoints_victoire(j.getPoints_victoire() + Integer.parseInt(effet.get("valeurEffet")));
 		}
 		if(effet.get("nomEffet").equals("gain_boucliers")) {

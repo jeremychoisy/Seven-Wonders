@@ -2,6 +2,7 @@ package org.Model.assets;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Joueur {
 	private SocketIOClient socket;
@@ -17,7 +18,7 @@ public class Joueur {
 	private int points_victoire;
 	private int boucliers;
 	
-	private HashMap<String,Integer> ressources;
+	private Map<String,Integer> ressources;
 
 	
 	public Joueur() {}
@@ -41,7 +42,7 @@ public class Joueur {
 		this.pièces = 0;
 		this.points_victoire = 0;
 		this.boucliers = 0;
-
+		
 		ressources = new HashMap<String,Integer>();
 		ressources.put("bois", 0);
 		ressources.put("pierre", 0);
@@ -105,7 +106,7 @@ public class Joueur {
 		this.ressources = gain_ressources;
 	}
 
-	public HashMap<String, Integer> GetRessources() {
+	public Map<String, Integer> GetRessources() {
 		return ressources;
 	}
 

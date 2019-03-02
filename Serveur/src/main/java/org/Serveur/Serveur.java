@@ -80,11 +80,24 @@ public class Serveur {
 		});
 		
 		// Ajout de l'écouteur traitant de l'événement de la défausse d'une carte.
-		serveur.addEventListener("Carte défaussé", Carte.class, new DataListener<Carte>(){
+		serveur.addEventListener("Carte Défaussée", Carte.class, new DataListener<Carte>(){
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
 				p.défausserCarte(client,data);
+				
+				if(p.estGagnant(client) || p.AgeEstFini()) {
+					p.afficherResultats(client);
+					synchronized(attenteConnexion) {
+						attenteConnexion.notify();
+					}
+				}
+				else
+				{
+					if(p.tourEstFini())
+						p.demarrerTourSuivant();
+				}
+				
 			}
 			
 		});

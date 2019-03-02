@@ -181,14 +181,18 @@ public class Partie {
 	// Fonction qui traite la carte défaussée par un joueur.
 	public void défausserCarte(SocketIOClient socket,Carte c) {
 		int index = getIndexFromSocket(socket);
+		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
+		nbCartesJouées += 1;
 		if(AgeEstFini()) {
 			// fonction qui démarre l'age suivant
 		} 
 		else
 		{
 			listeJoueurs.get(index).getSocket().sendEvent("Pièces", 3);
+			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
+			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		}
 	}
 	

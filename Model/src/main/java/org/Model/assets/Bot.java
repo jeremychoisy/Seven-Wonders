@@ -47,6 +47,7 @@ public class Bot {
 	public void jouerTour(Socket s) {
 		Carte c = null;
 		JSONObject carteJouéeJSON=null;
+		JSONObject carteDéfausséeJSON=null;
 		//là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
 
 		/*
@@ -59,37 +60,55 @@ public class Bot {
 
 
 		*/
+
 		//on itère sur les cartes
 		for(int i = 0; i < j.getM().getMain().size(); i++)
 		{
 			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
-			HashMap<String, Integer> ressources = j.GetRessources();
-
-			//on itère sur les coûts des cartes et on compare avec les ressources du bot https://stackoverflow.com/a/30906661
-			for (Map.Entry<String,Integer> entry1 : cout.entrySet()){
-				String key = entry1.getKey();
-				Integer value1 = entry1.getValue();
-				Integer value2 = ressources.get(key);
-				//si le bot a assez de ressources il joue cette carte
-				if (value2>=value1){
-					c = j.getM().getMain().get(i);
-					j.getM().remove(i); // pour remove de la main la carte (c) jouée
-					break;
+			Map<String, Integer> ressources = j.GetRessources();
+			boolean isPlayable = true;
+			
+			//on itère sur les coûts des cartes et on compare avec les ressources du bot
+			for (Map.Entry<String,Integer> entry : cout.entrySet()){
+				String key = entry.getKey();
+				Integer ressourceCarte = entry.getValue();
+				Integer ressourceJoueur = ressources.get(key);
+				//si le bot n'a pas assez de ressources, on met la variable isPlayable à false
+				if (ressourceCarte > ressourceJoueur){
+					isPlayable = false;
 				}
 			}
+			
+			// Si isPlayable est true à ce moment là, les ressources du joueur ont été comparées à toutes les ressources
+			// nécessaires pour jouer la carte et le résultat est positif.
+			if(isPlayable == true) {
+				c = j.getM().get(i);
+				j.getM().remove(i); // pour remove de la main la carte (c) jouée
+				break;
+			}
 		}
+		
 
-
-
-
-
-		try {
-			carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// On vérifie que le bot est capable de jouer une carte, si ce n'est pas le cas, on défausse la première.
+		if( c == null) {
+			try {
+				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			s.emit("Carte Défaussée", carteDéfausséeJSON);
 		}
-		s.emit("Carte Jouée", carteJouéeJSON);
+		else
+		{
+			try {
+				carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			s.emit("Carte Jouée", carteJouéeJSON);
+		}
 	}
 
 	public void addPièces(int valeur) {
