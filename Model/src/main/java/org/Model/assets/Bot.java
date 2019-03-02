@@ -6,6 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import io.socket.client.Socket;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Bot {
 	private Joueur j;
 	
@@ -44,9 +47,41 @@ public class Bot {
 	public void jouerTour(Socket s) {
 		Carte c = null;
 		JSONObject carteJouéeJSON=null;
-	
-		c = j.getM().getMain().get(0);
-		j.getM().remove(0);
+		//là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
+
+		/*
+		il faut se servir de getQuantitéRessource(String nomRessource) de la classe joueur
+		et de getCout() de la classe carte pour comparer les ressources dispo / needed
+
+		ressources de joueur : HashMap<String,Integer>()
+
+		cout de carte : Map<String, Integer>
+
+
+		*/
+		//on itère sur les cartes
+		for(int i = 0; i < j.getM().getMain().size(); i++)
+		{
+			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
+			HashMap<String, Integer> ressources = j.GetRessources();
+
+			//on itère sur les coûts des cartes et on compare avec les ressources du bot https://stackoverflow.com/a/30906661
+			for (Map.Entry<String,Integer> entry1 : cout.entrySet()){
+				String key = entry1.getKey();
+				Integer value1 = entry1.getValue();
+				Integer value2 = ressources.get(key);
+				//si le bot a assez de ressources il joue cette carte
+				if (value2>=value1){
+					c = j.getM().getMain().get(i);
+					j.getM().remove(i); // pour remove de la main la carte (c) jouée
+					break;
+				}
+			}
+		}
+
+
+
+
 
 		try {
 			carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
