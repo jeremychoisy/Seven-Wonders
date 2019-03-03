@@ -30,6 +30,7 @@ public class Partie {
 	// variables utiles pour le déroulement du jeu
 	private ArrayList<Carte> défausse;
 	private int tourCourant;
+	private int ageCourant;
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated = false;
 
@@ -45,6 +46,7 @@ public class Partie {
 		// Récupération des cartes/merveilles via les fichiers Json
 		recupererDonnees();
 		tourCourant = 0;
+		ageCourant = 1;
 	}
 	
 	public void ajouterJoueur(String nom, SocketIOClient socket) {
@@ -140,7 +142,10 @@ public class Partie {
 		}
 		return false;
 	}
-		
+	
+	public int getAgeCourant() {
+		return ageCourant;
+	}
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
@@ -163,7 +168,10 @@ public class Partie {
 		défausse.add(c);
 		nbCartesJouées += 1;
 		if(AgeEstFini()) {
-			// fonction qui démarre l'age suivant
+			if(tourEstFini()) {
+				changerAge();
+			}
+			
 		} 
 		else
 		{
@@ -173,6 +181,35 @@ public class Partie {
 		}
 	}
 	
+	public void changerAge() {
+		if(ageCourant<2) {
+			ageCourant ++;
+			tourCourant = 0;
+			log("Début de l'âge " + ageCourant + " !");
+			
+		}
+		Main main;
+		for(int i=0;i<listeJoueurs.size();i++) {
+			main = new Main();
+			// Construction de la main
+			for(int j=0;j<7;j++) {
+				main.add(cartesAgeII.get(0));
+				cartesAgeII.remove(0);
+			}
+		
+			// Mise à jour du joueur côté serveur
+			listeJoueurs.get(i).setM(main);
+		
+			
+			// Envoi de la main au joueur 
+			listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
+		
+			log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + ".");
+			
+		}
+		demarrerTourSuivant();
+	
+	}
 	// Fonction qui permet de passer au tour suivant.
 	public void demarrerTourSuivant() {
 		nbCartesJouées = 0;

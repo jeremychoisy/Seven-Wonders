@@ -85,7 +85,7 @@ public class Serveur {
 		
 	}
 	public void goNext() {
-		if(p.AgeEstFini()) {
+		if(p.AgeEstFini()) {//ajouter l'age courant
 			if(p.tourEstFini()) {
 				p.afficherGagnant();
 				synchronized(attenteConnexion) {
