@@ -43,7 +43,17 @@ public class Bot {
 		}
 		j.setMerveille(m);	
 	}
-	
+	public void defausserDerniereCarte(Socket s) {
+		JSONObject carteDéfausséeJSON = null;
+		try {
+			carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		j.getM().remove(0);
+		s.emit("Carte Défaussée", carteDéfausséeJSON);	
+	}
 	public void jouerTour(Socket s) {
 		Carte c = null;
 		JSONObject carteJouéeJSON=null;
@@ -99,6 +109,7 @@ public class Bot {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
+			j.getM().remove(0);
 			s.emit("Carte Défaussée", carteDéfausséeJSON);
 		}
 		else

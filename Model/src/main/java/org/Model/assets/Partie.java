@@ -92,6 +92,7 @@ public class Partie {
 		// Mélange des listes
 		Collections.shuffle(cartesAgeI);
 		Collections.shuffle(cartesAgeII);
+		log("" + cartesAgeII.size());
 		Collections.shuffle(cartesAgeIII);
 		Collections.shuffle(listeMerveilles);
 		
@@ -123,6 +124,14 @@ public class Partie {
 		}
 	}
 	
+	public int getTourCourant() {
+		return tourCourant;
+	}
+
+	public void setTourCourant(int tourCourant) {
+		this.tourCourant = tourCourant;
+	}
+
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
 	public void setRdy(SocketIOClient socket) {
 		int index = getIndexFromSocket(socket);
@@ -137,9 +146,9 @@ public class Partie {
 		
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
 	public boolean AgeEstFini() {
-		if(tourCourant == 6) {
-			return true;
-		}
+			if(tourCourant == 7) {
+				return true;
+			}
 		return false;
 	}
 	
@@ -168,16 +177,13 @@ public class Partie {
 		défausse.add(c);
 		nbCartesJouées += 1;
 		if(AgeEstFini()) {
-			if(tourEstFini()) {
-				changerAge();
-			}
-			
+				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) (fin de l'âge).");
 		} 
 		else
 		{
 			listeJoueurs.get(index).getSocket().sendEvent("Pièces", 3);
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
-			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
+			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)." + listeJoueurs.get(index).getM().toString());
 		}
 	}
 	
@@ -187,27 +193,29 @@ public class Partie {
 			tourCourant = 0;
 			log("Début de l'âge " + ageCourant + " !");
 			
-		}
-		Main main;
-		for(int i=0;i<listeJoueurs.size();i++) {
-			main = new Main();
-			// Construction de la main
-			for(int j=0;j<7;j++) {
-				main.add(cartesAgeII.get(0));
-				cartesAgeII.remove(0);
+
+
+			Main main;
+			for(int i=0;i<listeJoueurs.size();i++) {
+				main = new Main();
+				// Construction de la main
+				for(int j=0;j<7;j++) {
+					main.add(cartesAgeII.get(0));
+					cartesAgeII.remove(0);
+				}
+			
+				// Mise à jour du joueur côté serveur
+				listeJoueurs.get(i).setM(main);
+			
+				
+				// Envoi de la main au joueur 
+				listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
+			
+				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + "." + main.toString());
+				
 			}
-		
-			// Mise à jour du joueur côté serveur
-			listeJoueurs.get(i).setM(main);
-		
-			
-			// Envoi de la main au joueur 
-			listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
-		
-			log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + ".");
-			
+			demarrerTourSuivant();
 		}
-		demarrerTourSuivant();
 	
 	}
 	// Fonction qui permet de passer au tour suivant.
@@ -217,6 +225,16 @@ public class Partie {
 		log("Début du tour " + tourCourant + " !");
 		for(int i = 0; i < listeJoueurs.size();i++) {
 			listeJoueurs.get(i).getSocket().sendEvent("Ton tour");
+		}
+	}
+	
+	// Fonction qui permet de passer au tour suivant.
+	public void demarrerDernierTour() {
+		nbCartesJouées = 0;
+		tourCourant += 1;
+		log("Début du dernier Tour (défausse) !");
+		for(int i = 0; i < listeJoueurs.size();i++) {
+			listeJoueurs.get(i).getSocket().sendEvent("Ton dernier tour");
 		}
 	}
 	
