@@ -1,11 +1,7 @@
 # Seven Wonders
 
-<<<<<<< HEAD
 ![Alt text](~/git/Seven-Wonders/Documentation/logo-7-wonders.png "Title")
 Projet de développement en Java dans le cadre de l'enseignement dispensé en L3 MIAGE par Mr Renevier.
-=======
-Projet de développement en Java dans le cadre de l'enseignement dispensé en L3 MIAGE par M. Renevier.
->>>>>>> e735a7c1fa890259b0629b58b444373e7c6b06ff
 
 Il s'agit de créer une version électronique du jeu de plateau 7 Wonders avec 2 joueurs robots intelligents et 1 "random".
 
@@ -52,11 +48,7 @@ mvn exec:java
 
 ## Auteurs
 
-<<<<<<< HEAD
-* **Jérémy Choisy** - *Chef de projet* - [PurpleBooth](https://github.com/jeremychoisy)
-=======
-* **Jérémy Choisy** - *Lead Dev* - [LEPLUFOR](https://github.com/jeremychoisy)
->>>>>>> e735a7c1fa890259b0629b58b444373e7c6b06ff
+* **Jérémy Choisy** - *Chef de Projet* - [LEPLUFOR](https://github.com/jeremychoisy)
 
 Voici la liste des contributeurs [contributeurs](https://github.com/jeremychoisy/Seven-Wonders/graphs/contributors) qui ont participé au projet.
 
