@@ -1,7 +1,7 @@
 # Seven Wonders
 
 
-![alt text](https://github.com/jeremychoisy/Seven-Wonders/Documentation/logo-7-wonders.png)
+![alt text](./Documentation/logo-7-wonders.png)
 Projet de développement en Java dans le cadre de l'enseignement dispensé en L3 MIAGE par Mr Renevier.
 
 Il s'agit de créer une version électronique du jeu de plateau 7 Wonders avec 2 joueurs robots intelligents et 1 "random".
