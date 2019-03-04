@@ -54,7 +54,7 @@ mvn exec:java
 Voici la liste des contributeurs [contributeurs](https://github.com/jeremychoisy/Seven-Wonders/graphs/contributors) qui ont participé au projet.
 
 
-## Acknowledgments
+## Connaissances
 
 * Une connaissance parfaite des Règles du jeu 7Wonders
 * Des heures de pure plaisir à jouer au jeu de plateau
