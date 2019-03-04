@@ -1,40 +1,33 @@
 package org.Model.assets;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public class Carte {
 	private String nom;
 	private String type;
-	// Itération suivante :
 	//private HashMap<String, Integer> cout;
-	//private int configurationNumber;
+	private int configurationNumber;
 	private int age;
-	private int pointsVictoire;
-
-	public Carte() {
-	}
+	
+	// effet
+	private String nomEffet;
+	private int ValeurEffet;
+	private String orientationEffet;
+	private String ressourceEffet;
 	
 
-	public Carte(String nom, String type, int pointsVictoire) {
+	public Carte() {}
+	
+	public Carte(String nom, String type, String nomEffet,int ValeurEffet, String orientationEffet, String ressourceEffet, int configurationNumber) {
 		this.nom = nom;
 		this.type = type;
-		this.pointsVictoire = pointsVictoire;
-
+		this.nomEffet = nomEffet;
+		//this.cout = cout;
+		this.configurationNumber= configurationNumber;
+		this.ValeurEffet = ValeurEffet;
+		this.orientationEffet = orientationEffet;
+		this.ressourceEffet = ressourceEffet;
 	}
-	/*public Carte(String nom, String type, HashMap<String, Integer> cout, int age, boolean pose,
-			int configurationNumber) {
-		this.nom = nom;
-		this.type = type;
-		this.cout = cout;
-		this.age = age;
-		this.pose = pose;
-		this.configurationNumber = configurationNumber;
-	}*/
-
-
+	
 	public int getAge() {
 		return age;
 	}
@@ -45,16 +38,8 @@ public class Carte {
 
 	/*public int getCout(String ressource) {
 		return cout.get(ressource);
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
-		Set set = cout.entrySet();
-		Iterator iterator = set.iterator();
-		while (iterator.hasNext()) {
-			Map.Entry mentry = (Map.Entry) iterator.next();
-			ret.put((String) mentry.getKey(), (Integer) mentry.getValue());
-		}
-
-		return ret;
 	}
+
 
 	public void addCout(String ressource, int valeur) {
 		cout.put(ressource, valeur);
@@ -76,11 +61,45 @@ public class Carte {
 		this.type = type;
 	}
 
-	public int getPointsVictoire() {
-		return pointsVictoire;
+	public int getConfigurationNumber() {
+		return configurationNumber;
 	}
 
-	public void setPointsVictoire(int pointsVictoire) {
-		this.pointsVictoire = pointsVictoire;
+	public void setConfigurationNumber(int configurationNumber) {
+		this.configurationNumber = configurationNumber;
 	}
+
+	public String getNomEffet() {
+		return nomEffet;
+	}
+
+	public void setNomEffet(String nomEffet) {
+		this.nomEffet = nomEffet;
+	}
+
+	public String getOrientationEffet() {
+		return orientationEffet;
+	}
+
+	public void setOrientationEffet(String orientationEffet) {
+		this.orientationEffet = orientationEffet;
+	}
+
+	public int getValeurEffet() {
+		return ValeurEffet;
+	}
+
+	public void setValeurEffet(int valeurEffet) {
+		ValeurEffet = valeurEffet;
+	}
+
+	public String getRessourceEffet() {
+		return ressourceEffet;
+	}
+
+	public void setRessourceEffet(String ressourceEffet) {
+		this.ressourceEffet = ressourceEffet;
+	}
+	
+	
 }

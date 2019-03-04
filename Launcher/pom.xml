@@ -22,7 +22,8 @@
   </properties>
   
   <build>
-	<sourceDirectory>/src/main/java</sourceDirectory>
+	<sourceDirectory>src/main/java</sourceDirectory>
+	<testSourceDirectory>src/test/java</testSourceDirectory>
     <plugins>
     	<plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -36,7 +37,7 @@
                 </execution>
             </executions>
             <configuration>
-                <mainClass>Launcher.Launcher</mainClass>
+                <mainClass>org.Launcher.Launcher</mainClass>
             </configuration>
         </plugin>
     </plugins>	
