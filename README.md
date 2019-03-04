@@ -47,7 +47,7 @@ mvn exec:java
 
 ## Auteurs
 
-* **Jérémy Choisy** - *Chef de projet* - [LEPLUFOR](https://github.com/jeremychoisy)
+* **Jérémy Choisy** - *Lead Dev* - [LEPLUFOR](https://github.com/jeremychoisy)
 
 Voici la liste des contributeurs [contributeurs](https://github.com/jeremychoisy/Seven-Wonders/graphs/contributors) qui ont participé au projet.
 
