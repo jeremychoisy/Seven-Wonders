@@ -97,6 +97,15 @@ public class Client{
 					b.jouerTour(connexion);
 				}
 			});
+			
+			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
+			connexion.on("Ton dernier tour", new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					
+					b.defausserDerniereCarte(connexion);
+				}
+			});
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

@@ -75,29 +75,35 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
 				p.défausserCarte(client,data);
-				goNext();
-				
-
-				
+				goNext();			
 			}
 			
 		});
 		
 	}
 	public void goNext() {
-		if(p.AgeEstFini()) {//ajouter l'age courant
-			if(p.tourEstFini()) {
-				p.afficherGagnant();
-				synchronized(attenteConnexion) {
-					attenteConnexion.notify();
+		if(p.tourEstFini()) {
+				if(p.estFinie()) { 
+					p.afficherGagnant();
+					synchronized(attenteConnexion) {
+						attenteConnexion.notify();
+					}
 				}
-			}
+				else if(p.AgeEstFini())
+				{
+					p.changerAge();
+
+				}
+				else if(p.getTourCourant() == 6){ 
+					p.demarrerDernierTour();
+				}
+				else
+				{
+					if(p.tourEstFini())
+						p.demarrerTourSuivant();
+				}
 		}
-		else
-		{
-			if(p.tourEstFini())
-				p.demarrerTourSuivant();
-		}
+
 	}
 	// Formatage des sorties textes
 	public void log(String s) {

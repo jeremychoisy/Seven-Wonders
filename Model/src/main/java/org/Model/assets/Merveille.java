@@ -14,7 +14,7 @@ public class Merveille {
 	private Map<String,Integer> ressourceEtapeDeux;
 	private Map<String,Integer> ressourceEtapeTrois;
 	
-	//Effets associés à chaque étape de la marveille (face A uniquement)
+	//Effets associés à chaque étape de la merveille (face A uniquement)
 	private Map<String,String> effetEtapeUne;
 	private Map<String,String> effetEtapeDeux;
 	private Map<String,String> effetEtapeTrois;

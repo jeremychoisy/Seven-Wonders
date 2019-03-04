@@ -123,6 +123,10 @@ public class Partie {
 			
 		}
 	}
+	 
+	public boolean estFinie() { //méthode qui définit si la partie est terminée (pour l'âge 2 actuellement)
+		return (getAgeCourant()==2 && getTourCourant()==7);
+	}
 	
 	public int getTourCourant() {
 		return tourCourant;
@@ -218,6 +222,8 @@ public class Partie {
 		}
 	
 	}
+	
+	
 	// Fonction qui permet de passer au tour suivant.
 	public void demarrerTourSuivant() {
 		nbCartesJouées = 0;
