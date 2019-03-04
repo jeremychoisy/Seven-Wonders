@@ -5,10 +5,10 @@ import java.net.URISyntaxException;
 
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
-import org.Model.assets.Bot;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import bot.Bot;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -17,13 +17,11 @@ import io.socket.emitter.Emitter;
 
 public class Client{
 	private Socket connexion;
-	final Object attenteDeconnexion = new Object();
-	
 	private Bot b;
 
 	
 	public Client(String url, final String name) {
-		this.b = new Bot(name);
+		this.b = new Bot(name, this);
 		try {
 			IO.Options opts = new IO.Options();
 			opts.forceNew = true;
@@ -47,9 +45,6 @@ public class Client{
 					log("deconnecté");
 					connexion.disconnect();
 					connexion.close();
-					synchronized(attenteDeconnexion) {
-						attenteDeconnexion.notify();
-					}
 				}
 			});
 			// Traitement de l'événement "voici ta main" venant du serveur
@@ -111,18 +106,13 @@ public class Client{
 		}
 	}
 	
+	public void emit(Socket s, String event, Object...args) {
+		s.emit(event, args);
+	}
+	
 	public void demarrer() {
 		log("Tentative de connexion");
 		connexion.connect();
-
-		synchronized(attenteDeconnexion) {
-			try {
-				attenteDeconnexion.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 	
 	// Formatage des sorties textes

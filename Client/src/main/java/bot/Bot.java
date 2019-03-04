@@ -1,19 +1,24 @@
-package org.Model.assets;
+package bot;
 
+import org.Client.Client;
+import org.Model.assets.Carte;
+import org.Model.assets.Joueur;
+import org.Model.assets.Merveille;
 import org.Model.tools.GestionPersistance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import io.socket.client.Socket;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Bot {
+	private Client c;
 	private Joueur j;
 	
-	public Bot(String name) {
+	public Bot(String name, Client c) {
 		this.j = new Joueur(name);
+		this.c = c;
 	}
 	
 	public void setMain(JSONArray Json) {
@@ -52,10 +57,10 @@ public class Bot {
 			e.printStackTrace();
 		} 
 		j.getM().remove(0);
-		s.emit("Carte Défaussée", carteDéfausséeJSON);	
+		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);	
 	}
 	public void jouerTour(Socket s) {
-		Carte c = null;
+		Carte carte = null;
 		JSONObject carteJouéeJSON=null;
 		JSONObject carteDéfausséeJSON=null;
 		//là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
@@ -91,18 +96,18 @@ public class Bot {
 			// Si isPlayable est true à ce moment là, les ressources du joueur ont été comparées à toutes les ressources
 			// nécessaires pour jouer la carte et le résultat est positif.
 			if(isPlayable == true) {
-				c = j.getM().get(i);
-				if(c.getCout().get("pièces") != null) {
-					j.setPièces(j.getPièces() - c.getCout().get("pièces"));
+				carte = j.getM().get(i);
+				if(carte.getCout().get("pièces") != null) {
+					j.setPièces(j.getPièces() - carte.getCout().get("pièces"));
 				}
 				j.getM().remove(i); // pour remove de la main la carte (c) jouée
 				break;
 			}
 		}
-		
+
 
 		// On vérifie que le bot est capable de jouer une carte, si ce n'est pas le cas, on défausse la première.
-		if( c == null) {
+		if( carte == null) {
 			try {
 				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
 			} catch (JSONException e) {
@@ -110,17 +115,17 @@ public class Bot {
 				e.printStackTrace();
 			} 
 			j.getM().remove(0);
-			s.emit("Carte Défaussée", carteDéfausséeJSON);
+			c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
 		}
 		else
 		{
 			try {
-				carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(c));
+				carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(carte));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			s.emit("Carte Jouée", carteJouéeJSON);
+			c.emit(s,"Carte Jouée", carteJouéeJSON);
 		}
 	}
 

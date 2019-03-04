@@ -1,4 +1,4 @@
-package org.Model.assets;
+package partie;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,15 +6,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.Model.assets.Carte;
+import org.Model.assets.Joueur;
+import org.Model.assets.Main;
+import org.Model.assets.Merveille;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.GestionEffets;
+import org.Serveur.Serveur;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.gson.Gson;
 
 public class Partie {
 	private ArrayList<Joueur> listeJoueurs;
-	
+	// variable serveur
+	private Serveur s;
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 98;
@@ -35,7 +41,8 @@ public class Partie {
 	private boolean isEveryoneReadyStated = false;
 
 	
-	public Partie() {
+	public Partie(Serveur s) {
+		this.s = s;
 		listeJoueurs = new ArrayList<Joueur>();
 		c = new Carte[NB_CARTES];
 		m = new Merveille[NB_MERVEILLES];
@@ -113,11 +120,11 @@ public class Partie {
 			listeJoueurs.get(i).setPièces(3);
 			
 			// Envoi de la main au joueur 
-			listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
 			// Envoi de la merveille au joueur
-			listeJoueurs.get(i).getSocket().sendEvent("Merveille", merveille);
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Merveille", merveille);
 			// Envoi des 3 PO au joueur
-			listeJoueurs.get(i).getSocket().sendEvent("Pièces", 3);
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Pièces", 3);
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
 			
@@ -147,7 +154,7 @@ public class Partie {
 			demarrerTourSuivant();
 		}
 	}
-		
+
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
 	public boolean AgeEstFini() {
 			if(tourCourant == 7) {
@@ -171,6 +178,7 @@ public class Partie {
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
 		nbCartesJouées += 1;
+		goNext();
 	}
 	
 	// Fonction qui traite la carte défaussée par un joueur.
@@ -185,10 +193,11 @@ public class Partie {
 		} 
 		else
 		{
-			listeJoueurs.get(index).getSocket().sendEvent("Pièces", 3);
+			s.sendEvent(listeJoueurs.get(index).getSocket(),"Pièces", 3);
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
 			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)." + listeJoueurs.get(index).getM().toString());
 		}
+		goNext();
 	}
 	
 	public void changerAge() {
@@ -197,8 +206,6 @@ public class Partie {
 			tourCourant = 0;
 			log("Début de l'âge " + ageCourant + " !");
 			
-
-
 			Main main;
 			for(int i=0;i<listeJoueurs.size();i++) {
 				main = new Main();
@@ -213,7 +220,7 @@ public class Partie {
 			
 				
 				// Envoi de la main au joueur 
-				listeJoueurs.get(i).getSocket().sendEvent("Main", main.getMain());
+				s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
 			
 				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + "." + main.toString());
 				
@@ -229,9 +236,7 @@ public class Partie {
 		nbCartesJouées = 0;
 		tourCourant += 1;
 		log("Début du tour " + tourCourant + " !");
-		for(int i = 0; i < listeJoueurs.size();i++) {
-			listeJoueurs.get(i).getSocket().sendEvent("Ton tour");
-		}
+		s.broadcast("Ton tour");
 	}
 	
 	// Fonction qui permet de passer au tour suivant.
@@ -239,11 +244,17 @@ public class Partie {
 		nbCartesJouées = 0;
 		tourCourant += 1;
 		log("Début du dernier Tour (défausse) !");
-		for(int i = 0; i < listeJoueurs.size();i++) {
-			listeJoueurs.get(i).getSocket().sendEvent("Ton dernier tour");
-		}
+		s.broadcast("Ton dernier tour");
 	}
 	
+	public ArrayList<Joueur> getListeJoueurs() {
+		return listeJoueurs;
+	}
+
+	public void setListeJoueurs(ArrayList<Joueur> listeJoueurs) {
+		this.listeJoueurs = listeJoueurs;
+	}
+
 	// Fonction qui vérifie si tous les joueurs sont prêts
 	public boolean everyoneIsRdy() {
 		boolean ret = true;
@@ -263,6 +274,28 @@ public class Partie {
 		return false;
 	}
 	
+	public void goNext() {
+		if(tourEstFini()) {
+				if(estFinie()) { 
+					afficherGagnant();
+				}
+				else if(AgeEstFini())
+				{
+					changerAge();
+
+				}
+				else if(getTourCourant() == 6){ 
+					demarrerDernierTour();
+				}
+				else
+				{
+					if(tourEstFini())
+						demarrerTourSuivant();
+				}
+		}
+
+	}
+	
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public void afficherGagnant() {
 		int indexMax = 0;
@@ -274,6 +307,7 @@ public class Partie {
 			}
 		}
 		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points de civilisation.");
+		s.stop();
 	}
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket

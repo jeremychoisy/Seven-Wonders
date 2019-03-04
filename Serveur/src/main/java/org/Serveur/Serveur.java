@@ -2,7 +2,6 @@ package org.Serveur;
 
 import java.io.UnsupportedEncodingException;
 import org.Model.assets.Carte;
-import org.Model.assets.Partie;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 
@@ -14,18 +13,19 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 
+import partie.Partie;
+
 
 public class Serveur {
 	// variables client/serveur
 	private SocketIOServer serveur;
-	private final Object attenteConnexion = new Object(); 
 	
 	private Partie p;
 	
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
-		p = new Partie();
+		p = new Partie(this);
 
 		log("Attente de connexion des joueur...");
 		// Ajout de l'écouteur gérant la connexion d'un client
@@ -42,7 +42,6 @@ public class Serveur {
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				// On ajoute le joueur à la partie
 				p.ajouterJoueur(data, client);
-
 			}
 			
 		});
@@ -63,7 +62,6 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
 				p.jouerCarte(client, data);
-				goNext();
 				
 			}
 			
@@ -74,37 +72,29 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
-				p.défausserCarte(client,data);
-				goNext();			
+				p.défausserCarte(client,data);		
 			}
 			
 		});
 		
 	}
-	public void goNext() {
-		if(p.tourEstFini()) {
-				if(p.estFinie()) { 
-					p.afficherGagnant();
-					synchronized(attenteConnexion) {
-						attenteConnexion.notify();
-					}
-				}
-				else if(p.AgeEstFini())
-				{
-					p.changerAge();
-
-				}
-				else if(p.getTourCourant() == 6){ 
-					p.demarrerDernierTour();
-				}
-				else
-				{
-					if(p.tourEstFini())
-						p.demarrerTourSuivant();
-				}
+	
+	public void broadcast(String message) {
+		for(int i = 0; i < p.getListeJoueurs().size();i++) {
+			p.getListeJoueurs().get(i).getSocket().sendEvent(message);
 		}
-
 	}
+	
+	public void sendEvent(SocketIOClient s, String event, Object...data) {
+		s.sendEvent(event, data);
+	}
+	
+	public void stop() {
+		log("Fin de la connexion.");
+		serveur.stop();
+	}
+	
+
 	// Formatage des sorties textes
 	public void log(String s) {
 		System.out.println(CouleurSorties.ANSI_BLUE + "Serveur : " + s + CouleurSorties.ANSI_RESET);
@@ -113,16 +103,6 @@ public class Serveur {
 	
 	public void demarrer() {
 		serveur.start();
-		
-		synchronized(attenteConnexion) {
-			try {
-				attenteConnexion.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		log("fin de la connexion");
-		serveur.stop();
 	}
 	
 	public static void main(String[] args) {
