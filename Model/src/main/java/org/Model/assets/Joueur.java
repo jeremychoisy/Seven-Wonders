@@ -146,4 +146,8 @@ public class Joueur {
 		this.merveille = merveille;
 		this.ressources.put(merveille.getRessource(),1);
 	}
+	
+	public String toString() {
+		return "Joueur " + this.nom + " : " + this.m.toString(); 
+	}
 }

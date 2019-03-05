@@ -32,6 +32,7 @@ public class Partie {
 	private ArrayList<Carte> cartesAgeI;
 	private ArrayList<Carte> cartesAgeII;
 	private ArrayList<Carte> cartesAgeIII;
+	private ArrayList<Merveille> Merveilles;
 	
 	// variables utiles pour le déroulement du jeu
 	private ArrayList<Carte> défausse;
@@ -40,6 +41,7 @@ public class Partie {
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated = false;
 
+	public Partie() {}
 	
 	public Partie(Serveur s) {
 		this.s = s;
@@ -73,6 +75,37 @@ public class Partie {
 		Main main;
 		Merveille merveille;
 		
+		construireListes();
+		
+		// Pour chaque joueur
+		for(int i=0;i<listeJoueurs.size();i++) {
+			main = new Main();
+			// Construction de la main
+			for(int j=0;j<7;j++) {
+				main.add(cartesAgeI.get(0));
+				cartesAgeI.remove(0);
+			}
+			// Pioche de la merveille
+			merveille = Merveilles.get(0);
+			Merveilles.remove(0);
+			// Mise à jour du joueur côté serveur
+			listeJoueurs.get(i).setM(main);
+			listeJoueurs.get(i).setMerveille(merveille);
+			listeJoueurs.get(i).setPièces(3);
+			
+			// Envoi de la main au joueur 
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
+			// Envoi de la merveille au joueur
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Merveille", merveille);
+			// Envoi des 3 PO au joueur
+			s.sendEvent(listeJoueurs.get(i).getSocket(),"Pièces", 3);
+			
+			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
+			
+		}
+	}
+	
+	public void construireListes() {
 		// Construction d'une liste avec toutes les cartes
 		for(int i=0;i<NB_CARTES;i++) {
 			if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
@@ -91,64 +124,29 @@ public class Partie {
 		}
 		
 		//Construction d'une liste avec toutes les merveilles
-		ArrayList<Merveille> listeMerveilles = new ArrayList<Merveille>();
+		Merveilles = new ArrayList<Merveille>();
 		for(int i=0;i<NB_MERVEILLES;i++) {
-			listeMerveilles.add(m[i]);
+			Merveilles.add(m[i]);
 		}
 		
 		// Mélange des listes
 		Collections.shuffle(cartesAgeI);
 		Collections.shuffle(cartesAgeII);
-		log("" + cartesAgeII.size());
 		Collections.shuffle(cartesAgeIII);
-		Collections.shuffle(listeMerveilles);
-		
-		// Pour chaque joueur
-		for(int i=0;i<listeJoueurs.size();i++) {
-			main = new Main();
-			// Construction de la main
-			for(int j=0;j<7;j++) {
-				main.add(cartesAgeI.get(0));
-				cartesAgeI.remove(0);
-			}
-			// Pioche de la merveille
-			merveille = listeMerveilles.get(0);
-			listeMerveilles.remove(0);
-			// Mise à jour du joueur côté serveur
-			listeJoueurs.get(i).setM(main);
-			listeJoueurs.get(i).setMerveille(merveille);
-			listeJoueurs.get(i).setPièces(3);
-			
-			// Envoi de la main au joueur 
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
-			// Envoi de la merveille au joueur
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Merveille", merveille);
-			// Envoi des 3 PO au joueur
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Pièces", 3);
-			
-			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
-			
-		}
+		Collections.shuffle(Merveilles);
 	}
-	 
-	public boolean estFinie() { //méthode qui définit si la partie est terminée (pour l'âge 2 actuellement)
+	
+	// Fonction qui définit si la partie est terminée (pour l'âge 2 actuellement)
+	public boolean estFinie() {
 		return (getAgeCourant()==2 && getTourCourant()==7);
 	}
 	
-	public int getTourCourant() {
-		return tourCourant;
-	}
-
-	public void setTourCourant(int tourCourant) {
-		this.tourCourant = tourCourant;
-	}
-
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
 	public void setRdy(SocketIOClient socket) {
 		int index = getIndexFromSocket(socket);
 		listeJoueurs.get(index).setRdy(true);
 		log(listeJoueurs.get(index).getNom() + " est prêt !");
-		if(everyoneIsRdy() && isEveryoneReadyStated == false) {
+		if(isEveryoneRdy() && isEveryoneReadyStated == false) {
 			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
 			demarrerTourSuivant();
@@ -156,16 +154,14 @@ public class Partie {
 	}
 
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
-	public boolean AgeEstFini() {
+	public boolean ageEstFini() {
 			if(tourCourant == 7) {
 				return true;
 			}
 		return false;
 	}
 	
-	public int getAgeCourant() {
-		return ageCourant;
-	}
+
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(SocketIOClient socket, Carte c) {
 		int index = getIndexFromSocket(socket);
@@ -188,7 +184,7 @@ public class Partie {
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
 		nbCartesJouées += 1;
-		if(AgeEstFini()) {
+		if(ageEstFini()) {
 				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) (fin de l'âge).");
 		} 
 		else
@@ -247,16 +243,8 @@ public class Partie {
 		s.broadcast("Ton dernier tour");
 	}
 	
-	public ArrayList<Joueur> getListeJoueurs() {
-		return listeJoueurs;
-	}
-
-	public void setListeJoueurs(ArrayList<Joueur> listeJoueurs) {
-		this.listeJoueurs = listeJoueurs;
-	}
-
 	// Fonction qui vérifie si tous les joueurs sont prêts
-	public boolean everyoneIsRdy() {
+	public boolean isEveryoneRdy() {
 		boolean ret = true;
 		for(int i =0;i<listeJoueurs.size();i++) {
 			if(!listeJoueurs.get(i).isRdy()) {
@@ -277,9 +265,13 @@ public class Partie {
 	public void goNext() {
 		if(tourEstFini()) {
 				if(estFinie()) { 
-					afficherGagnant();
+					int index = getIndexGagnant();
+					Joueur JoueurGagnant = listeJoueurs.get(index);
+					int score = JoueurGagnant.getPoints_victoire() + JoueurGagnant.getPièces();
+					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");;
+					s.stop();
 				}
-				else if(AgeEstFini())
+				else if(ageEstFini())
 				{
 					changerAge();
 
@@ -297,7 +289,7 @@ public class Partie {
 	}
 	
 	// Fonction qui détermine et afficher le gagnant de la partie
-	public void afficherGagnant() {
+	public int getIndexGagnant() {
 		int indexMax = 0;
 		int max = listeJoueurs.get(0).getPoints_victoire() + listeJoueurs.get(0).getPièces();
 		for(int i=1;i < listeJoueurs.size();i++) {
@@ -306,8 +298,8 @@ public class Partie {
 				max = listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces();
 			}
 		}
-		log("Victoire de " + listeJoueurs.get(indexMax).getNom() + " avec " + max + " points de civilisation.");
-		s.stop();
+		return indexMax;
+
 	}
 	
 	// Fonction qui récupère le nom du joueur à partir de son socket
@@ -356,5 +348,102 @@ public class Partie {
 	// Formatage des sorties textes
 	public void log(String s) {
 		System.out.println(CouleurSorties.ANSI_GREEN + "[Annonce Partie] " + s + CouleurSorties.ANSI_RESET);
-	}	
+	}
+	
+	// Getters & Setters 
+	
+	public Carte[] getC() {
+		return c;
+	}
+
+	public void setC(Carte[] c) {
+		this.c = c;
+	}
+
+	public ArrayList<Carte> getCartesAgeI() {
+		return cartesAgeI;
+	}
+
+	public void setCartesAgeI(ArrayList<Carte> cartesAgeI) {
+		this.cartesAgeI = cartesAgeI;
+	}
+
+	public ArrayList<Carte> getCartesAgeII() {
+		return cartesAgeII;
+	}
+
+	public void setCartesAgeII(ArrayList<Carte> cartesAgeII) {
+		this.cartesAgeII = cartesAgeII;
+	}
+
+	public ArrayList<Carte> getCartesAgeIII() {
+		return cartesAgeIII;
+	}
+
+	public void setCartesAgeIII(ArrayList<Carte> cartesAgeIII) {
+		this.cartesAgeIII = cartesAgeIII;
+	}
+
+	public ArrayList<Carte> getDéfausse() {
+		return défausse;
+	}
+
+	public void setDéfausse(ArrayList<Carte> défausse) {
+		this.défausse = défausse;
+	}
+
+	public void setAgeCourant(int ageCourant) {
+		this.ageCourant = ageCourant;
+	}
+	
+	public ArrayList<Joueur> getListeJoueurs() {
+		return listeJoueurs;
+	}
+
+	public void setListeJoueurs(ArrayList<Joueur> listeJoueurs) {
+		this.listeJoueurs = listeJoueurs;
+	}
+	public ArrayList<Merveille> getMerveilles() {
+		return Merveilles;
+	}
+
+	public void setMerveilles(ArrayList<Merveille> merveilles) {
+		Merveilles = merveilles;
+	}
+	
+	public int getAgeCourant() {
+		return ageCourant;
+	}
+	public int getTourCourant() {
+		return tourCourant;
+	}
+
+	public void setTourCourant(int tourCourant) {
+		this.tourCourant = tourCourant;
+	}
+
+	public Merveille[] getM() {
+		return m;
+	}
+
+	public void setM(Merveille[] m) {
+		this.m = m;
+	}
+
+	public int getNbCartesJouées() {
+		return nbCartesJouées;
+	}
+
+	public void setNbCartesJouées(int nbCartesJouées) {
+		this.nbCartesJouées = nbCartesJouées;
+	}
+
+	public boolean isEveryoneReadyStated() {
+		return isEveryoneReadyStated;
+	}
+
+	public void setEveryoneReadyStated(boolean isEveryoneReadyStated) {
+		this.isEveryoneReadyStated = isEveryoneReadyStated;
+	}
+
 }
