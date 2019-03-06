@@ -2,8 +2,6 @@ package org.Serveur;
 
 import java.io.UnsupportedEncodingException;
 import org.Model.assets.Carte;
-import org.Model.assets.Id;
-import org.Model.assets.Partie;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 
@@ -15,18 +13,19 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 
+import org.partie.Partie;
+
 
 public class Serveur {
 	// variables client/serveur
 	private SocketIOServer serveur;
-	private final Object attenteConnexion = new Object(); 
 	
 	private Partie p;
 	
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
-		p = new Partie();
+		p = new Partie(this);
 
 		log("Attente de connexion des joueur...");
 		// Ajout de l'écouteur gérant la connexion d'un client
@@ -37,18 +36,17 @@ public class Serveur {
 			}	
 		});
 		// Ajout de l'écouteur traitant le message d'identification du client
-		serveur.addEventListener("id", Id.class, new DataListener<Id>(){
+		serveur.addEventListener("id", String.class, new DataListener<String>(){
 
 			@Override
-			public void onData(SocketIOClient client, Id data, AckRequest ackSender) throws Exception {
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				// On ajoute le joueur à la partie
-				p.ajouterJoueur(data.getNom(), client);
-
+				p.ajouterJoueur(data, client);
 			}
 			
 		});
 		// Ajout de l'écouteur traitant le message "Prêt" de la part d'un joueur
-		serveur.addEventListener("readyCheck", String.class, new DataListener<String>(){
+		serveur.addEventListener("ReadyCheck", String.class, new DataListener<String>(){
 
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
@@ -58,30 +56,45 @@ public class Serveur {
 			}
 			
 		});
-		// Ajout de l'écouteur traitant l'événement d'une carte jouée de la part d'un joueur
+		// Ajout de l'écouteur traitant l'événement d'une carte jouée de la part d'un joueur.
 		serveur.addEventListener("Carte Jouée", Carte.class, new DataListener<Carte>(){
 
 			@Override
-			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
 				p.jouerCarte(client, data);
-				if(p.estGagnant(client) || p.estFinie()) {
-					p.afficherResultats(client);
-					synchronized(attenteConnexion) {
-						attenteConnexion.notify();
-					}
-				}
-				else
-				{
-					if(p.tourEstFini())
-						p.demarrerTourSuivant();
-				}
 				
+			}
+			
+		});
+		
+		// Ajout de l'écouteur traitant de l'événement de la défausse d'une carte.
+		serveur.addEventListener("Carte Défaussée", Carte.class, new DataListener<Carte>(){
+
+			@Override
+			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
+				p.défausserCarte(client,data);		
 			}
 			
 		});
 		
 	}
 	
+	public void broadcast(String message) {
+		for(int i = 0; i < p.getListeJoueurs().size();i++) {
+			p.getListeJoueurs().get(i).getSocket().sendEvent(message);
+		}
+	}
+	
+	public void sendEvent(SocketIOClient s, String event, Object...data) {
+		s.sendEvent(event, data);
+	}
+	
+	public void stop() {
+		log("Fin de la connexion.");
+		serveur.stop();
+	}
+	
+
 	// Formatage des sorties textes
 	public void log(String s) {
 		System.out.println(CouleurSorties.ANSI_BLUE + "Serveur : " + s + CouleurSorties.ANSI_RESET);
@@ -90,16 +103,6 @@ public class Serveur {
 	
 	public void demarrer() {
 		serveur.start();
-		
-		synchronized(attenteConnexion) {
-			try {
-				attenteConnexion.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		log("fin de la connexion");
-		serveur.stop();
 	}
 	
 	public static void main(String[] args) {

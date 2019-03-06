@@ -1,31 +1,27 @@
 package org.Model.assets;
 
+import java.util.Map;
 
 public class Carte {
 	private String nom;
 	private String type;
-	//private HashMap<String, Integer> cout;
+	private Map<String, Integer> cout;
 	private int configurationNumber;
 	private int age;
-	
-	// effet
-	private String nomEffet;
-	private int ValeurEffet;
-	private String orientationEffet;
-	private String ressourceEffet;
+
+	// effet	
+	Map<String,String> effet;
 	
 
 	public Carte() {}
 	
-	public Carte(String nom, String type, String nomEffet,int ValeurEffet, String orientationEffet, String ressourceEffet, int configurationNumber) {
+	public Carte(String nom, String type, Map<String,String> effet ,Map<String,Integer> cout, int configurationNumber, int age) {
 		this.nom = nom;
 		this.type = type;
-		this.nomEffet = nomEffet;
-		//this.cout = cout;
+		this.effet=effet;
+		this.cout = cout;
 		this.configurationNumber= configurationNumber;
-		this.ValeurEffet = ValeurEffet;
-		this.orientationEffet = orientationEffet;
-		this.ressourceEffet = ressourceEffet;
+		this.age = age;
 	}
 	
 	public int getAge() {
@@ -36,14 +32,14 @@ public class Carte {
 		this.age = age;
 	}
 
-	/*public int getCout(String ressource) {
-		return cout.get(ressource);
+	public Map<String,Integer> getCout() {
+		return cout;
 	}
 
 
-	public void addCout(String ressource, int valeur) {
-		cout.put(ressource, valeur);
-	}*/
+	public void setCout(Map<String,Integer> cout) {
+		this.cout = cout;
+	}					
 
 	public String getNom() {
 		return nom;
@@ -68,38 +64,17 @@ public class Carte {
 	public void setConfigurationNumber(int configurationNumber) {
 		this.configurationNumber = configurationNumber;
 	}
-
-	public String getNomEffet() {
-		return nomEffet;
-	}
-
-	public void setNomEffet(String nomEffet) {
-		this.nomEffet = nomEffet;
-	}
-
-	public String getOrientationEffet() {
-		return orientationEffet;
-	}
-
-	public void setOrientationEffet(String orientationEffet) {
-		this.orientationEffet = orientationEffet;
-	}
-
-	public int getValeurEffet() {
-		return ValeurEffet;
-	}
-
-	public void setValeurEffet(int valeurEffet) {
-		ValeurEffet = valeurEffet;
-	}
-
-	public String getRessourceEffet() {
-		return ressourceEffet;
-	}
-
-	public void setRessourceEffet(String ressourceEffet) {
-		this.ressourceEffet = ressourceEffet;
+	
+	public Map<String,String> getEffet(){
+		return this.effet;
+ }
+	
+	public void setEffet(Map<String,String> effet){
+		this.effet = effet;
 	}
 	
+	public String toString() {
+		return "Carte : " + this.nom + " " + this.effet.get("nomEffet");
+	}
 	
 }

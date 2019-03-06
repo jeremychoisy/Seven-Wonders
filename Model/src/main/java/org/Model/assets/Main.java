@@ -18,12 +18,25 @@ public class Main {
 	public int size() {
 		return main.size();
 	}
+	
 	public void remove(int i) {
 		main.remove(i);
 	}
 	
-	public Carte get(int index) {
-		return main.get(index);
+	public Carte get(int i) {
+		return main.get(i);
+	}
+	
+	public ArrayList<Carte> getMain() {
+		return main;
+	}
+	
+	public void RemoveCardFromName(String nomCarte) {
+		for(int i = 0;i < main.size();i++) {
+			if(main.get(i).getNom().equals(nomCarte)) {
+				main.remove(i);
+			}
+		}
 	}
 	
 	public String toString() {
@@ -35,4 +48,5 @@ public class Main {
 		
 		return buffer;
 	}
+
 }

@@ -3,16 +3,12 @@ package org.Client;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
-import org.Model.assets.Id;
-import org.Model.assets.Joueur;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
-import org.Model.assets.Carte;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import bot.Bot;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -21,14 +17,11 @@ import io.socket.emitter.Emitter;
 
 public class Client{
 	private Socket connexion;
-	private Id id;
-	final Object attenteDeconnexion = new Object();
-	
-	private Joueur j;
+	private Bot b;
 
 	
 	public Client(String url, final String name) {
-		this.j = new Joueur(name);
+		this.b = new Bot(name, this);
 		try {
 			IO.Options opts = new IO.Options();
 			opts.forceNew = true;
@@ -39,9 +32,7 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					log("connecté");
-					id = new Id(name);
-					JSONObject idJson = new JSONObject(id);
-					connexion.emit("id", idJson);
+					connexion.emit("id", name);
 					
 				}
 				
@@ -54,53 +45,60 @@ public class Client{
 					log("deconnecté");
 					connexion.disconnect();
 					connexion.close();
-					synchronized(attenteDeconnexion) {
-						attenteDeconnexion.notify();
-					}
 				}
 			});
 			// Traitement de l'événement "voici ta main" venant du serveur
-			connexion.on("main",new Emitter.Listener() {
+			connexion.on("Main",new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
-					Carte c =null;
 					JSONArray cJson = (JSONArray) args[0];
-				    for(int i=0;i<7;i++) {
-			
-						try {
-							c = new Carte((String)(cJson.getJSONObject(i).get("nom")),(String)(cJson.getJSONObject(i).get("type")),(String)(cJson.getJSONObject(i).get("nomEffet")),(Integer)(cJson.getJSONObject(i).get("valeurEffet")),(String)(cJson.getJSONObject(i).get("orientationEffet")),(String)(cJson.getJSONObject(i).get("ressourceEffet")),(Integer)cJson.getJSONObject(i).get("configurationNumber"));
-						}
-						catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						j.getM().add(c);
-				    }
-					connexion.emit("readyCheck", "Prêt");
+				    
+					b.setMain(cJson);
+					
+					connexion.emit("ReadyCheck", "Prêt");
 				}
 				
 			});
 			
 			// traitement de l'événement "voici tes pièces" venant du serveur
-			connexion.on("pièces", new Emitter.Listener() {
+			connexion.on("Pièces", new Emitter.Listener() {
 				
 				@Override
 				public void call(Object... args) {
 					int valeur = (Integer) args[0];
-					j.setPièces(j.getPièces() + valeur);
+					
+					b.addPièces(valeur);
 					
 				}
 			});
 			
-			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
-			connexion.on("Ton tour",new Emitter.Listener() {
+			// traitement de l'événement "voici ta merveille" venant du serveur
+			connexion.on("Merveille", new Emitter.Listener() {
+				
 				@Override
 				public void call(Object... args) {
-					Carte c = null;
-					c = j.getM().get(0);
-					j.getM().remove(0);
-					JSONObject carteJouéeJSON = new JSONObject(c);
-					connexion.emit("Carte Jouée", carteJouéeJSON);
+
+					JSONObject Json = (JSONObject)args[0];
+					
+					b.setMerveille(Json);	
+				}
+			});
+			
+			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
+			connexion.on("Ton tour", new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					
+					b.jouerTour(connexion);
+				}
+			});
+			
+			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
+			connexion.on("Ton dernier tour", new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					
+					b.defausserDerniereCarte(connexion);
 				}
 			});
 		} catch (URISyntaxException e) {
@@ -108,23 +106,18 @@ public class Client{
 		}
 	}
 	
+	public void emit(Socket s, String event, Object...args) {
+		s.emit(event, args);
+	}
+	
 	public void demarrer() {
 		log("Tentative de connexion");
 		connexion.connect();
-
-		synchronized(attenteDeconnexion) {
-			try {
-				attenteDeconnexion.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 	
 	// Formatage des sorties textes
 	public void log(String s) {
-		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + j.getNom() + "] : " + s + CouleurSorties.ANSI_RESET);
+		System.out.println(CouleurSorties.ANSI_BLUE + "Client [" + b.getJ().getNom() + "] : " + s + CouleurSorties.ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {

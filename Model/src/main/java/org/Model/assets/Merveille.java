@@ -1,6 +1,6 @@
 package org.Model.assets;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.Model.tools.GestionEffets;
 
@@ -10,28 +10,29 @@ public class Merveille {
 	private int etapeCourante;
 	
 	//Ressources nécessaires à la réalisation de l'étape de Merveille
-	private HashMap<String,Integer> ressourceEtape1;
-	private HashMap<String,Integer> ressourceEtape2;
-	private HashMap<String,Integer> ressourceEtape3;
+	private Map<String,Integer> ressourceEtapeUne;
+	private Map<String,Integer> ressourceEtapeDeux;
+	private Map<String,Integer> ressourceEtapeTrois;
 	
-	//Effets associés à chaque étape de la marveille (face A uniquement)
-	private HashMap<String,String> effetEtapeUne;
-	private HashMap<String,String> effetEtapeDeux;
-	private HashMap<String,String> effetEtapeTrois;
-	
+	//Effets associés à chaque étape de la merveille (face A uniquement)
+	private Map<String,String> effetEtapeUne;
+	private Map<String,String> effetEtapeDeux;
+	private Map<String,String> effetEtapeTrois;
+
 
 	public Merveille() {
 	}
 
-	public Merveille(String nom, String ressource,HashMap<String,Integer> ressourceEtape1,HashMap<String,Integer> ressourceEtape2,HashMap<String,Integer> ressourceEtape3, HashMap<String,String> effetEtapeUne, HashMap<String,String> effetEtapeDeux, HashMap<String,String> effetEtapeTrois) {
+	public Merveille(String nom, String ressource,Map<String,Integer> ressourceEtapeUne,Map<String,Integer> ressourceEtapeDeux,Map<String,Integer> ressourceEtapeTrois, Map<String,String> effetEtapeUne, Map<String,String> effetEtapeDeux, Map<String,String> effetEtapeTrois) {
 		this.nom = nom;
 		this.ressource = ressource;
 		this.etapeCourante = 0;
 		
-		this.setRessourceEtape1(ressourceEtape1);
-		this.setRessourceEtape2(ressourceEtape2);
-		this.setRessourceEtape3(ressourceEtape3);
+		this.ressourceEtapeUne = ressourceEtapeUne;
+		this.ressourceEtapeDeux = ressourceEtapeDeux;
+		this.ressourceEtapeTrois = ressourceEtapeTrois;
 		
+
 		this.effetEtapeUne = effetEtapeUne;
 		this.effetEtapeDeux = effetEtapeDeux;
 		this.effetEtapeTrois = effetEtapeTrois;
@@ -61,13 +62,13 @@ public class Merveille {
 		if(this.etapeCourante < 3) {
 			switch(this.etapeCourante) {
 				case 0:
-					GestionEffets.appliquerEffetMerveille(this.effetEtapeUne, j);
+					GestionEffets.appliquerEffet(this.effetEtapeUne, j);
 					break;
 				case 1:
-					GestionEffets.appliquerEffetMerveille(this.effetEtapeDeux, j);
+					GestionEffets.appliquerEffet(this.effetEtapeDeux, j);
 					break;
 				case 2:
-					GestionEffets.appliquerEffetMerveille(this.effetEtapeTrois, j);
+					GestionEffets.appliquerEffet(this.effetEtapeTrois, j);
 					break;
 			}
 			this.etapeCourante++;
@@ -75,51 +76,55 @@ public class Merveille {
 		
 	}
 
-	public HashMap<String,Integer> getRessourceEtape1() {
-		return ressourceEtape1;
+	public Map<String, Integer> getressourceEtapeUne() {
+		return ressourceEtapeUne;
 	}
 
-	public void setRessourceEtape1(HashMap<String,Integer> ressourceEtape1) {
-		this.ressourceEtape1 = ressourceEtape1;
+	public void setressourceEtapeUne(Map<String, Integer> ressourceEtapeUne) {
+		this.ressourceEtapeUne = ressourceEtapeUne;
 	}
 
-	public HashMap<String,Integer> getRessourceEtape2() {
-		return ressourceEtape2;
+	public Map<String, Integer> getressourceEtapeDeux() {
+		return ressourceEtapeDeux;
 	}
 
-	public void setRessourceEtape2(HashMap<String,Integer> ressourceEtape2) {
-		this.ressourceEtape2 = ressourceEtape2;
+	public void setressourceEtapeDeux(Map<String, Integer> ressourceEtapeDeux) {
+		this.ressourceEtapeDeux = ressourceEtapeDeux;
 	}
 
-	public HashMap<String,Integer> getRessourceEtape3() {
-		return ressourceEtape3;
+	public Map<String, Integer> getressourceEtapeTrois() {
+		return ressourceEtapeTrois;
 	}
 
-	public void setRessourceEtape3(HashMap<String,Integer> ressourceEtape3) {
-		this.ressourceEtape3 = ressourceEtape3;
+	public void setressourceEtapeTrois(Map<String, Integer> ressourceEtapeTrois) {
+		this.ressourceEtapeTrois = ressourceEtapeTrois;
 	}
 
-	public HashMap<String,String> getEffetEtapeTrois() {
-		return effetEtapeTrois;
-	}
-
-	public void setEffetEtapeTrois(HashMap<String,String> effetEtapeTrois) {
-		this.effetEtapeTrois = effetEtapeTrois;
-	}
-
-	public HashMap<String,String> getEffetEtapeDeux() {
-		return effetEtapeDeux;
-	}
-
-	public void setEffetEtapeDeux(HashMap<String,String> effetEtapeDeux) {
-		this.effetEtapeDeux = effetEtapeDeux;
-	}
-
-	public HashMap<String,String> getEffetEtapeUne() {
+	public Map<String, String> getEffetEtapeUne() {
 		return effetEtapeUne;
 	}
 
-	public void setEffetEtapeUne(HashMap<String,String> effetEtapeUne) {
+	public void setEffetEtapeUne(Map<String, String> effetEtapeUne) {
 		this.effetEtapeUne = effetEtapeUne;
+	}
+
+	public Map<String, String> getEffetEtapeDeux() {
+		return effetEtapeDeux;
+	}
+
+	public void setEffetEtapeDeux(Map<String, String> effetEtapeDeux) {
+		this.effetEtapeDeux = effetEtapeDeux;
+	}
+
+	public Map<String, String> getEffetEtapeTrois() {
+		return effetEtapeTrois;
+	}
+
+	public void setEffetEtapeTrois(Map<String, String> effetEtapeTrois) {
+		this.effetEtapeTrois = effetEtapeTrois;
+	}
+
+	public void setEtapeCourante(int etapeCourante) {
+		this.etapeCourante = etapeCourante;
 	}
 }

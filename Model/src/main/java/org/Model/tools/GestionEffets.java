@@ -1,52 +1,43 @@
 package org.Model.tools;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
-import org.Model.assets.Merveille;
 
 public abstract class GestionEffets
 {
-	public static void  appliquerEffetCarte(Carte c, Joueur j) {
-		if(c.getNomEffet().equals("commerce_ressources_primaires")) {
+	public static void appliquerEffet(Map<String,String> effet, Joueur j) {
+		if(effet.get("nomEffet").equals("commerce_ressources_primaires")) {
 			j.setCommerce_ressources_primaires(true);
 		}
-		if(c.getNomEffet().equals("commerce_ressources_secondaires")) {
+		if(effet.get("nomEffet").equals("commerce_ressources_secondaires")) {
 			j.setCommerce_ressources_secondaires(true);
 		}
-		if(c.getNomEffet().equals("gain_pièces")) {
-			j.setPièces(j.getPièces() + c.getValeurEffet());
+		if(effet.get("nomEffet").equals("gain_pièces")) {
+			j.setPièces(j.getPièces() + Integer.parseInt(effet.get("valeurEffet")));
 		}
-		if(c.getNomEffet().equals("gain_points_victoire")) {
-			j.setPoints_victoire(j.getPoints_victoire() + c.getValeurEffet());
+		if(effet.get("nomEffet").equals("gain_points_victoire")) {
+			j.setPoints_victoire(j.getPoints_victoire() + Integer.parseInt(effet.get("valeurEffet")));
 		}
-		if(c.getNomEffet().equals("gain_boucliers")) {
-			j.setBouclier(j.getBouclier() + c.getValeurEffet());
+		if(effet.get("nomEffet").equals("gain_boucliers")) {
+			j.setBouclier(j.getBouclier() + Integer.parseInt(effet.get("valeurEffet")));
 		}
-		if(c.getNomEffet().equals("gain_ressources")) {
-			j.ajouterRessources(c.getRessourceEffet(), c.getValeurEffet());
-		}	
-
-	}
-	
-	public static void appliquerEffetMerveille(HashMap<String,String> effetEtape, Joueur j) {
-		if(effetEtape.get("nomEffet").equals("commerce_ressources_primaires")) {
-			j.setCommerce_ressources_primaires(true);
+		if(effet.get("nomEffet").equals("batiment_gratuit")) {
+			// TODO
 		}
-		if(effetEtape.get("nomEffet").equals("commerce_ressources_secondaires")) {
-			j.setCommerce_ressources_secondaires(true);
+		if(effet.get("nomEffet").equals("gain_ressources")) {
+			if(j.GetRessources().get(effet.get("ressourceEffet")) != null){
+				j.GetRessources().put(effet.get("ressourceEffet"),j.GetRessources().get(effet.get("ressourceEffet")) + Integer.parseInt(effet.get("valeurEffet")));
+			}
+			else
+			{
+				j.GetRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+			}
 		}
-		if(effetEtape.get("nomEffet").equals("gain_pièces")) {
-			j.setPièces(j.getPièces() + Integer.parseInt(effetEtape.get("valeurEffet")));
+		if(effet.get("nomEffet").equals("gain_ressources_multiples")) {
+			// TODO
 		}
-		if(effetEtape.get("nomEffet").equals("gain_points_victoire")) {
-			j.setPoints_victoire(j.getPoints_victoire() + Integer.parseInt(effetEtape.get("valeurEffet")));
-		}
-		if(effetEtape.get("nomEffet").equals("gain_boucliers")) {
-			j.setBouclier(j.getBouclier() + Integer.parseInt(effetEtape.get("valeurEffet")));
-		}
-		if(effetEtape.get("nomEffet").equals("batiment_gratuit")) {
+		if(effet.get("nomEffet").equals("gain_pièces_par_cartes")) {
 			// TODO
 		}
 	}

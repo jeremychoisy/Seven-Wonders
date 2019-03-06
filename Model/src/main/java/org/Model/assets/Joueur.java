@@ -2,6 +2,7 @@ package org.Model.assets;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Joueur {
 	private SocketIOClient socket;
@@ -13,58 +14,46 @@ public class Joueur {
 	private boolean commerce_ressources_primaires;
 	private boolean commerce_ressources_secondaires;
 
-	private int pièces;
 	private int points_victoire;
 	private int boucliers;
 	
-	private HashMap<String,Integer> ressources;
+	private Map<String,Integer> ressources;
 
 	
 	public Joueur() {}
 	
 	public Joueur(String nom) {
 		this.nom = nom;
-		this.m = new Main();
-		this.isRdy = false;
-		this.setCommerce_ressources_primaires(false);
-		this.setCommerce_ressources_secondaires(false);
-		this.pièces = 0;
-		this.points_victoire = 0;
-		this.boucliers = 0;
-
-		ressources = new HashMap<String,Integer>();
-		ressources.put("bois", 0);
-		ressources.put("pierre", 0);
-		ressources.put("minerai", 0);
-		ressources.put("argile", 0);
-		ressources.put("tissu", 0);
-		ressources.put("verre", 0);
-		ressources.put("parchemin", 0);
+		initJoueur();
 	}
 	public Joueur(String nom, SocketIOClient socket) {
 		this.nom = nom;
-		this.m = new Main();
 		this.socket = socket;
+		initJoueur();
+
+	}
+	
+	public void initJoueur() {
+		this.m = new Main();
 		this.isRdy = false;
 		this.setCommerce_ressources_primaires(false);
 		this.setCommerce_ressources_secondaires(false);
-		this.pièces = 0;
 		this.points_victoire = 0;
 		this.boucliers = 0;
-
+		
 		ressources = new HashMap<String,Integer>();
+		ressources.put("pièces", 0);
 		ressources.put("bois", 0);
 		ressources.put("pierre", 0);
 		ressources.put("minerai", 0);
 		ressources.put("argile", 0);
 		ressources.put("tissu", 0);
 		ressources.put("verre", 0);
-		ressources.put("parchemin", 0);
-
+		ressources.put("papier", 0);
 	}
+	
 	public void ajouterRessources(String nomRessource, int quantité) {
-		int qtéInitial = ressources.get(nomRessource);
-		ressources.put(nomRessource, qtéInitial + quantité);
+		ressources.put(nomRessource, ressources.get(nomRessource) + quantité);
 	}
 
 	public int getQuantitéRessource(String nomRessource) {
@@ -89,11 +78,11 @@ public class Joueur {
 	}
 
 	public int getPièces() {
-		return pièces;
+		return ressources.get("pièces");
 	}
 
 	public void setPièces(int gain_pièces) {
-		this.pièces = gain_pièces;
+		ressources.put("pièces",gain_pièces);
 	}
 
 	public int getPoints_victoire() {
@@ -116,7 +105,7 @@ public class Joueur {
 		this.ressources = gain_ressources;
 	}
 
-	public HashMap<String, Integer> GetRessources() {
+	public Map<String, Integer> GetRessources() {
 		return ressources;
 	}
 
@@ -155,5 +144,10 @@ public class Joueur {
 
 	public void setMerveille(Merveille merveille) {
 		this.merveille = merveille;
+		this.ressources.put(merveille.getRessource(),1);
+	}
+	
+	public String toString() {
+		return "Joueur " + this.nom + " : " + this.m.toString(); 
 	}
 }
