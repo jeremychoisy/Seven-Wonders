@@ -13,7 +13,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 
-import partie.Partie;
+import org.partie.Partie;
 
 
 public class Serveur {

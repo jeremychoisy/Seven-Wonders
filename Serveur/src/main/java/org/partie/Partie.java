@@ -1,4 +1,4 @@
-package partie;
+package org.partie;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
