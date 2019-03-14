@@ -183,7 +183,7 @@ public class Partie {
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() - c.getCout().get("pièces"));
 		}
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
-		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s).");
+		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires.");
 		nbCartesJouées += 1;
 		goNext();
 	}
@@ -196,13 +196,13 @@ public class Partie {
 		défausse.add(c);
 		nbCartesJouées += 1;
 		if(ageEstFini()) {
-				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) (fin de l'âge).");
+				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires (fin de l'âge).");
 		} 
 		else
 		{
 			s.sendEvent(listeJoueurs.get(index).getSocket(),"Pièces", 3);
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
-			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)." + listeJoueurs.get(index).getM().toString());
+			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) "  + listeJoueurs.get(0).getPoint_militaires() + "points militaires." + listeJoueurs.get(index).getM().toString());
 		}
 		goNext();
 	}
@@ -278,7 +278,7 @@ public class Partie {
 				if(estFinie()) { 
 					int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
-					int score = JoueurGagnant.getPoints_victoire() + JoueurGagnant.getPièces();
+					int score = JoueurGagnant.getPoints_victoire() + JoueurGagnant.getPièces() + JoueurGagnant.getPoint_militaires();
 					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");;
 					s.stop();
 				}
@@ -302,11 +302,11 @@ public class Partie {
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public int getIndexGagnant() {
 		int indexMax = 0;
-		int max = listeJoueurs.get(0).getPoints_victoire() + listeJoueurs.get(0).getPièces();
+		int max = listeJoueurs.get(0).getPoints_victoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getPoint_militaires();
 		for(int i=1;i < listeJoueurs.size();i++) {
-			if(listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces() > max) {
+			if(listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces() + listeJoueurs.get(0).getPoint_militaires()> max) {
 				indexMax = i;
-				max = listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces();
+				max = listeJoueurs.get(i).getPoints_victoire() + listeJoueurs.get(i).getPièces() + + listeJoueurs.get(0).getPoint_militaires();
 			}
 		}
 		return indexMax;
