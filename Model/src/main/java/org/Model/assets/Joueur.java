@@ -16,6 +16,7 @@ public class Joueur {
 
 	private int points_victoire;
 	private int boucliers;
+	private int point_militaires;
 	
 	private Map<String,Integer> ressources;
 
@@ -40,6 +41,7 @@ public class Joueur {
 		this.setCommerce_ressources_secondaires(false);
 		this.points_victoire = 0;
 		this.boucliers = 0;
+		this.setPoint_militaires(0);
 		
 		ressources = new HashMap<String,Integer>();
 		ressources.put("pièces", 0);
@@ -99,6 +101,14 @@ public class Joueur {
 
 	public void setBouclier(int gain_bouclier) {
 		this.boucliers = gain_bouclier;
+	}
+
+	public int getPoint_militaires() {
+		return point_militaires;
+	}
+
+	public void setPoint_militaires(int point_militaires) {
+		this.point_militaires = point_militaires;
 	}
 
 	public void setRessources(HashMap<String, Integer> gain_ressources) {
