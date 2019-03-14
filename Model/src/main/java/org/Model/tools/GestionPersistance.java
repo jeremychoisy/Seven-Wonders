@@ -6,29 +6,46 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.json.JSONObject;
 
 import org.Model.assets.Carte;
 import org.Model.assets.Merveille;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class GestionPersistance {
 	
 	// Méthodes pour sérialisation / désérialisation des échanges serveur/client.
 	public static Map<String,String> JSONToMapEffet(JSONObject j){
-		return new Gson().fromJson(j.toString(), new TypeToken<HashMap<String, String>>() {}.getType());
+		try {
+			return new ObjectMapper().readValue(j.toString(), new TypeReference<Map<String,String>>() {});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static Map<String,Integer> JSONToMapRessource(JSONObject j){
-		return new Gson().fromJson(j.toString(), new TypeToken<HashMap<String, Integer>>() {}.getType());
+		try {
+			return new ObjectMapper().readValue(j.toString(), new TypeReference<Map<String,Integer>>() {});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static String ObjectToJSONString(Object o) {
-		return new Gson().toJson(o);
+		try {
+			return new ObjectMapper().writeValueAsString(o);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-	
+
 	// Méthodes pour sérialisation / désérialisation des données vers / depuis des fichiers json.
     public static boolean isData() {
     	File fileCarte = new File("./../Assets/cartes.json");
@@ -37,11 +54,9 @@ public class GestionPersistance {
     }
     
     public static void generateData() {
-    	Gson gson = new Gson();
-		FileWriter writer = null;
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 
-			writer = new FileWriter("./../Assets/cartes.json");
 			Carte[] c = new Carte[98];
 			
 			Map<String,String> effet = new HashMap<String,String>();
@@ -497,12 +512,8 @@ public class GestionPersistance {
             c[] = new Carte("Guilde des Magistrats","Guilde",0);
             c[] = new Carte("Guilde des Bâtisseurs","Guilde",0);*/
 
+			mapper.writeValue(new File("./../Assets/cartes.json"),c);
 
-			gson.toJson(c, writer);
-			writer.flush();
-			writer.close();
-			
-			writer = new FileWriter("./../Assets/merveilles.json");
 			Merveille[] m = new Merveille[4];
 			Map<String,Integer> ressourceEtapeUne = new HashMap<String,Integer>();
 			ressourceEtapeUne.put("bois", 2);
@@ -587,10 +598,9 @@ public class GestionPersistance {
 			effetEtapeTrois.put("valeurEffet", "7");
 			
 			m[3] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
-			
-			gson.toJson(m,writer);
-			writer.flush();
-			writer.close();
+
+			mapper.writeValue(new File("./../Assets/merveilles.json"),m);
+
 			
 		} catch (IOException e) {
 			e.printStackTrace();

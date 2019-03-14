@@ -25,7 +25,7 @@ public class Serveur {
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
-		p = new Partie(this);
+		p = new Partie(this, true);
 
 		log("Attente de connexion des joueur...");
 		// Ajout de l'écouteur gérant la connexion d'un client

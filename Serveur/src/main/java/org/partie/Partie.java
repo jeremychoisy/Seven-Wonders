@@ -1,11 +1,13 @@
 package org.partie;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
 import org.Model.assets.Main;
@@ -15,9 +17,12 @@ import org.Model.tools.GestionEffets;
 import org.Serveur.Serveur;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.google.gson.Gson;
+
+import static org.Model.tools.GestionPersistance.generateData;
+import static org.Model.tools.GestionPersistance.isData;
 
 public class Partie {
+	private boolean displayLogs;
 	private ArrayList<Joueur> listeJoueurs;
 	// variable serveur
 	private Serveur s;
@@ -43,8 +48,10 @@ public class Partie {
 
 	public Partie() {}
 	
-	public Partie(Serveur s) {
+	public Partie(Serveur s, boolean displayLogs) {
 		this.s = s;
+		this.displayLogs = displayLogs;
+
 		listeJoueurs = new ArrayList<Joueur>();
 		c = new Carte[NB_CARTES];
 		m = new Merveille[NB_MERVEILLES];
@@ -52,10 +59,13 @@ public class Partie {
 		cartesAgeII = new ArrayList<Carte>();
 		cartesAgeIII = new ArrayList<Carte>();
 		défausse = new ArrayList<Carte>();
-		// Récupération des cartes/merveilles via les fichiers Json
-		recupererDonnees();
 		tourCourant = 0;
 		ageCourant = 1;
+		if(!isData()){
+			generateData();
+		}
+		// Récupération des cartes/merveilles via les fichiers Json
+		recupererDonnees();
 	}
 	
 	public void ajouterJoueur(String nom, SocketIOClient socket) {
@@ -74,7 +84,7 @@ public class Partie {
 	public void initPartie() {
 		Main main;
 		Merveille merveille;
-		
+
 		construireListes();
 		
 		// Pour chaque joueur
@@ -111,6 +121,7 @@ public class Partie {
 			if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
 				switch(c[i].getAge()) {
 					case 1:
+
 						cartesAgeI.add(c[i]);
 						break;
 					case 2:
@@ -315,39 +326,32 @@ public class Partie {
 	// Fonction responsable de la récupération des données depuis les fichiers JSON
 	public void recupererDonnees() {
 		FileReader reader = null;
-		Gson gson = new Gson();
-		
+		ObjectMapper mapper = new ObjectMapper();
+
 		// Stockage des cartes du jeu dans un tableau depuis le fichier JSON correspondant
-		try {
-			reader = new FileReader("./../Assets/cartes.json");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		log("Chargement des cartes...");
-		c = gson.fromJson(reader, Carte[].class);
+
 		try {
-			reader.close();
-		} catch (IOException e) {		
+			c  = mapper.readValue(new File("./../Assets/cartes.json"), Carte[].class);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// Stockage des merveilles du jeu dans un tableau depuis le fichier JSON correspondant
-		try {
-			reader = new FileReader("./../Assets/merveilles.json");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		log("Chargement des merveilles...");
-		m = gson.fromJson(reader, Merveille[].class);
 		try {
-			reader.close();
+			m = mapper.readValue(new File("./../Assets/merveilles.json"), Merveille[].class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+	public void setDisplayLogs(boolean b){
+		displayLogs = b;
+	}
 	// Formatage des sorties textes
 	public void log(String s) {
-		System.out.println(CouleurSorties.ANSI_GREEN + "[Annonce Partie] " + s + CouleurSorties.ANSI_RESET);
+		if(displayLogs) {
+			System.out.println(CouleurSorties.ANSI_GREEN + "[Annonce Partie] " + s + CouleurSorties.ANSI_RESET);
+		}
 	}
 	
 	// Getters & Setters 

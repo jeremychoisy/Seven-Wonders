@@ -34,7 +34,7 @@ public class PartieTest {
 	@BeforeEach
 	@Test
 	void constructeurEtrecuperationDonnéesTest() {
-		p = new Partie(s);
+		p = new Partie(s, false);
 		
 		assertEquals(98, p.getC().length, "Il y a normalement 98 cartes dans le tableau");
 	}
