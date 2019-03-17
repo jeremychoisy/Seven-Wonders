@@ -18,7 +18,7 @@ Ensuite vous pouvez suivre ce magnifique [tutoriel](https://openclassrooms.com/f
 
 ### Installation
 
-Depuis votre terminal de commande déplacez vous dans le répertoire ou se trouve le jeu suivez cette procédure.
+Depuis votre terminal, de commande déplacez vous dans le répertoire où se trouve le jeu et suivez cette procédure.
 
 
 ```
