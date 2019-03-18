@@ -111,6 +111,10 @@ public class Joueur {
 		this.point_militaires = point_militaires;
 	}
 
+	public void addPoint_militaires(int point){this.point_militaires += point;}
+
+	public void delPoint_militaires(){this.point_militaires -= 1;}
+
 	public void setRessources(HashMap<String, Integer> gain_ressources) {
 		this.ressources = gain_ressources;
 	}

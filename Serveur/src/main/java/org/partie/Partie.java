@@ -209,6 +209,7 @@ public class Partie {
 	
 	public void changerAge() {
 		if(ageCourant<2) {
+			ConflitsMilitaire();
 			ageCourant ++;
 			tourCourant = 0;
 			log("Début de l'âge " + ageCourant + " !");
@@ -252,6 +253,73 @@ public class Partie {
 		tourCourant += 1;
 		log("Début du dernier Tour (défausse) !");
 		s.broadcast("Ton dernier tour");
+	}
+
+	//Fonction pour résoudre les conflits militaires
+	public void ConflitsMilitaire(){
+		for(int i =0;i<listeJoueurs.size();i++) {
+			//conflit voisin de droite
+			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
+				log("Joueur" + i + "a gagné " + points_militaires_selon_age() + "points militaires.");
+			}
+			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).delPoint_militaires();
+				log("Joueur" + i + "a perdu 1 point militaire.");
+			}
+			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+				log("Joueur" + i + " a autant de points de bouclier que son voisin de droite, il ne perd donc pas de points militaires après la bataille.");
+			}
+
+			//conflit voisin de gauche
+			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
+				log("Joueur" + i + "a gagné " + points_militaires_selon_age() + "points militaires.");
+			}
+			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).delPoint_militaires();
+				log("Joueur" + i + "a perdu 1 point militaire.");
+			}
+			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+				log("Joueur" + i + " a autant de points de bouclier que son voisin de gauche, il ne perd donc pas de points militaires après la bataille.");
+			}
+		}
+	}
+
+	//Fonction pour attribution points militaires selon l'âge
+	public int points_militaires_selon_age(){
+		int points_militaires = 0;
+		switch (getAgeCourant()){
+			case 1:
+				points_militaires = 1;
+				break;
+			case 2:
+				points_militaires = 3;
+				break;
+			case 3:
+				points_militaires = 5;
+				break;
+		}
+		return points_militaires;
+	}
+
+	//Fonction qui retourne l'index du voisin de droite
+	public int IndexVoisinDroite(int currentIndex, ArrayList<Joueur> listeJoueurs){
+		if (currentIndex == (listeJoueurs.size()-1) ){
+			return 0;
+		}
+		else{
+			return 	currentIndex+1;
+		}
+	}
+	//Fonction qui retourne l'index du voisin de gauche
+	public int IndexVoisinGauche(int currentIndex, ArrayList<Joueur> listeJoueurs){
+		if (currentIndex == (0) ){
+			return (listeJoueurs.size()-1);
+		}
+		else{
+			return 	currentIndex-1;
+		}
 	}
 	
 	// Fonction qui vérifie si tous les joueurs sont prêts
