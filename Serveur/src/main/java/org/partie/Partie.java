@@ -428,7 +428,7 @@ public class Partie {
 		this.listeJoueurs.get(index).getMerveille().etapeSuivante(this.listeJoueurs.get(index));
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
-		défausse.add(carte);d
+		défausse.add(carte);
 		log(name + " a défaussé pour debloquer une étape de sa merveille" + carte.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires (fin de l'âge).");
 	}
 	
