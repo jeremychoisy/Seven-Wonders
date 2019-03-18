@@ -4,7 +4,7 @@ public class Jeton {
 	private String nom;
 	private int valeur;
 	
-	
+	public Jeton(){}
 	
 	
 	public Jeton(String nom, int age) {

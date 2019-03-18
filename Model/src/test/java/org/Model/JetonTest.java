@@ -12,11 +12,11 @@ public class JetonTest {
 
 	
 
+	Jeton testGet = new Jeton("Défaite", 1);
 	Jeton test = new Jeton();
-	Jeton testGet = new Jeton(4);
 	@Test
 	public void testGetValeur() {
-		assertEquals(4,testGet.getValeur());
+		assertEquals(-1,testGet.getValeur());
 	}
 	@Test
 	public void testSetValeur() {
