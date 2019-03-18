@@ -76,8 +76,19 @@ public class Serveur {
 			}
 			
 		});
+
+		serveur.addEventListener("Etape Merveille", Carte.class, new DataListener<Carte>(){
+
+			@Override
+			public void onData(SocketIOClient client, Carte carte, AckRequest ackSender) throws Exception {
+				p.debloquerMerveille(client, carte);
+			}
+
+		});
 		
 	}
+
+
 	
 	public void broadcast(String message) {
 		for(int i = 0; i < p.getListeJoueurs().size();i++) {
