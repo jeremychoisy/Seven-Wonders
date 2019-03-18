@@ -81,7 +81,6 @@ public class Bot {
 		for(int i = 0; i < j.getM().getMain().size(); i++)
 		{
 			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
-			Map<String, Integer> ressources = j.GetRessources();
 			boolean isPlayable = true;
 
 			//on itère sur les coûts des cartes et on compare avec les ressources du bot
@@ -110,6 +109,11 @@ public class Bot {
 
 		// On vérifie que le bot est capable de jouer une carte, si ce n'est pas le cas, on défausse la première.
 		if( carte == null) {
+
+			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
+
+			boolean isCreable = true;
+
 			try {
 				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
 			} catch (JSONException e) {
