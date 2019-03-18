@@ -58,6 +58,20 @@ public class Merveille {
 		return etapeCourante;
 	}
 
+	public Map<String, Integer> getressourceEtapeCourante() {
+		switch(this.etapeCourante){
+			case 0:
+				return ressourceEtapeUne;
+			case 1:
+				return ressourceEtapeDeux;
+			case 2:
+				return ressourceEtapeTrois;
+			default:
+				return null;
+		}
+	}
+
+
 	public void etapeSuivante(Joueur j) { 
 		if(this.etapeCourante < 3) {
 			switch(this.etapeCourante) {
@@ -75,6 +89,7 @@ public class Merveille {
 		}
 		
 	}
+
 
 	public Map<String, Integer> getressourceEtapeUne() {
 		return ressourceEtapeUne;
