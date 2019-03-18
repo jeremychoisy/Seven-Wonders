@@ -15,7 +15,6 @@ import java.util.Map;
 public class Bot {
 	private Client c;
 	private Joueur j;
-	
 	public Bot(String name, Client c) {
 		this.j = new Joueur(name);
 		this.c = c;
@@ -34,7 +33,7 @@ public class Bot {
 			j.getM().add(c);
 	    }
 	}
-	
+
 	public void setMerveille(JSONObject Json) {
 		Merveille m = null;
 		try {
@@ -46,8 +45,9 @@ public class Bot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		j.setMerveille(m);	
+		j.setMerveille(m);
 	}
+
 	public void defausserDerniereCarte(Socket s) {
 		JSONObject carteDéfausséeJSON = null;
 		try {
@@ -55,10 +55,11 @@ public class Bot {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		j.getM().remove(0);
-		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);	
+		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
 	}
+
 	public void jouerTour(Socket s) {
 		Carte carte = null;
 		JSONObject carteJouéeJSON=null;
@@ -82,7 +83,7 @@ public class Bot {
 			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
 			Map<String, Integer> ressources = j.GetRessources();
 			boolean isPlayable = true;
-			
+
 			//on itère sur les coûts des cartes et on compare avec les ressources du bot
 			for (Map.Entry<String,Integer> entry : cout.entrySet()){
 				String key = entry.getKey();
@@ -103,6 +104,7 @@ public class Bot {
 				j.getM().remove(i); // pour remove de la main la carte (c) jouée
 				break;
 			}
+
 		}
 
 
@@ -113,7 +115,7 @@ public class Bot {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			}
 			j.getM().remove(0);
 			c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
 		}
@@ -132,14 +134,14 @@ public class Bot {
 	public void addPièces(int valeur) {
 		j.setPièces(j.getPièces() + valeur);
 	}
-	
+
 	public void removePièces(int valeur) {
 		if((j.getPièces() - valeur) > 0)
 			j.setPièces(j.getPièces() - valeur);
 		else
 			j.setPièces(0);
 	}
-	
+
 	public Joueur getJ() {
 		return j;
 	}
@@ -147,8 +149,8 @@ public class Bot {
 	public void setJ(Joueur j) {
 		this.j = j;
 	}
-	
-	
+
+
 
 
 
