@@ -29,9 +29,6 @@ mvn install
 mvn compile
 ```
 
-```
-mvn build
-```
 
 ## Lancement des tests
 
