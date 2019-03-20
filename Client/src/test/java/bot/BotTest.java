@@ -143,6 +143,15 @@ public class BotTest {
             }
         }).when(c).emit(eq(socket),eq("Carte Défaussée"),any(JSONObject.class));
 
+        doAnswer(new Answer(){
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                JSONObject j = invocation.getArgument(2);
+                assertEquals("Officine",j.getString("nom"),"Le nom de la carte défaussé devrait être 'Officine'.");
+                return null;
+            }
+        }).when(c).emit(eq(socket),eq("Carte Défaussée"),any(JSONObject.class));
+
 
         b.jouerTour(socket);
 
