@@ -56,6 +56,12 @@ public class Joueur {
 		ressources.put(nomRessource, ressources.get(nomRessource) + quantité);
 	}
 
+	public void ajouterRessources(Map<String, Integer> gain_ressources) {
+		for (Map.Entry<String,Integer> entry : gain_ressources.entrySet()) {
+			this.ressources.put(entry.getKey(), this.ressources.get(entry.getKey()) + entry.getValue());
+		}
+	}
+
 	public int getQuantitéRessource(String nomRessource) {
 		return ressources.get(nomRessource);
 	}
@@ -101,8 +107,8 @@ public class Joueur {
 		this.boucliers = gain_bouclier;
 	}
 
-	public void setRessources(HashMap<String, Integer> gain_ressources) {
-		this.ressources = gain_ressources;
+	public void setRessources(Map<String, Integer> ressources) {
+			this.ressources = ressources;
 	}
 
 	public Map<String, Integer> GetRessources() {

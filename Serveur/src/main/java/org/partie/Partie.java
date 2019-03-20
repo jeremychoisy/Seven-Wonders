@@ -44,10 +44,11 @@ public class Partie {
 	private int tourCourant;
 	private int ageCourant;
 	private int nbCartesJouées;
-	private boolean isEveryoneReadyStated = false;
+	private boolean isEveryoneReadyStated;
+	private boolean hasGameStarted ;
 
 	public Partie() {}
-	
+
 	public Partie(Serveur s, boolean displayLogs) {
 		this.s = s;
 		this.displayLogs = displayLogs;
@@ -61,6 +62,8 @@ public class Partie {
 		défausse = new ArrayList<Carte>();
 		tourCourant = 0;
 		ageCourant = 1;
+		isEveryoneReadyStated = false;
+		hasGameStarted = false;
 		if(!isData()){
 			generateData();
 		}
@@ -111,6 +114,8 @@ public class Partie {
 			s.sendEvent(listeJoueurs.get(i).getSocket(),"Pièces", 3);
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
+
+			this.hasGameStarted = true;
 			
 		}
 	}
@@ -354,7 +359,11 @@ public class Partie {
 		}
 	}
 	
-	// Getters & Setters 
+	// Getters & Setters
+
+	public boolean HasGameStarted() {
+		return hasGameStarted;
+	}
 	
 	public Carte[] getC() {
 		return c;

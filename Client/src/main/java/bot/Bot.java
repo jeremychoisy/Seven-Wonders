@@ -15,8 +15,9 @@ import java.util.Map;
 public class Bot {
 	private Client c;
 	private Joueur j;
+	private boolean displayLogs;
 	
-	public Bot(String name, Client c) {
+	public Bot(String name, Client c ) {
 		this.j = new Joueur(name);
 		this.c = c;
 	}
