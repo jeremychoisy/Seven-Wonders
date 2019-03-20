@@ -11,7 +11,6 @@ import org.partie.Partie;
 import com.corundumstudio.socketio.SocketIOClient;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,15 +41,22 @@ public class PartieTest {
 	
 	@Test
 	void ajouterJoueurTest() {
-		ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
 		Joueur j = new Joueur("bot_1",socket);
-		listeJoueur.add(j);
-		
+
 		p.ajouterJoueur("bot_1", socket);
 		
-		assertEquals( listeJoueur.get(0).toString() , p.getListeJoueurs().get(0).toString(), "Le joueur a été correctement ajouté à la partie");		
+		assertEquals( j.toString() , p.getListeJoueurs().get(0).toString(), "Le joueur a été correctement ajouté à la partie");
+
+		p.ajouterJoueur("bot_2",socket);
+
+		assertEquals( 2, p.getListeJoueurs().size(), "Les deux joueurs ont été correctement ajouté à la partie");
+
+		p.ajouterJoueur("bot_3",socket);
+		p.ajouterJoueur("bot_4",socket);
+
+		assertEquals(true, p.HasGameStarted(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
 	}
-	
+
 	@Test
 	void construireTest() {
 		p.construireListes();
