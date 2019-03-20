@@ -1,7 +1,6 @@
 package org.partie;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -183,7 +182,7 @@ public class Partie {
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() - c.getCout().get("pièces"));
 		}
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
-		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires.");
+		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getPoint_militaires() + " points militaires.)");
 		nbCartesJouées += 1;
 		goNext();
 	}
@@ -196,20 +195,34 @@ public class Partie {
 		défausse.add(c);
 		nbCartesJouées += 1;
 		if(ageEstFini()) {
-				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires (fin de l'âge).");
+				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getPoint_militaires() + " points militaires (fin de l'âge).");
 		} 
 		else
 		{
 			s.sendEvent(listeJoueurs.get(index).getSocket(),"Pièces", 3);
 			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
-			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) "  + listeJoueurs.get(0).getPoint_militaires() + "points militaires." + listeJoueurs.get(index).getM().toString());
+			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | "  + listeJoueurs.get(index).getPoint_militaires() + " points militaires.");
 		}
 		goNext();
 	}
-	
+
+	// Fonction qui traite le cas
+	public void débloquerMerveille(SocketIOClient client, Carte carte){
+		int index = this.getIndexFromSocket(client);
+		this.listeJoueurs.get(index).getMerveille().etapeSuivante(this.listeJoueurs.get(index));
+		String name = listeJoueurs.get(index).getNom();
+		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
+		défausse.add(carte);
+		nbCartesJouées += 1;
+		log(name + " a défaussé " + carte.getNom() + " pour debloquer une étape de sa merveille  ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getPoint_militaires() + " points militaires (fin de l'âge).");
+		goNext();
+	}
+
+
 	public void changerAge() {
 		if(ageCourant<2) {
-			ConflitsMilitaire();
+			log("---- Conflits militaires ----");
+			conflitsMilitaires();
 			ageCourant ++;
 			tourCourant = 0;
 			log("Début de l'âge " + ageCourant + " !");
@@ -230,7 +243,7 @@ public class Partie {
 				// Envoi de la main au joueur 
 				s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
 			
-				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + "." + main.toString());
+				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + ". " + main.toString());
 				
 			}
 			demarrerTourSuivant();
@@ -256,67 +269,65 @@ public class Partie {
 	}
 
 	//Fonction pour résoudre les conflits militaires
-	public void ConflitsMilitaire(){
+	public void conflitsMilitaires(){
 		for(int i=0;i<listeJoueurs.size();i++) {
 			log("Points de boucliers de "+listeJoueurs.get(i).getNom()+": "+listeJoueurs.get(i).getBouclier());
 			//conflit voisin de droite
-			log("Le voisin de droite de "+ listeJoueurs.get(i).getNom() +" est : "+IndexVoisinDroite(i,listeJoueurs));
-			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
-				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
-				log(listeJoueurs.get(i).getNom()+" a gagné " + points_militaires_selon_age() + "points militaires.");
+			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).addPoint_militaires(pointsMilitairesSelonAge());
+				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " points militaires.");
 			}
-			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delPoint_militaires();
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire.");
 			}
-			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
 				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que son voisin de droite, il ne perd donc pas de points militaires après la bataille.");
 			}
 
 			//conflit voisin de gauche
-			log("Le voisin de gauche de "+ listeJoueurs.get(i).getNom() +"index("+i+" est : "+listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getNom());
-			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
-				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
-				log(listeJoueurs.get(i).getNom()+" a gagné " + points_militaires_selon_age() + "points militaires.");
+			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+				listeJoueurs.get(i).addPoint_militaires(pointsMilitairesSelonAge());
+				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " points militaires.");
 			}
-			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delPoint_militaires();
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire.");
 			}
-			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
 				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que son voisin de gauche, il ne perd donc pas de points militaires après la bataille.");
 			}
 		}
 	}
 
 	//Fonction pour attribution points militaires selon l'âge
-	public int points_militaires_selon_age(){
-		int points_militaires = 0;
+	public int pointsMilitairesSelonAge(){
+		int pointsMilitaires = 0;
 		switch (getAgeCourant()){
 			case 1:
-				points_militaires = 1;
+				pointsMilitaires = 1;
 				break;
 			case 2:
-				points_militaires = 3;
+				pointsMilitaires = 3;
 				break;
 			case 3:
-				points_militaires = 5;
+				pointsMilitaires = 5;
 				break;
 		}
-		return points_militaires;
+		return pointsMilitaires;
 	}
 
 	//Fonction qui retourne l'index du voisin de droite
-	public int IndexVoisinDroite(int currentIndex, ArrayList<Joueur> listeJoueurs){
+	public int getIndexVoisinDroite(int currentIndex, ArrayList<Joueur> listeJoueurs){
 		if (currentIndex == (listeJoueurs.size()-1) ){
 			return 0;
 		}
 		else{
-			return 	currentIndex+1;
+			return 	currentIndex + 1;
 		}
 	}
 	//Fonction qui retourne l'index du voisin de gauche
-	public int IndexVoisinGauche(int currentIndex, ArrayList<Joueur> listeJoueurs){
+	public int getIndexVoisinGauche(int currentIndex, ArrayList<Joueur> listeJoueurs){
 		if (currentIndex == (0) ){
 			return (listeJoueurs.size()-1);
 		}
@@ -346,7 +357,7 @@ public class Partie {
 	
 	public void goNext() {
 		if(tourEstFini()) {
-				if(estFinie()) { 
+				if(estFinie()) {
 					int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
 					int score = JoueurGagnant.getPoints_victoire() + JoueurGagnant.getPièces() + JoueurGagnant.getPoint_militaires();
@@ -358,13 +369,12 @@ public class Partie {
 					changerAge();
 
 				}
-				else if(getTourCourant() == 6){ 
+				else if(getTourCourant() == 6){
 					demarrerDernierTour();
 				}
 				else
 				{
-					if(tourEstFini())
-						demarrerTourSuivant();
+					demarrerTourSuivant();
 				}
 		}
 
@@ -426,15 +436,6 @@ public class Partie {
 	}
 
 
-	public void debloquerMerveille(SocketIOClient client, Carte carte){
-		int index = this.getIndexFromSocket(client);
-		this.listeJoueurs.get(index).getMerveille().etapeSuivante(this.listeJoueurs.get(index));
-		String name = listeJoueurs.get(index).getNom();
-		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
-		défausse.add(carte);
-		log(name + " a défaussé pour debloquer une étape de sa merveille" + carte.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPoints_victoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s)" + listeJoueurs.get(0).getPoint_militaires() + "points militaires (fin de l'âge).");
-	}
-	
 	// Getters & Setters 
 	
 	public Carte[] getC() {

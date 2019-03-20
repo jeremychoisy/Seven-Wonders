@@ -81,7 +81,7 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte carte, AckRequest ackSender) throws Exception {
-				p.debloquerMerveille(client, carte);
+				p.débloquerMerveille(client, carte);
 			}
 
 		});
