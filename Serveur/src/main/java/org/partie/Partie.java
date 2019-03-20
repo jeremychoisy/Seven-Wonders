@@ -257,31 +257,34 @@ public class Partie {
 
 	//Fonction pour résoudre les conflits militaires
 	public void ConflitsMilitaire(){
-		for(int i =0;i<listeJoueurs.size();i++) {
+		for(int i=0;i<listeJoueurs.size();i++) {
+			log("Points de boucliers de "+listeJoueurs.get(i).getNom()+": "+listeJoueurs.get(i).getBouclier());
 			//conflit voisin de droite
+			log("Le voisin de droite de "+ listeJoueurs.get(i).getNom() +" est : "+IndexVoisinDroite(i,listeJoueurs));
 			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
-				log("Joueur" + i + "a gagné " + points_militaires_selon_age() + "points militaires.");
+				log(listeJoueurs.get(i).getNom()+" a gagné " + points_militaires_selon_age() + "points militaires.");
 			}
 			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delPoint_militaires();
-				log("Joueur" + i + "a perdu 1 point militaire.");
+				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire.");
 			}
 			if (listeJoueurs.get(IndexVoisinDroite(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
-				log("Joueur" + i + " a autant de points de bouclier que son voisin de droite, il ne perd donc pas de points militaires après la bataille.");
+				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que son voisin de droite, il ne perd donc pas de points militaires après la bataille.");
 			}
 
 			//conflit voisin de gauche
+			log("Le voisin de gauche de "+ listeJoueurs.get(i).getNom() +"index("+i+" est : "+listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getNom());
 			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).addPoint_militaires(points_militaires_selon_age());
-				log("Joueur" + i + "a gagné " + points_militaires_selon_age() + "points militaires.");
+				log(listeJoueurs.get(i).getNom()+" a gagné " + points_militaires_selon_age() + "points militaires.");
 			}
 			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delPoint_militaires();
-				log("Joueur" + i + "a perdu 1 point militaire.");
+				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire.");
 			}
 			if (listeJoueurs.get(IndexVoisinGauche(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
-				log("Joueur" + i + " a autant de points de bouclier que son voisin de gauche, il ne perd donc pas de points militaires après la bataille.");
+				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que son voisin de gauche, il ne perd donc pas de points militaires après la bataille.");
 			}
 		}
 	}
