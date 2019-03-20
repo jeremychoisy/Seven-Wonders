@@ -15,15 +15,15 @@ import java.util.Map;
 public class Bot {
 	private Client c;
 	private Joueur j;
-	
+
 	public Bot(String name, Client c) {
 		this.j = new Joueur(name);
 		this.c = c;
 	}
-	
+
 	public void setMain(JSONArray Json) {
-	    for(int i=0;i<7;i++) {
-	    	Carte c = null;
+		for(int i=0;i<7;i++) {
+			Carte c = null;
 			try {
 				c = new Carte(Json.getJSONObject(i).getString("nom"),Json.getJSONObject(i).getString("type"),GestionPersistance.JSONToMapEffet((JSONObject)Json.getJSONObject(i).get("effet")),GestionPersistance.JSONToMapRessource((JSONObject)Json.getJSONObject(i).get("cout")),Json.getJSONObject(i).getInt("configurationNumber"),Json.getJSONObject(i).getInt("age"));
 			}
@@ -32,9 +32,9 @@ public class Bot {
 				e.printStackTrace();
 			}
 			j.getM().add(c);
-	    }
+		}
 	}
-	
+
 	public void setMerveille(JSONObject Json) {
 		Merveille m = null;
 		try {
@@ -46,7 +46,7 @@ public class Bot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		j.setMerveille(m);	
+		j.setMerveille(m);
 	}
 	public void defausserDerniereCarte(Socket s) {
 		JSONObject carteDéfausséeJSON = null;
@@ -55,14 +55,15 @@ public class Bot {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		j.getM().remove(0);
-		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);	
+		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
 	}
 	public void jouerTour(Socket s) {
 		Carte carte = null;
 		JSONObject carteJouéeJSON=null;
 		JSONObject carteDéfausséeJSON=null;
+		Map<String, Integer> ressources = j.GetRessources();
 		//là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
 
 		/*
@@ -80,9 +81,8 @@ public class Bot {
 		for(int i = 0; i < j.getM().getMain().size(); i++)
 		{
 			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
-			Map<String, Integer> ressources = j.GetRessources();
 			boolean isPlayable = true;
-			
+
 			//on itère sur les coûts des cartes et on compare avec les ressources du bot
 			for (Map.Entry<String,Integer> entry : cout.entrySet()){
 				String key = entry.getKey();
@@ -108,14 +108,33 @@ public class Bot {
 
 		// On vérifie que le bot est capable de jouer une carte, si ce n'est pas le cas, on défausse la première.
 		if( carte == null) {
+
+			Map<String, Integer> coutMerveille = j.getMerveille().getressourceEtapeCourante();
+			boolean isCreable = false;
+
+			for (Map.Entry<String,Integer> entry : coutMerveille.entrySet()){
+				String key = entry.getKey();
+				Integer ressourceMerveille = entry.getValue();
+				Integer ressourceJoueur = ressources.get(key);
+				if (ressourceJoueur > ressourceMerveille){
+					isCreable = true;
+				}
+			}
+
+
 			try {
 				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			}
 			j.getM().remove(0);
-			c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
+			if(isCreable){
+				c.emit(s,"Etape Merveille", carteDéfausséeJSON);
+			}
+			else {
+				c.emit(s, "Carte Défaussée", carteDéfausséeJSON);
+			}
 		}
 		else
 		{
@@ -132,14 +151,14 @@ public class Bot {
 	public void addPièces(int valeur) {
 		j.setPièces(j.getPièces() + valeur);
 	}
-	
+
 	public void removePièces(int valeur) {
 		if((j.getPièces() - valeur) > 0)
 			j.setPièces(j.getPièces() - valeur);
 		else
 			j.setPièces(0);
 	}
-	
+
 	public Joueur getJ() {
 		return j;
 	}
@@ -147,8 +166,8 @@ public class Bot {
 	public void setJ(Joueur j) {
 		this.j = j;
 	}
-	
-	
+
+
 
 
 
