@@ -11,11 +11,12 @@ public class Joueur {
 	private boolean isRdy;
 	private Merveille merveille; 
 
-	private boolean commerce_ressources_primaires;
-	private boolean commerce_ressources_secondaires;
+	private boolean commerceRessourcesPrimaires;
+	private boolean commerceRessourcesSecondaires;
 
-	private int points_victoire;
+	private int pointsVictoire;
 	private int boucliers;
+	private int pointsMilitaires;
 	
 	private Map<String,Integer> ressources;
 
@@ -36,10 +37,11 @@ public class Joueur {
 	public void initJoueur() {
 		this.m = new Main();
 		this.isRdy = false;
-		this.setCommerce_ressources_primaires(false);
-		this.setCommerce_ressources_secondaires(false);
-		this.points_victoire = 0;
+		this.setcommerceRessourcesPrimaires(false);
+		this.setcommerceRessourcesSecondaires(false);
+		this.pointsVictoire = 0;
 		this.boucliers = 0;
+		this.setpointsMilitaires(0);
 		
 		ressources = new HashMap<String,Integer>();
 		ressources.put("pièces", 0);
@@ -56,25 +58,31 @@ public class Joueur {
 		ressources.put(nomRessource, ressources.get(nomRessource) + quantité);
 	}
 
+	public void ajouterRessources(Map<String, Integer> gain_ressources) {
+		for (Map.Entry<String,Integer> entry : gain_ressources.entrySet()) {
+			this.ressources.put(entry.getKey(), this.ressources.get(entry.getKey()) + entry.getValue());
+		}
+	}
+
 	public int getQuantitéRessource(String nomRessource) {
 		return ressources.get(nomRessource);
 	}
 
 	// Setters & Getters
-	public boolean isCommerce_ressources_primaires() {
-		return commerce_ressources_primaires;
+	public boolean iscommerceRessourcesPrimaires() {
+		return commerceRessourcesPrimaires;
 	}
 
-	public void setCommerce_ressources_primaires(boolean commerce_ressources_primaires) {
-		this.commerce_ressources_primaires = commerce_ressources_primaires;
+	public void setcommerceRessourcesPrimaires(boolean commerceRessourcesPrimaires) {
+		this.commerceRessourcesPrimaires = commerceRessourcesPrimaires;
 	}
 
-	public boolean isCommerce_ressources_secondaires() {
-		return commerce_ressources_secondaires;
+	public boolean iscommerceRessourcesSecondaires() {
+		return commerceRessourcesSecondaires;
 	}
 
-	public void setCommerce_ressources_secondaires(boolean commerce_ressources_secondaires) {
-		this.commerce_ressources_secondaires = commerce_ressources_secondaires;
+	public void setcommerceRessourcesSecondaires(boolean commerceRessourcesSecondaires) {
+		this.commerceRessourcesSecondaires = commerceRessourcesSecondaires;
 	}
 
 	public int getPièces() {
@@ -85,12 +93,12 @@ public class Joueur {
 		ressources.put("pièces",gain_pièces);
 	}
 
-	public int getPoints_victoire() {
-		return points_victoire;
+	public int getPointsVictoire() {
+		return pointsVictoire;
 	}
 
-	public void setPoints_victoire(int gain_points_victoire) {
-		this.points_victoire = gain_points_victoire;
+	public void setPointsVictoire(int gain_pointsVictoire) {
+		this.pointsVictoire = gain_pointsVictoire;
 	}
 
 	public int getBouclier() {
@@ -100,6 +108,18 @@ public class Joueur {
 	public void setBouclier(int gain_bouclier) {
 		this.boucliers = gain_bouclier;
 	}
+
+	public int getpointsMilitaires() {
+		return pointsMilitaires;
+	}
+
+	public void setpointsMilitaires(int pointsMilitaires) {
+		this.pointsMilitaires = pointsMilitaires;
+	}
+
+	public void addpointsMilitaires(int point){this.pointsMilitaires += point;}
+
+	public void delpointsMilitaires(){this.pointsMilitaires -= 1;}
 
 	public void setRessources(HashMap<String, Integer> gain_ressources) {
 		this.ressources = gain_ressources;

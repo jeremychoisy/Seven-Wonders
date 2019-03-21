@@ -4,21 +4,23 @@ import org.Model.assets.Carte;
 import org.Model.assets.Main;
 
 
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class MainTest{
 
-	
-	
-	Main main = new Main();
-	Carte c = new Carte();
-	
+	Main main;
+	Carte c;
+
+	@BeforeEach
 	@Test
-	public void testAdd() {
-		
+	public void addTest() {
+		main = new Main();
+		c = new Carte();
+
 		assertEquals(0,main.size());
 		main.add(c);
 		assertEquals(1,main.size());
@@ -34,18 +36,17 @@ public class MainTest{
 		assertEquals(6,main.size());
 		main.add(c);
 		assertEquals(7,main.size());
+
 		main.add(c);
 		assertEquals(7,main.size());
-		
 	}
+
 	@Test
 	public void testRemove() {
-		assertEquals(0,main.size());
-		main.add(c);
-		main.add(c);
-		assertEquals(2,main.size());
+		main.remove(6);
+		assertEquals(6,main.size());
 		main.remove(0);
-		assertEquals(1,main.size());
+		assertEquals(5,main.size());
 	}
 
 }

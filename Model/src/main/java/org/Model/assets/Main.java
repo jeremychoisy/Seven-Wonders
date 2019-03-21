@@ -35,6 +35,7 @@ public class Main {
 		for(int i = 0;i < main.size();i++) {
 			if(main.get(i).getNom().equals(nomCarte)) {
 				main.remove(i);
+				break;
 			}
 		}
 	}
