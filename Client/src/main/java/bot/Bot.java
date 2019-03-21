@@ -48,6 +48,8 @@ public class Bot {
 		}
 		j.setMerveille(m);
 	}
+
+	@SuppressWarnings("Duplicates")
 	public void defausserDerniereCarte(Socket s) {
 		JSONObject carteDéfausséeJSON = null;
 		try {
@@ -59,6 +61,8 @@ public class Bot {
 		j.getM().remove(0);
 		c.emit(s,"Carte Défaussée", carteDéfausséeJSON);
 	}
+
+	@SuppressWarnings("Duplicates")
 	public void jouerTour(Socket s) {
 		Carte carte = null;
 		JSONObject carteJouéeJSON=null;
@@ -95,7 +99,7 @@ public class Bot {
 			}
 			// Si isPlayable est true à ce moment là, les ressources du joueur ont été comparées à toutes les ressources
 			// nécessaires pour jouer la carte et le résultat est positif.
-			if(isPlayable == true) {
+			if(isPlayable) {
 				carte = j.getM().get(i);
 				if(carte.getCout().get("pièces") != null) {
 					j.setPièces(j.getPièces() - carte.getCout().get("pièces"));
@@ -110,26 +114,26 @@ public class Bot {
 		if( carte == null) {
 
 			Map<String, Integer> coutMerveille = j.getMerveille().getressourceEtapeCourante();
-			boolean isCreable = false;
+			boolean isCreable = true;
 
 			for (Map.Entry<String,Integer> entry : coutMerveille.entrySet()){
 				String key = entry.getKey();
 				Integer ressourceMerveille = entry.getValue();
 				Integer ressourceJoueur = ressources.get(key);
-				if (ressourceJoueur > ressourceMerveille){
-					isCreable = true;
+				if (ressourceJoueur < ressourceMerveille){
+					isCreable = false;
 				}
 			}
-
 
 			try {
 				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			j.getM().remove(0);
+
 			if(isCreable){
+				j.getMerveille().etapeSuivante(j);
 				c.emit(s,"Etape Merveille", carteDéfausséeJSON);
 			}
 			else {

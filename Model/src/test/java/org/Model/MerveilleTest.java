@@ -1,72 +1,60 @@
-
 package org.Model;
 
 import org.Model.assets.Joueur;
 import org.Model.assets.Merveille;
 
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MerveilleTest{
 
+	Joueur j;
 
-	Merveille merveille = new Merveille();
-	HashMap<String,Integer> e1 = new HashMap<String,Integer>();
-	HashMap<String,Integer> e2 = new HashMap<String,Integer>();
-	HashMap<String,Integer> e3 = new HashMap<String,Integer>();
-	
-	HashMap<String,String> effetEtapeUne = new HashMap<String,String>();
-	HashMap<String,String> effetEtapeDeux = new HashMap<String,String>();
-	HashMap<String,String> effetEtapeTrois = new HashMap<String,String>();
-	
-	
-	Merveille test = new Merveille("Gizah", "pierre",e1,e2,e3,effetEtapeUne,effetEtapeDeux,effetEtapeTrois);
-	Joueur j = new Joueur();
-	@Test
-	public void testGetNom() {
-		assertEquals("Gizah",test.getNom());
-	}
-	
-	@Test
-	public void testSetNom() {
-		merveille.setNom("Rhodos");
-		assertEquals("Rhodos",merveille.getNom());
-	}
+	Merveille merveille;
 
-	@Test
-	public void testGetRessource() {
-		assertEquals("pierre",test.getRessource());
-	}
+	@BeforeEach
+	public void setUp(){
 
-	@Test
-	public void testSetRessource() {
-		merveille.setRessource("minerai");
-		assertEquals("minerai",merveille.getRessource());
-	}
+		Map<String,Integer> ressourceEtapeUne = new HashMap<String,Integer>();
+		Map<String,Integer> ressourceEtapeDeux = new HashMap<String,Integer>();
+		Map<String,Integer> ressourceEtapeTrois = new HashMap<String,Integer>();
 
-	@Test
-	public void testGetEtapeCourante() {
-		assertEquals(0,test.getEtapeCourante());
-	}
+		Map<String,String> effetEtapeUne = new HashMap<String,String>();
+		Map<String,String> effetEtapeDeux = new HashMap<String,String>();
+		Map<String,String> effetEtapeTrois = new HashMap<String,String>();
 
-	@Test
-	public void testChangeEtape() {
-		
-		effetEtapeUne.put("nomEffet", "gain_points_victoire");
+		ressourceEtapeUne.put("pierre",2);
+		ressourceEtapeDeux.put("bois",3);
+		ressourceEtapeTrois.put("pierre",4);
+
+		effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeUne.put("valeurEffet", "3");
-		effetEtapeDeux.put("nomEffet", "gain_points_victoire");
+		effetEtapeDeux.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeDeux.put("valeurEffet", "5");
-		effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+		effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeTrois.put("valeurEffet", "7");
-		
-		assertEquals(0,test.getEtapeCourante());
-		test.etapeSuivante(j);
-		assertEquals(1,test.getEtapeCourante());
-		test.etapeSuivante(j);
-		assertEquals(2,test.getEtapeCourante());
+
+		merveille = new Merveille("Gizah", "pierre",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois,effetEtapeUne,effetEtapeDeux,effetEtapeTrois);
+		j = new Joueur();
+	}
+
+	@Test
+	public void ChangeEtapeTest() {
+		assertEquals(0,merveille.getEtapeCourante());
+		merveille.etapeSuivante(j);
+		assertEquals(3, j.getPointsVictoire(), "Le joueur devrait maintenant avoir gagné 3 points de victoire.");
+		assertEquals(1,merveille.getEtapeCourante(), "L'étape courante de la merveille devrait maintenant être 1.");
+		merveille.etapeSuivante(j);
+		assertEquals(8, j.getPointsVictoire(), "Le joueur devrait maintenant avoir gagné 8 points de victoire.");
+		assertEquals(2,merveille.getEtapeCourante(), "L'étape courante de la merveille devrait maintenant être 2.");
+		merveille.etapeSuivante(j);
+		assertEquals(15, j.getPointsVictoire(), "Le joueur devrait maintenant avoir gagné 15 points de victoire.");
+		assertEquals(3,merveille.getEtapeCourante(), "L'étape courante de la merveille devrait maintenant être 3.");
 	}
 	
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.socket.client.Socket;
 import org.Client.Client;
 import org.Model.assets.Carte;
+import org.Model.assets.Merveille;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ public class BotTest {
     Client c;
 
     @BeforeEach
+    @Test
     void constructeurEtCreationMain() {
 
         b = new Bot("bot_1", c);
@@ -46,13 +48,34 @@ public class BotTest {
 
         JSONArray j = new JSONArray();
 
+        Map<String,Integer> ressourceEtapeUne = new HashMap<String,Integer>();
+        Map<String,Integer> ressourceEtapeDeux = new HashMap<String,Integer>();
+        Map<String,Integer> ressourceEtapeTrois = new HashMap<String,Integer>();
+
+        Map<String,String> effetEtapeUne = new HashMap<String,String>();
+        Map<String,String> effetEtapeDeux = new HashMap<String,String>();
+        Map<String,String> effetEtapeTrois = new HashMap<String,String>();
+
+        ressourceEtapeUne.put("pierre",2);
+        ressourceEtapeDeux.put("bois",3);
+        ressourceEtapeTrois.put("pierre",4);
+
+        effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
+        effetEtapeUne.put("valeurEffet", "3");
+        effetEtapeDeux.put("nomEffet", "gain_pointsVictoire");
+        effetEtapeDeux.put("valeurEffet", "5");
+        effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
+        effetEtapeTrois.put("valeurEffet", "7");
+
+        Merveille m = new Merveille("Gizah","pierre",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
+
+
         Map<String,String> effet = new HashMap<String,String>();
         Map<String,Integer> ressources = new HashMap<String,Integer>();
-        effet = new HashMap<String,String>();
+
         effet.put("nomEffet", "gain_boucliers");
         effet.put("valeurEffet", "2");
 
-        ressources = new HashMap<String,Integer>();
         ressources.put("minerai",1);
         ressources.put("bois",1);
         ressources.put("argile",1);
@@ -78,12 +101,14 @@ public class BotTest {
         Carte c3 = new Carte("Atelier","Bâtiment Scientifique",effet,ressources,7,1);
 
         ObjectMapper o = new ObjectMapper();
+        JSONObject mJSON = null;
         JSONObject cJSON1 = null;
         JSONObject cJSON2 = null;
         JSONObject cJSON3 = null;
 
 
         try {
+            mJSON = new JSONObject(o.writeValueAsString(m));
             cJSON1 = new JSONObject(o.writeValueAsString(c1));
             cJSON2 = new JSONObject(o.writeValueAsString(c2));
             cJSON3 = new JSONObject(o.writeValueAsString(c3));
@@ -107,13 +132,18 @@ public class BotTest {
             e.printStackTrace();
         }
 
+        b.setMerveille(mJSON);
         b.setMain(j);
+
+        assertEquals(7,b.getJ().getM().size(),"Il y'a normalement maintenant 7 cartes dans la main du joueur.");
+        assertEquals("Gizah",b.getJ().getMerveille().getNom(),"Le joueur dispose normalement maintenant de la merveille de Gizah.");
+
+
     }
 
 
     @Test
-    void defausserDerniereCarteEtSetMainTest(){
-        assertEquals(7,b.getJ().getM().size(),"Il y'a normalement maintenant 7 cartes dans la main du joueur.");
+    void defausserDerniereCarteTest(){
 
 
         for(int i = 0; i < 7; i++){
@@ -147,15 +177,22 @@ public class BotTest {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 JSONObject j = invocation.getArgument(2);
-                assertEquals("Officine",j.getString("nom"),"Le nom de la carte défaussé devrait être 'Officine'.");
+                assertEquals(1, b.getJ().getMerveille().getEtapeCourante(), "L'étape courante de la merveille devrait maintenant être 1.");
+                assertEquals("Atelier",j.getString("nom"),"Le nom de la carte défaussé devrait être 'Atelier'.");
                 return null;
             }
-        }).when(c).emit(eq(socket),eq("Carte Défaussée"),any(JSONObject.class));
-
+        }).when(c).emit(eq(socket),eq("Etape Merveille"),any(JSONObject.class));
 
         b.jouerTour(socket);
 
+
         Map<String,Integer> ressources = new HashMap<String,Integer>();
+        ressources.put("pierre",2);
+
+        b.getJ().ajouterRessources(ressources);
+
+
+        b.jouerTour(socket);
 
 
         ressources = new HashMap<String,Integer>();

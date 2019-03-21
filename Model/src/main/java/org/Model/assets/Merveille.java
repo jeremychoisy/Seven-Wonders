@@ -26,7 +26,7 @@ public class Merveille {
 	public Merveille(String nom, String ressource,Map<String,Integer> ressourceEtapeUne,Map<String,Integer> ressourceEtapeDeux,Map<String,Integer> ressourceEtapeTrois, Map<String,String> effetEtapeUne, Map<String,String> effetEtapeDeux, Map<String,String> effetEtapeTrois) {
 		this.nom = nom;
 		this.ressource = ressource;
-		this.etapeCourante = 1;
+		this.etapeCourante = 0;
 		
 		this.ressourceEtapeUne = ressourceEtapeUne;
 		this.ressourceEtapeDeux = ressourceEtapeDeux;
@@ -60,11 +60,11 @@ public class Merveille {
 
 	public Map<String, Integer> getressourceEtapeCourante() {
 		switch(this.etapeCourante){
-			case 1:
+			case 0:
 				return ressourceEtapeUne;
-			case 2:
+			case 1:
 				return ressourceEtapeDeux;
-			case 3:
+			case 2:
 				return ressourceEtapeTrois;
 			default:
 				return null;
@@ -72,8 +72,9 @@ public class Merveille {
 	}
 
 
-	public void etapeSuivante(Joueur j) { 
+	public void etapeSuivante(Joueur j) {
 		if(this.etapeCourante < 3) {
+			this.etapeCourante++;
 			switch(this.etapeCourante) {
 				case 1:
 					GestionEffets.appliquerEffet(this.effetEtapeUne, j);
@@ -85,7 +86,6 @@ public class Merveille {
 					GestionEffets.appliquerEffet(this.effetEtapeTrois, j);
 					break;
 			}
-			this.etapeCourante++;
 		}
 		
 	}

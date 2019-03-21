@@ -117,7 +117,7 @@ public class PartieTest {
 		
 		ressources.put("pièces",1);
 					
-		effet.put("nomEffet", "gain_points_victoire");
+		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 		
 		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
@@ -125,7 +125,7 @@ public class PartieTest {
 		p.jouerCarte(socket, c);
 		
 		assertEquals(2,j.getPièces(),"Le joueur ne dispose normalement plus que de 2 pièces.");
-		assertEquals(3,j.getPoints_victoire(),"Le joueur a normalement gagné 3 points de victoires.");
+		assertEquals(3,j.getPointsVictoire(),"Le joueur a normalement gagné 3 points de victoires.");
 		assertEquals(1,p.getNbCartesJouées(),"Le nombre de cartes jouées est normalement de 1.");
 		assertEquals(0,j.getM().size(),"La main du joueur est normalement vide.");		
 	}
@@ -143,7 +143,7 @@ public class PartieTest {
 		
 		ressources.put("pièces",1);
 					
-		effet.put("nomEffet", "gain_points_victoire");
+		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 		
 		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
@@ -231,10 +231,10 @@ public class PartieTest {
 		Map<String,String> effetEtapeDeux = new HashMap<String,String>();
 		Map<String,String> effetEtapeTrois = new HashMap<String,String>();
 
-		effetEtapeUne.put("nomEffet", "gain_points_victoire");
+		effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeUne.put("valeurEffet", "3");
 		effetEtapeDeux.put("nomEffet", "batiment_gratuit");
-		effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+		effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeTrois.put("valeurEffet", "7");
 
 		Merveille m = new Merveille("Olympia","bois",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
@@ -244,7 +244,7 @@ public class PartieTest {
 
 		ressources.put("pièces",1);
 
-		effet.put("nomEffet", "gain_points_victoire");
+		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 
 		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
@@ -260,9 +260,9 @@ public class PartieTest {
 
 		p.débloquerMerveille(socket,j.getM().get(0));
 
-		assertEquals(2, j.getMerveille().getEtapeCourante(), "L'étape courante de la merveille devrait être 2.");
+		assertEquals(1, j.getMerveille().getEtapeCourante(), "L'étape courante de la merveille devrait être 1.");
 		assertEquals( 6, j.getM().size(),"La taille de la main du joueur devrait maintenant être de 6");
-		assertEquals( 3, j.getPoints_victoire(), "Le joueur devrait maintenant avoir 3 points de victoire.");
+		assertEquals( 3, j.getPointsVictoire(), "Le joueur devrait maintenant avoir 3 points de victoire.");
 	}
 
 	@Test
@@ -291,10 +291,10 @@ public class PartieTest {
 
 		p.conflitsMilitaires();
 
-		assertEquals(1, p.getListeJoueurs().get(0).getPoint_militaires(), "bot_1 devrait avoir 0 points militaires (1 victoire / 1 défaite");
-		assertEquals(1, p.getListeJoueurs().get(1).getPoint_militaires(), "bot_2 devrait avoir 0 points militaires (1 victoire / 1 défaite");
-		assertEquals(-1, p.getListeJoueurs().get(2).getPoint_militaires(), "bot_3 devrait avoir -1 points militaires (0 victoire / 1 défaite");
-		assertEquals(-1, p.getListeJoueurs().get(3).getPoint_militaires(), "bot_4 devrait avoir -1 points militaires (0 victoire / 1 défaite");
+		assertEquals(1, p.getListeJoueurs().get(0).getpointsMilitaires(), "bot_1 devrait avoir 0 points militaires (1 victoire / 1 défaite");
+		assertEquals(1, p.getListeJoueurs().get(1).getpointsMilitaires(), "bot_2 devrait avoir 0 points militaires (1 victoire / 1 défaite");
+		assertEquals(-1, p.getListeJoueurs().get(2).getpointsMilitaires(), "bot_3 devrait avoir -1 points militaires (0 victoire / 1 défaite");
+		assertEquals(-1, p.getListeJoueurs().get(3).getpointsMilitaires(), "bot_4 devrait avoir -1 points militaires (0 victoire / 1 défaite");
 
 	}
 
@@ -312,13 +312,13 @@ public class PartieTest {
 	void getIndexGagnantTest() {
 		p.ajouterJoueur("bot_1", socket);
 		p.getListeJoueurs().get(0).setPièces(2);
-		p.getListeJoueurs().get(0).setPoints_victoire(4);
+		p.getListeJoueurs().get(0).setPointsVictoire(4);
 		p.ajouterJoueur("bot_2", socket);
 		p.getListeJoueurs().get(1).setPièces(10);
-		p.getListeJoueurs().get(1).setPoints_victoire(2);
+		p.getListeJoueurs().get(1).setPointsVictoire(2);
 		p.ajouterJoueur("bot_3", socket);
 		p.getListeJoueurs().get(2).setPièces(8);
-		p.getListeJoueurs().get(2).setPoints_victoire(3);
+		p.getListeJoueurs().get(2).setPointsVictoire(3);
 
 		
 		assertEquals(1,p.getIndexGagnant(),"Le joueur gagnant correspond normalement à l'index 1.");

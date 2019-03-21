@@ -62,7 +62,7 @@ public class GestionPersistance {
 			Map<String,String> effet = new HashMap<String,String>();
 			Map<String,Integer> ressources = new HashMap<String,Integer>();
 						
-			effet.put("nomEffet", "gain_points_victoire");
+			effet.put("nomEffet", "gain_pointsVictoire");
 			effet.put("valeurEffet","3");
 			
 			// Age I
@@ -76,7 +76,7 @@ public class GestionPersistance {
 			c[3] = new Carte("Bains","Batiment Civil",effet,ressources, 7,1);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "gain_points_victoire");
+			effet.put("nomEffet", "gain_pointsVictoire");
 			effet.put("valeurEffet","2");
 			
 			ressources = new HashMap<String,Integer>();
@@ -120,21 +120,21 @@ public class GestionPersistance {
 			c[16] = new Carte("Taverne","Batiment Commercial",effet,ressources, 7,1);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "commerce_ressources_primaires");
+			effet.put("nomEffet", "commerceRessourcesPrimaires");
 			effet.put("orientationEffet", "droite");
 			
 			c[17] = new Carte("Comptoir Est","Batiment Commercial",effet,ressources, 7,1);
 			c[18] = new Carte("Comptoir Est","Batiment Commercial",effet,ressources, 3,1);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "commerce_ressources_primaires");
+			effet.put("nomEffet", "commerceRessourcesPrimaires");
 			effet.put("orientationEffet", "gauche");
 			
 			c[19] = new Carte("Comptoir Ouest","Batiment Commercial",effet,ressources, 7,1);
 			c[20] = new Carte("Comptoir Ouest","Batiment Commercial",effet,ressources, 3,1);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "commerce_ressources_secondaires");
+			effet.put("nomEffet", "commerceRessourcesSecondaires");
 			effet.put("orientationEffet", "droiteGauche");
 			
 			c[21] = new Carte("Marché","Batiment Commercial",effet,ressources, 3,1);
@@ -415,7 +415,7 @@ public class GestionPersistance {
 			c[79] = new Carte("Place d'armes","Conflit Militaire",effet,ressources, 7,2);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "gain_points_victoire");
+			effet.put("nomEffet", "gain_pointsVictoire");
 			effet.put("valeurEffet","3");
 			
             ressources = new HashMap<String,Integer>();
@@ -428,7 +428,7 @@ public class GestionPersistance {
 
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "gain_points_victoire");
+			effet.put("nomEffet", "gain_pointsVictoire");
 			effet.put("valeurEffet","4");
 			
             ressources = new HashMap<String,Integer>();
@@ -446,7 +446,7 @@ public class GestionPersistance {
 			c[85] = new Carte("Statue","Batiment Civil",effet,ressources, 7,2);
 			
 			effet = new HashMap<String,String>();
-			effet.put("nomEffet", "gain_points_victoire");
+			effet.put("nomEffet", "gain_pointsVictoire");
 			effet.put("valeurEffet","5");
 			
             ressources = new HashMap<String,Integer>();
@@ -526,10 +526,10 @@ public class GestionPersistance {
 			Map<String,String> effetEtapeDeux = new HashMap<String,String>();
 			Map<String,String> effetEtapeTrois = new HashMap<String,String>();
 			
-			effetEtapeUne.put("nomEffet", "gain_points_victoire");
+			effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeUne.put("valeurEffet", "3");
 			effetEtapeDeux.put("nomEffet", "batiment_gratuit");
-			effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+			effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeTrois.put("valeurEffet", "7");
 
 			
@@ -548,11 +548,11 @@ public class GestionPersistance {
 			ressourceEtapeDeux.put("bois",3);
 			ressourceEtapeTrois.put("pierre",4);
 			
-			effetEtapeUne.put("nomEffet", "gain_points_victoire");
+			effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeUne.put("valeurEffet", "3");
-			effetEtapeDeux.put("nomEffet", "gain_points_victoire");
+			effetEtapeDeux.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeDeux.put("valeurEffet", "5");
-			effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+			effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeTrois.put("valeurEffet", "7");
 			
 			m[1] = new Merveille("Gizah","pierre",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
@@ -569,11 +569,11 @@ public class GestionPersistance {
 			ressourceEtapeDeux.put("argile",3);
 			ressourceEtapeTrois.put("minerai",4);
 			
-			effetEtapeUne.put("nomEffet", "gain_points_victoire");
+			effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeUne.put("valeurEffet", "3");
 			effetEtapeDeux.put("nomEffet", "gain_boucliers");
 			effetEtapeDeux.put("valeurEffet", "2");
-			effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+			effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeTrois.put("valeurEffet", "7");
 			
 			m[2] = new Merveille("Rhodos","minerai",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
@@ -590,11 +590,11 @@ public class GestionPersistance {
 			ressourceEtapeDeux.put("bois",2);
 			ressourceEtapeTrois.put("papyrus",2);
 			
-			effetEtapeUne.put("nomEffet", "gain_points_victoire");
+			effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeUne.put("valeurEffet", "3");
 			effetEtapeDeux.put("nomEffet", "gain_pièces");
 			effetEtapeDeux.put("valeurEffet", "9");
-			effetEtapeTrois.put("nomEffet", "gain_points_victoire");
+			effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 			effetEtapeTrois.put("valeurEffet", "7");
 			
 			m[3] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
