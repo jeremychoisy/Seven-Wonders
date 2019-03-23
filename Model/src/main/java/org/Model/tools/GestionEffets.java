@@ -14,7 +14,7 @@ public abstract class GestionEffets
 			j.setcommerceRessourcesSecondaires(true);
 		}
 		if(effet.get("nomEffet").equals("gain_pièces")) {
-			j.setPièces(j.getPièces() + Integer.parseInt(effet.get("valeurEffet")));
+			j.addPièces(Integer.parseInt(effet.get("valeurEffet")));
 		}
 		if(effet.get("nomEffet").equals("gain_pointsVictoire")) {
 			j.setPointsVictoire(j.getPointsVictoire() + Integer.parseInt(effet.get("valeurEffet")));
@@ -26,12 +26,12 @@ public abstract class GestionEffets
 			// TODO
 		}
 		if(effet.get("nomEffet").equals("gain_ressources")) {
-			if(j.GetRessources().get(effet.get("ressourceEffet")) != null){
-				j.GetRessources().put(effet.get("ressourceEffet"),j.GetRessources().get(effet.get("ressourceEffet")) + Integer.parseInt(effet.get("valeurEffet")));
+			if(j.getRessources().get(effet.get("ressourceEffet")) != null){
+				j.getRessources().put(effet.get("ressourceEffet"),j.getRessources().get(effet.get("ressourceEffet")) + Integer.parseInt(effet.get("valeurEffet")));
 			}
 			else
 			{
-				j.GetRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
 			}
 		}
 		if(effet.get("nomEffet").equals("gain_ressources_multiples")) {

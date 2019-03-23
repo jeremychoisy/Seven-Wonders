@@ -1,11 +1,9 @@
 package org.Model.assets;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Joueur {
-	private SocketIOClient socket;
 	private String nom;
 	private Main m;
 	private boolean isRdy;
@@ -25,35 +23,33 @@ public class Joueur {
 	
 	public Joueur(String nom) {
 		this.nom = nom;
-		initJoueur();
-	}
-	public Joueur(String nom, SocketIOClient socket) {
-		this.nom = nom;
-		this.socket = socket;
-		initJoueur();
 
+        this.m = new Main();
+        this.isRdy = false;
+        this.setcommerceRessourcesPrimaires(false);
+        this.setcommerceRessourcesSecondaires(false);
+        this.pointsVictoire = 0;
+        this.boucliers = 0;
+        this.setpointsMilitaires(0);
+
+        ressources = new HashMap<String,Integer>();
+        ressources.put("pièces", 0);
+        ressources.put("bois", 0);
+        ressources.put("pierre", 0);
+        ressources.put("minerai", 0);
+        ressources.put("argile", 0);
+        ressources.put("tissu", 0);
+        ressources.put("verre", 0);
+        ressources.put("papier", 0);
 	}
-	
-	public void initJoueur() {
-		this.m = new Main();
-		this.isRdy = false;
-		this.setcommerceRessourcesPrimaires(false);
-		this.setcommerceRessourcesSecondaires(false);
-		this.pointsVictoire = 0;
-		this.boucliers = 0;
-		this.setpointsMilitaires(0);
-		
-		ressources = new HashMap<String,Integer>();
-		ressources.put("pièces", 0);
-		ressources.put("bois", 0);
-		ressources.put("pierre", 0);
-		ressources.put("minerai", 0);
-		ressources.put("argile", 0);
-		ressources.put("tissu", 0);
-		ressources.put("verre", 0);
-		ressources.put("papier", 0);
+
+	public boolean checkRessources(String nomRessource, int quantité){
+		if(ressources.get(nomRessource) >= quantité) {
+			return true;
+		}
+		return false;
 	}
-	
+
 	public void ajouterRessources(String nomRessource, int quantité) {
 		ressources.put(nomRessource, ressources.get(nomRessource) + quantité);
 	}
@@ -89,9 +85,17 @@ public class Joueur {
 		return ressources.get("pièces");
 	}
 
-	public void setPièces(int gain_pièces) {
-		ressources.put("pièces",gain_pièces);
+	public void addPièces(int gainPièces) {
+		ressources.put("pièces",ressources.get("pièces") + gainPièces);
 	}
+
+	public void substractPièces(int pertePièces){
+	    if(ressources.get("pièces") >= pertePièces) {
+            ressources.put("pièces", ressources.get("pièces") - pertePièces);
+        } else {
+	        ressources.put("pièces",0);
+        }
+    }
 
 	public int getPointsVictoire() {
 		return pointsVictoire;
@@ -125,19 +129,14 @@ public class Joueur {
 		this.ressources = gain_ressources;
 	}
 
-	public Map<String, Integer> GetRessources() {
+	public Map<String, Integer> getRessources() {
 		return ressources;
 	}
 
-	public SocketIOClient getSocket() {
-		return socket;
-	}
-	public void setSocket(SocketIOClient socket) {
-		this.socket = socket;
-	}
 	public String getNom() {
 		return nom;
 	}
+
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
@@ -166,8 +165,8 @@ public class Joueur {
 		this.merveille = merveille;
 		this.ressources.put(merveille.getRessource(),1);
 	}
-	
-	public String toString() {
-		return "Joueur " + this.nom + " : " + this.m.toString(); 
-	}
+
+	public String toString(){
+	    return "" + nom;
+    }
 }

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
 import org.Model.tools.CouleurSorties;
+import org.Model.tools.GestionPersistance;
 import org.Model.tools.MyPrintStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,7 +68,7 @@ public class Client{
 				public void call(Object... args) {
 					int valeur = (Integer) args[0];
 					
-					b.addPièces(valeur);
+					b.getJ().addPièces(valeur);
 					
 				}
 			});
@@ -88,8 +89,8 @@ public class Client{
 			connexion.on("Ton tour", new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
-					
-					b.jouerTour(connexion);
+					JSONObject j = (JSONObject) args[0];
+					b.jouerTour(GestionPersistance.JSONToMapRessource(j));
 				}
 			});
 			
@@ -98,16 +99,25 @@ public class Client{
 				@Override
 				public void call(Object... args) {
 					
-					b.defausserDerniereCarte(connexion);
+					b.defausserDerniereCarte();
 				}
 			});
+
+			connexion.on("Commerce status", new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+
+					b.defausserDerniereCarte();
+				}
+			});
+
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void emit(Socket s, String event, Object...args) {
-		s.emit(event, args);
+	public void emit(String event, Object...args) {
+		connexion.emit(event, args);
 	}
 	
 	public void demarrer() {

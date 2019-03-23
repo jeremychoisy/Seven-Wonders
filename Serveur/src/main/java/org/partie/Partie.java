@@ -5,12 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.Model.assets.Carte;
-import org.Model.assets.Joueur;
-import org.Model.assets.Main;
-import org.Model.assets.Merveille;
+import org.Model.assets.*;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.GestionEffets;
 import org.Serveur.Serveur;
@@ -70,9 +69,9 @@ public class Partie {
 		recupererDonnees();
 	}
 	
-	public void ajouterJoueur(String nom, SocketIOClient socket) {
-		Joueur j = new Joueur(nom,socket);
-		log("le joueur : " + socket.getRemoteAddress() + " s'est identifié en tant que : " + nom + ".");
+	public void ajouterJoueur(String nom) {
+		Joueur j = new Joueur(nom);
+		log("Un joueur s'est identifié en tant que : " + nom + ".");
 		listeJoueurs.add(j);
 		// Si le nombre de joueurs correspond au nombre de joueurs attendu
 		if(listeJoueurs.size() == NB_JOUEURS) {
@@ -103,19 +102,18 @@ public class Partie {
 			// Mise à jour du joueur côté serveur
 			listeJoueurs.get(i).setM(main);
 			listeJoueurs.get(i).setMerveille(merveille);
-			listeJoueurs.get(i).setPièces(3);
+			listeJoueurs.get(i).addPièces(3);
 			
 			// Envoi de la main au joueur 
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
+			s.sendEvent(i,"Main", main.getMain());
 			// Envoi de la merveille au joueur
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Merveille", merveille);
+			s.sendEvent(i,"Merveille", merveille);
 			// Envoi des 3 PO au joueur
-			s.sendEvent(listeJoueurs.get(i).getSocket(),"Pièces", 3);
+			s.sendEvent(i,"Pièces", 3);
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
-			this.hasGameStarted = true;
-			
 		}
+        this.hasGameStarted = true;
 	}
 	
 	public void construireListes() {
@@ -124,7 +122,6 @@ public class Partie {
 			if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
 				switch(c[i].getAge()) {
 					case 1:
-
 						cartesAgeI.add(c[i]);
 						break;
 					case 2:
@@ -156,8 +153,7 @@ public class Partie {
 	}
 	
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
-	public void setRdy(SocketIOClient socket) {
-		int index = getIndexFromSocket(socket);
+	public void setRdy(int index) {
 		listeJoueurs.get(index).setRdy(true);
 		log(listeJoueurs.get(index).getNom() + " est prêt !");
 		if(isEveryoneRdy() && isEveryoneReadyStated == false) {
@@ -177,23 +173,56 @@ public class Partie {
 	
 
 	// Fonction qui traite la carte joué par un joueur.
-	public void jouerCarte(SocketIOClient socket, Carte c) {
-		int index = getIndexFromSocket(socket);
+	public void jouerCarte(int index, Carte c) {
 		String name = listeJoueurs.get(index).getNom();
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
 		// MaJ du joueur côté serveur
 		if(c.getCout().get("pièces") != null) {
-			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() - c.getCout().get("pièces"));
+			listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
 		}
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.)");
 		nbCartesJouées += 1;
 		goNext();
 	}
+
+	public void jouerCarteCommerce(int index, Carte c){
+	    String name = listeJoueurs.get(index).getNom();
+        for (Map.Entry<String,Integer> entry : c.getCout().entrySet()){
+            String key = entry.getKey();
+            Integer ressourceCarte = entry.getValue();
+            Integer ressourceJoueur = listeJoueurs.get(index).getRessources().get(key);
+            // Si le bot n'a pas assez de ressources, on regarde les ressources voisines
+            // En partant de l'hypothèse que le bot ne triche pas.
+            if (ressourceCarte > ressourceJoueur){
+                // Si le voisin de gauche dispose de ce genre de ressource
+                if(listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) != 0){
+                    // Si le voisin de gauche a assez de ressource pour couvrir le besoin
+                    if( listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) >= ressourceCarte - ressourceJoueur){
+                        listeJoueurs.get(getIndexVoisinGauche(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
+                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        // Sinon, cela signifie que le voisin de droite est en mesure de combler le besoin restant.
+                    } else {
+                        listeJoueurs.get(getIndexVoisinGauche(index)).addPièces(listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2);
+                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur - listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key)) * 2);
+                        log("" + name + " achète [" + key + "] à son voisin de droite.");
+                    }
+                } else {
+                    // Sinon, cela signifie que le voisin de droite comble entièrement le besoin
+                    listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
+                    log("" + name + " achète [" + key + "] à son voisin de droite.");
+                }
+                // le bot doit payer le quantité totale de ressources achetées
+                listeJoueurs.get(index).substractPièces((ressourceCarte - ressourceJoueur) * 2);
+                log("" + name + " perd " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
+            }
+        }
+	    jouerCarte(index,c);
+    }
 	
 	// Fonction qui traite la carte défaussée par un joueur.
-	public void défausserCarte(SocketIOClient socket,Carte c) {
-		int index = getIndexFromSocket(socket);
+	public void défausserCarte(int index,Carte c) {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
@@ -203,16 +232,15 @@ public class Partie {
 		} 
 		else
 		{
-			s.sendEvent(listeJoueurs.get(index).getSocket(),"Pièces", 3);
-			listeJoueurs.get(index).setPièces(listeJoueurs.get(index).getPièces() + 3);
+			s.sendEvent( index,"Pièces", 3);
+			listeJoueurs.get(index).addPièces(3);
 			log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | "  + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.");
 		}
 		goNext();
 	}
 
-	// Fonction qui traite le cas
-	public void débloquerMerveille(SocketIOClient client, Carte carte){
-		int index = this.getIndexFromSocket(client);
+	// Fonction qui traite le cas d'un débloquage d'une étape d'une merveille
+	public void débloquerMerveille(int index, Carte carte){
 		this.listeJoueurs.get(index).getMerveille().etapeSuivante(this.listeJoueurs.get(index));
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
@@ -221,7 +249,6 @@ public class Partie {
 		log(name + " a défaussé " + carte.getNom() + " pour debloquer une étape de sa merveille  ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		goNext();
 	}
-
 
 	public void changerAge() {
 		if(ageCourant<2) {
@@ -245,7 +272,7 @@ public class Partie {
 			
 				
 				// Envoi de la main au joueur 
-				s.sendEvent(listeJoueurs.get(i).getSocket(),"Main", main.getMain());
+				s.sendEvent(i,"Main", main.getMain());
 			
 				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + ". " + main.toString());
 				
@@ -261,8 +288,27 @@ public class Partie {
 		nbCartesJouées = 0;
 		tourCourant += 1;
 		log("Début du tour " + tourCourant + " !");
-		s.broadcast("Ton tour");
+		for(int i =0; i < listeJoueurs.size();i++) {
+            s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i));
+        }
 	}
+
+	public Map<String,Integer> buildRessourcesVoisinsList(int index) {
+        Map<String, Integer> ressourcesVoisinList = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().entrySet()) {
+            ressourcesVoisinList.put(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<String, Integer> entry : listeJoueurs.get(getIndexVoisinDroite(index)).getRessources().entrySet()) {
+            if (ressourcesVoisinList.get(entry.getKey()) == null) {
+                ressourcesVoisinList.put(entry.getKey(), entry.getValue());
+            } else {
+                ressourcesVoisinList.put(entry.getKey(), ressourcesVoisinList.get(entry.getKey()) + entry.getValue());
+            }
+        }
+        ressourcesVoisinList.remove("pièces");
+        return ressourcesVoisinList;
+    }
 	
 	// Fonction qui permet de passer au tour suivant.
 	public void demarrerDernierTour() {
@@ -277,29 +323,29 @@ public class Partie {
 		for(int i=0;i<listeJoueurs.size();i++) {
 			log("Points de boucliers de "+listeJoueurs.get(i).getNom()+": "+listeJoueurs.get(i).getBouclier());
 			//conflit voisin de droite
-			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() < listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).addpointsMilitaires(pointsMilitairesSelonAge());
-				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " point(s) militaire(s) contre " + listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getNom() + ".");
+				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " point(s) militaire(s) contre " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() + ".");
 			}
-			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
-				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " + listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getNom() +".");
+				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() +".");
 			}
-			if (listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
-				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que " + listeJoueurs.get(getIndexVoisinDroite(i,listeJoueurs)).getNom() + " , il ne perd donc pas de points militaires après la bataille.");
+			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() + " , il ne perd donc pas de points militaires après la bataille.");
 			}
 
 			//conflit voisin de gauche
-			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() < listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() < listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).addpointsMilitaires(pointsMilitairesSelonAge());
-				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " point(s) militaire(s) contre " +  listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getNom() + ".");
+				log(listeJoueurs.get(i).getNom()+" a gagné " + pointsMilitairesSelonAge() + " point(s) militaire(s) contre " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ".");
 			}
-			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() > listeJoueurs.get(i).getBouclier()){
+			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
-				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " +  listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getNom() + ".");
+				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ".");
 			}
-			if (listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getBouclier() == listeJoueurs.get(i).getBouclier()){
-				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que " +  listeJoueurs.get(getIndexVoisinGauche(i,listeJoueurs)).getNom() + ", il ne perd donc pas de points militaires après la bataille.");
+			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
+				log(listeJoueurs.get(i).getNom()+" a autant de points de bouclier que " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ", il ne perd donc pas de points militaires après la bataille.");
 			}
 		}
 	}
@@ -322,7 +368,7 @@ public class Partie {
 	}
 
 	//Fonction qui retourne l'index du voisin de droite
-	public int getIndexVoisinDroite(int currentIndex, ArrayList<Joueur> listeJoueurs){
+	public int getIndexVoisinDroite(int currentIndex){
 		if (currentIndex == (listeJoueurs.size()-1) ){
 			return 0;
 		}
@@ -331,7 +377,7 @@ public class Partie {
 		}
 	}
 	//Fonction qui retourne l'index du voisin de gauche
-	public int getIndexVoisinGauche(int currentIndex, ArrayList<Joueur> listeJoueurs){
+	public int getIndexVoisinGauche(int currentIndex){
 		if (currentIndex == (0) ){
 			return (listeJoueurs.size()-1);
 		}
@@ -397,16 +443,7 @@ public class Partie {
 		return indexMax;
 
 	}
-	
-	// Fonction qui récupère le nom du joueur à partir de son socket
-	public int getIndexFromSocket(SocketIOClient socket) {
-		for(int i =0;i<listeJoueurs.size();i++) {
-			if(listeJoueurs.get(i).getSocket().equals(socket)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+
 	
 	// Fonction responsable de la récupération des données depuis les fichiers JSON
 	public void recupererDonnees() {

@@ -1,7 +1,10 @@
 package org.Serveur;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
 import org.Model.assets.Carte;
+import org.Model.assets.ClientID;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
 
@@ -19,12 +22,19 @@ import org.partie.Partie;
 public class Serveur {
 	// variables client/serveur
 	private SocketIOServer serveur;
+
+	private ArrayList<ClientID> clients;
+	private int id;
 	
 	private Partie p;
 	
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
+
+		clients = new ArrayList<ClientID>();
+		id = 0;
+
 		p = new Partie(this, true);
 
 		log("Attente de connexion des joueur...");
@@ -40,8 +50,11 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+				// On ajoute le client à la liste des clients
+				clients.add(new ClientID(id,client));
+				id++;
 				// On ajoute le joueur à la partie
-				p.ajouterJoueur(data, client);
+				p.ajouterJoueur(data);
 			}
 			
 		});
@@ -51,7 +64,7 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				if(data.equals("Prêt")) {
-					p.setRdy(client);
+					p.setRdy(getIndexFromSocket(client));
 				}
 			}
 			
@@ -61,7 +74,7 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {	
-				p.jouerCarte(client, data);
+				p.jouerCarte(getIndexFromSocket(client), data);
 				
 			}
 			
@@ -72,32 +85,56 @@ public class Serveur {
 
 			@Override
 			public void onData(SocketIOClient client, Carte data, AckRequest ackSender) throws Exception {
-				p.défausserCarte(client,data);		
+				p.défausserCarte(getIndexFromSocket(client),data);
 			}
 			
 		});
 
+		// Ajout de l'écouteur traitant de l'évènement du débloquage d'une étape d'une merveille
 		serveur.addEventListener("Etape Merveille", Carte.class, new DataListener<Carte>(){
 
 			@Override
 			public void onData(SocketIOClient client, Carte carte, AckRequest ackSender) throws Exception {
-				p.débloquerMerveille(client, carte);
+				p.débloquerMerveille(getIndexFromSocket(client), carte);
+			}
+
+		});
+		// Ajout de l'écouteur traitant de l'évènement d'une carte jouée en commerçant avec des bots voisins.
+		serveur.addEventListener("Carte Jouée avec commerce", Carte.class	, new DataListener<Carte>(){
+
+			@Override
+			public void onData(SocketIOClient client, Carte carte, AckRequest ackSender) throws Exception {
+				p.jouerCarteCommerce(getIndexFromSocket(client), carte);
 			}
 
 		});
 		
 	}
 
+	// Fonction qui récupère l'indice du joueur à partir de son socket
+	public int getIndexFromSocket(SocketIOClient socket) {
+		for(int i =0;i<clients.size();i++) {
+			if(clients.get(i).getSocket().equals(socket)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-	
+
 	public void broadcast(String message) {
-		for(int i = 0; i < p.getListeJoueurs().size();i++) {
-			p.getListeJoueurs().get(i).getSocket().sendEvent(message);
+		for(int i = 0; i < clients.size();i++) {
+			clients.get(i).getSocket().sendEvent(message);
 		}
 	}
-	
-	public void sendEvent(SocketIOClient s, String event, Object...data) {
-		s.sendEvent(event, data);
+
+	public void broadcast(String message, Object data){
+		for(int i = 0; i < clients.size();i++) {
+			clients.get(i).getSocket().sendEvent(message, data);
+		}
+	}
+	public void sendEvent(int index, String event, Object...data) {
+		clients.get(index).getSocket().sendEvent(event, data);
 	}
 	
 	public void stop() {

@@ -147,7 +147,7 @@ public class BotTest {
 
 
         for(int i = 0; i < 7; i++){
-            b.defausserDerniereCarte(socket);
+            b.defausserDerniereCarte();
             assertEquals(6 - i,b.getJ().getM().size(),"Il y'a normalement maintenant" + (6 - i) +  "cartes dans la main du joueur.");
 
         }
@@ -158,41 +158,44 @@ public class BotTest {
         doAnswer(new Answer(){
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                JSONObject j = invocation.getArgument(2);
+                JSONObject j = invocation.getArgument(1);
                 assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée devrait être 'Ecuries'.");
                 return null;
             }
-        }).when(c).emit(eq(socket),eq("Carte Jouée"),any(JSONObject.class));
+        }).when(c).emit(eq("Carte Jouée"),any(JSONObject.class));
 
        doAnswer(new Answer(){
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                JSONObject j = invocation.getArgument(2);
+                JSONObject j = invocation.getArgument(1);
                 assertEquals("Officine",j.getString("nom"),"Le nom de la carte défaussé devrait être 'Officine'.");
                 return null;
             }
-        }).when(c).emit(eq(socket),eq("Carte Défaussée"),any(JSONObject.class));
+        }).when(c).emit(eq("Carte Défaussée"),any(JSONObject.class));
 
         doAnswer(new Answer(){
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                JSONObject j = invocation.getArgument(2);
+                JSONObject j = invocation.getArgument(1);
                 assertEquals(1, b.getJ().getMerveille().getEtapeCourante(), "L'étape courante de la merveille devrait maintenant être 1.");
                 assertEquals("Atelier",j.getString("nom"),"Le nom de la carte défaussé devrait être 'Atelier'.");
                 return null;
             }
-        }).when(c).emit(eq(socket),eq("Etape Merveille"),any(JSONObject.class));
-
-        b.jouerTour(socket);
-
+        }).when(c).emit(eq("Etape Merveille"),any(JSONObject.class));
 
         Map<String,Integer> ressources = new HashMap<String,Integer>();
+        ressources.put("bois",2);
+
+        b.jouerTour(ressources);
+
+
+        ressources = new HashMap<String,Integer>();
         ressources.put("pierre",2);
 
         b.getJ().ajouterRessources(ressources);
 
 
-        b.jouerTour(socket);
+        b.jouerTour(ressources);
 
 
         ressources = new HashMap<String,Integer>();
@@ -202,6 +205,6 @@ public class BotTest {
 
         b.getJ().ajouterRessources(ressources);
 
-        b.jouerTour(socket);
+        b.jouerTour(ressources);
     }
 }

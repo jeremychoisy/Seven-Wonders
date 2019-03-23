@@ -41,18 +41,18 @@ public class PartieTest {
 	
 	@Test
 	void ajouterJoueurTest() {
-		Joueur j = new Joueur("bot_1",socket);
+		Joueur j = new Joueur("bot_1");
 
-		p.ajouterJoueur("bot_1", socket);
+		p.ajouterJoueur("bot_1");
 		
 		assertEquals( j.toString() , p.getListeJoueurs().get(0).toString(), "Le joueur a été correctement ajouté à la partie");
 
-		p.ajouterJoueur("bot_2",socket);
+		p.ajouterJoueur("bot_2");
 
 		assertEquals( 2, p.getListeJoueurs().size(), "Les deux joueurs ont été correctement ajouté à la partie");
 
-		p.ajouterJoueur("bot_3",socket);
-		p.ajouterJoueur("bot_4",socket);
+		p.ajouterJoueur("bot_3");
+		p.ajouterJoueur("bot_4");
 
 		assertEquals(true, p.HasGameStarted(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
 	}
@@ -68,17 +68,16 @@ public class PartieTest {
 	
 	@Test
 	void initPartieTest() {
-		
-		p.ajouterJoueur("Bot_1", socket);
-		p.ajouterJoueur("Bot_2", socket);
-		p.ajouterJoueur("Bot_3", socket);
-		p.ajouterJoueur("Bot_4", socket);
-		
-		p.initPartie();
+		p.ajouterJoueur("Bot_1");
+		p.ajouterJoueur("Bot_2");
+		p.ajouterJoueur("Bot_3");
+		p.ajouterJoueur("Bot_4");
+
+		// 4 Joueurs ont rejoint la partie, initPartie() est appelée automatiquement.
 		
 		for(Joueur j:p.getListeJoueurs()) {
 			assertEquals(7,j.getM().size(),"Il y a normalement 7 cartes dans la main de chaque joueur");
-			assertEquals(3,j.GetRessources().get("pièces"),"Chaque joueur dispose normalement de 3 pièces");
+			assertEquals(3,j.getRessources().get("pièces"),"Chaque joueur dispose normalement de 3 pièces");
 		}
 	}
 	
@@ -93,8 +92,8 @@ public class PartieTest {
 	
 	@Test
 	void setRdyTest() {
-		p.ajouterJoueur("Bot_1", socket);
-		p.setRdy(socket);
+		p.ajouterJoueur("Bot_1");
+		p.setRdy(0);
 		
 		assertEquals(true,p.getListeJoueurs().get(0).isRdy(),"Le joueur est normalement prêt.");
 	}
@@ -108,9 +107,9 @@ public class PartieTest {
 	
 	@Test
 	void jouerCarteTest() {
-		p.ajouterJoueur("Bot_1", socket);
+		p.ajouterJoueur("Bot_1");
 		Joueur j = p.getListeJoueurs().get(0);
-		j.setPièces(3);
+		j.addPièces(3);
 		
 		Map<String,String> effet = new HashMap<String,String>();
 		Map<String,Integer> ressources = new HashMap<String,Integer>();
@@ -122,7 +121,7 @@ public class PartieTest {
 		
 		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
 		j.getM().add(c);
-		p.jouerCarte(socket, c);
+		p.jouerCarte(0, c);
 		
 		assertEquals(2,j.getPièces(),"Le joueur ne dispose normalement plus que de 2 pièces.");
 		assertEquals(3,j.getPointsVictoire(),"Le joueur a normalement gagné 3 points de victoires.");
@@ -132,11 +131,11 @@ public class PartieTest {
 	
 	@Test
 	void défausserCarteTest() {
-		p.ajouterJoueur("Bot_1", socket);
+		p.ajouterJoueur("Bot_1");
 		
 		// Cas général
 		Joueur j = p.getListeJoueurs().get(0);
-		j.setPièces(3);
+		j.addPièces(3);
 		
 		Map<String,String> effet = new HashMap<String,String>();
 		Map<String,Integer> ressources = new HashMap<String,Integer>();
@@ -148,7 +147,7 @@ public class PartieTest {
 		
 		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
 		j.getM().add(c);
-		p.défausserCarte(socket, c);
+		p.défausserCarte(0, c);
 
 		assertEquals(6,j.getPièces(),"Le joueur dispose normalement de 6 pièces.");
 		assertEquals(1,p.getDéfausse().size(),"Il y'a normalement maintenant une carte dans la défausse.");
@@ -158,11 +157,10 @@ public class PartieTest {
 		// Cas de la fin d'un âge
 		
 		j.getM().add(c);
-		j.setPièces(3);
 		p.setTourCourant(7);
-		p.défausserCarte(socket, c);
+		p.défausserCarte(0, c);
 		
-		assertEquals(3,j.getPièces(),"Le joueur dispose normalement de 3 pièces.");
+		assertEquals(6,j.getPièces(),"Le joueur dispose normalement de 6 pièces.");
 		assertEquals(2,p.getDéfausse().size(),"Il y'a normalement maintenant deux carte dans la défausse.");
 		assertEquals(2,p.getNbCartesJouées(),"Le nombre de cartes jouées est normalement maintenant de 2.");
 		assertEquals(0,j.getM().size(),"La main du joueur est normalement vide.");		
@@ -170,7 +168,7 @@ public class PartieTest {
 	
 	@Test
 	void changerAgeTest() {
-		p.ajouterJoueur("bot_1", socket);
+		p.ajouterJoueur("bot_1");
 		p.construireListes();
 		p.changerAge();
 		
@@ -192,8 +190,8 @@ public class PartieTest {
 	
 	@Test
 	void everyoneIsRdyTest() {
-		p.ajouterJoueur("bot_1", socket);
-		p.ajouterJoueur("bot_2", socket);
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
 		
 		p.getListeJoueurs().get(0).setRdy(true);
 		
@@ -217,7 +215,7 @@ public class PartieTest {
 
 	@Test
 	void débloquerMerveilleTest(){
-		p.ajouterJoueur("bot_1", socket);
+		p.ajouterJoueur("bot_1");
 		Joueur j = p.getListeJoueurs().get(0);
 
 		Map<String,Integer> ressourceEtapeUne = new HashMap<String,Integer>();
@@ -258,7 +256,7 @@ public class PartieTest {
 
 		j.ajouterRessources("bois",2);
 
-		p.débloquerMerveille(socket,j.getM().get(0));
+		p.débloquerMerveille(0,j.getM().get(0));
 
 		assertEquals(1, j.getMerveille().getEtapeCourante(), "L'étape courante de la merveille devrait être 1.");
 		assertEquals( 6, j.getM().size(),"La taille de la main du joueur devrait maintenant être de 6");
@@ -267,24 +265,24 @@ public class PartieTest {
 
 	@Test
 	void getIndexVoisinTest(){
-		p.ajouterJoueur("bot_1", socket);
-		p.ajouterJoueur("bot_2", socket);
-		p.ajouterJoueur("bot_3", socket);
-		p.ajouterJoueur("bot_4", socket);
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		p.ajouterJoueur("bot_3");
+		p.ajouterJoueur("bot_4");
 
-		assertEquals(3, p.getIndexVoisinGauche(0, p.getListeJoueurs()), "Le voisin de gauche du premier joueur devrait être bot_4 (indice 3)");
-		assertEquals(1, p.getIndexVoisinDroite(0, p.getListeJoueurs()), "Le voisin de droite du premier joueur devrait être bot_2 (indice 1)");
+		assertEquals(3, p.getIndexVoisinGauche(0), "Le voisin de gauche du premier joueur devrait être bot_4 (indice 3)");
+		assertEquals(1, p.getIndexVoisinDroite(0), "Le voisin de droite du premier joueur devrait être bot_2 (indice 1)");
 
-		assertEquals(2, p.getIndexVoisinGauche(3, p.getListeJoueurs()), "Le voisin de gauche du dernier joueur devrait être bot_3 (indice 2)");
-		assertEquals(0, p.getIndexVoisinDroite(3, p.getListeJoueurs()), "Le voisin de droite du dernier joueur devrait être bot_1 (indice 0)");
+		assertEquals(2, p.getIndexVoisinGauche(3), "Le voisin de gauche du dernier joueur devrait être bot_3 (indice 2)");
+		assertEquals(0, p.getIndexVoisinDroite(3), "Le voisin de droite du dernier joueur devrait être bot_1 (indice 0)");
 	}
 
 	@Test
 	void conflitsMilitairesTest(){
-		p.ajouterJoueur("bot_1", socket);
-		p.ajouterJoueur("bot_2", socket);
-		p.ajouterJoueur("bot_3", socket);
-		p.ajouterJoueur("bot_4", socket);
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		p.ajouterJoueur("bot_3");
+		p.ajouterJoueur("bot_4");
 
 		p.getListeJoueurs().get(0).setBouclier(1);
 		p.getListeJoueurs().get(1).setBouclier(1);
@@ -310,14 +308,14 @@ public class PartieTest {
 	
 	@Test
 	void getIndexGagnantTest() {
-		p.ajouterJoueur("bot_1", socket);
-		p.getListeJoueurs().get(0).setPièces(2);
+		p.ajouterJoueur("bot_1");
+		p.getListeJoueurs().get(0).addPièces(2);
 		p.getListeJoueurs().get(0).setPointsVictoire(4);
-		p.ajouterJoueur("bot_2", socket);
-		p.getListeJoueurs().get(1).setPièces(10);
+		p.ajouterJoueur("bot_2");
+		p.getListeJoueurs().get(1).addPièces(10);
 		p.getListeJoueurs().get(1).setPointsVictoire(2);
-		p.ajouterJoueur("bot_3", socket);
-		p.getListeJoueurs().get(2).setPièces(8);
+		p.ajouterJoueur("bot_3");
+		p.getListeJoueurs().get(2).addPièces(8);
 		p.getListeJoueurs().get(2).setPointsVictoire(3);
 
 		
