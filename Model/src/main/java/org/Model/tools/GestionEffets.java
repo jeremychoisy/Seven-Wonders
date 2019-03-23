@@ -40,5 +40,14 @@ public abstract class GestionEffets
 		if(effet.get("nomEffet").equals("gain_pièces_par_cartes")) {
 			// TODO
 		}
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_cartes")) {
+			// TODO
+		}
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_merveille")) {
+			// TODO
+		}
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_merveille")) {
+			// TODO
+		}
 	}
 }
