@@ -21,7 +21,7 @@ public class Bot {
 	}
 
 	public void setMain(JSONArray Json) {
-		for(int i=0;i<7;i++) {
+		for(int i=0;i<Json.length();i++) {
 			Carte c = null;
 			try {
 				c = new Carte(Json.getJSONObject(i).getString("nom"),Json.getJSONObject(i).getString("type"),GestionPersistance.JSONToMapEffet((JSONObject)Json.getJSONObject(i).get("effet")),GestionPersistance.JSONToMapRessource((JSONObject)Json.getJSONObject(i).get("cout")),Json.getJSONObject(i).getInt("configurationNumber"),Json.getJSONObject(i).getInt("age"));
