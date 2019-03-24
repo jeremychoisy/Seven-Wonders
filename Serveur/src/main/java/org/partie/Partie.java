@@ -155,7 +155,7 @@ public class Partie {
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
 	public void setRdy(int index) {
 		listeJoueurs.get(index).setRdy(true);
-		log(listeJoueurs.get(index).getNom() + " est prêt !");
+		log(listeJoueurs.get(index).getNom() + " a reçu sa main !");
 		if(isEveryoneRdy() && isEveryoneReadyStated == false) {
 			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
@@ -285,11 +285,31 @@ public class Partie {
 	
 	// Fonction qui permet de passer au tour suivant.
 	public void demarrerTourSuivant() {
+		Main buffer = new Main();
 		nbCartesJouées = 0;
 		tourCourant += 1;
+	
 		log("Début du tour " + tourCourant + " !");
+		
+		
 		for(int i =0; i < listeJoueurs.size();i++) {
-            s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i));
+			if(tourCourant>1) {
+				if(i==0) {
+					buffer=listeJoueurs.get(i).getM();
+					listeJoueurs.get(i).setM(listeJoueurs.get(i+1).getM());
+				}
+				else if (i==listeJoueurs.size()-1){
+					listeJoueurs.get(i).setM(buffer);
+				}
+				else {
+					listeJoueurs.get(i).setM(listeJoueurs.get(i+1).getM());
+				}
+			}
+			
+			s.sendEvent(i, "Main", listeJoueurs.get(i).getM().getMain());
+			
+			//log(listeJoueurs.get(i).getNom() + " : " + listeJoueurs.get(i).getM().toString());
+		    s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i));
         }
 	}
 
