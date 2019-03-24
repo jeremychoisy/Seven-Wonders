@@ -61,6 +61,18 @@ public class Client{
 				
 			});
 			
+			connexion.on("Change main", new Emitter.Listener() {
+
+				@Override
+				public void call(Object... args) {
+					JSONArray cJson = (JSONArray) args[0];
+					
+					b.changeMain(cJson);
+					
+					connexion.emit("ReçuCheck", "Reçu");
+				}
+				
+			});
 			// traitement de l'événement "voici tes pièces" venant du serveur
 			connexion.on("Pièces", new Emitter.Listener() {
 				
