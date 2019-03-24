@@ -61,18 +61,18 @@ public class Client{
 				
 			});
 			
-			connexion.on("Change main", new Emitter.Listener() {
+		/*	connexion.on("Change main", new Emitter.Listener() {
 
 				@Override
 				public void call(Object... args) {
 					JSONArray cJson = (JSONArray) args[0];
 					
-					b.changeMain(cJson);
+					b.setMain(cJson);
 					
-					connexion.emit("ReçuCheck", "Reçu");
+				
 				}
 				
-			});
+			});*/
 			// traitement de l'événement "voici tes pièces" venant du serveur
 			connexion.on("Pièces", new Emitter.Listener() {
 				
@@ -101,8 +101,11 @@ public class Client{
 			connexion.on("Ton tour", new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
+					JSONArray jArray = (JSONArray) args[1];
+					b.setMain(jArray);
 					JSONObject j = (JSONObject) args[0];
 					b.jouerTour(GestionPersistance.JSONToMapRessource(j));
+					
 				}
 			});
 			

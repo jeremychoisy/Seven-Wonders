@@ -10,7 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
-
+import org.Model.assets.*;
 public class Bot {
 	private Client c;
 	private Joueur j;
@@ -21,20 +21,7 @@ public class Bot {
 	}
 
 	public void setMain(JSONArray Json) {
-		for(int i=0;i<7;i++) {
-			Carte c = null;
-			try {
-				c = new Carte(Json.getJSONObject(i).getString("nom"),Json.getJSONObject(i).getString("type"),GestionPersistance.JSONToMapEffet((JSONObject)Json.getJSONObject(i).get("effet")),GestionPersistance.JSONToMapRessource((JSONObject)Json.getJSONObject(i).get("cout")),Json.getJSONObject(i).getInt("configurationNumber"),Json.getJSONObject(i).getInt("age"));
-			}
-			catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			j.getM().add(c);
-		}
-	}
-	
-	public void changeMain(JSONArray Json) {
+		j.setM(new Main()); 
 		for(int i=0;i<Json.length();i++) {
 			Carte c = null;
 			try {
@@ -47,6 +34,9 @@ public class Bot {
 			j.getM().add(c);
 		}
 	}
+	
+	
+
 	public void setMerveille(JSONObject Json) {
 		Merveille m = null;
 		try {

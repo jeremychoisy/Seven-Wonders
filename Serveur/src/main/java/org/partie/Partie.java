@@ -162,15 +162,7 @@ public class Partie {
 			demarrerTourSuivant();
 		}
 	}
-	public void setRdyTour(int index) {
-		listeJoueurs.get(index).setRdy(true);
-		log(listeJoueurs.get(index).getNom() + "a reçu sa nouvelle main !");
-		if(isEveryoneRdy()) {
-			log(listeJoueurs.get(index).getNom()+ " " + listeJoueurs.get(index).getM().toString());
-			
-		}
-		
-	}
+	
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
 	public boolean ageEstFini() {
 			if(tourCourant == 7) {
@@ -314,10 +306,10 @@ public class Partie {
 				}
 			}
 			
-			s.sendEvent(i, "Change main", listeJoueurs.get(i).getM().getMain());
+			//s.sendEvent(i, "Change main", listeJoueurs.get(i).getM().getMain());
 			
-			//log(listeJoueurs.get(i).getNom() + " : " + listeJoueurs.get(i).getM().toString());
-		    s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i));
+			log(listeJoueurs.get(i).getNom() + " : " + listeJoueurs.get(i).getM().toString());
+		    s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i),listeJoueurs.get(i).getM().getMain());
         }
 	}
 
