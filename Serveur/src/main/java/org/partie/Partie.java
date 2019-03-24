@@ -155,14 +155,22 @@ public class Partie {
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
 	public void setRdy(int index) {
 		listeJoueurs.get(index).setRdy(true);
-		log(listeJoueurs.get(index).getNom() + " a reçu sa main !");
+		log(listeJoueurs.get(index).getNom() + " est prêt !");
 		if(isEveryoneRdy() && isEveryoneReadyStated == false) {
 			isEveryoneReadyStated = true;
 			log("Tous les joueurs sont prêts.");
 			demarrerTourSuivant();
 		}
 	}
-
+	public void setRdyTour(int index) {
+		listeJoueurs.get(index).setRdy(true);
+		log(listeJoueurs.get(index).getNom() + "a reçu sa nouvelle main !");
+		if(isEveryoneRdy()) {
+			log(listeJoueurs.get(index).getNom()+ " " + listeJoueurs.get(index).getM().toString());
+			
+		}
+		
+	}
 	// Fonction qui retourne l'état de l'Age (en cours ou finie).
 	public boolean ageEstFini() {
 			if(tourCourant == 7) {
@@ -306,7 +314,7 @@ public class Partie {
 				}
 			}
 			
-			s.sendEvent(i, "Main", listeJoueurs.get(i).getM().getMain());
+			s.sendEvent(i, "Change main", listeJoueurs.get(i).getM().getMain());
 			
 			//log(listeJoueurs.get(i).getNom() + " : " + listeJoueurs.get(i).getM().toString());
 		    s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i));

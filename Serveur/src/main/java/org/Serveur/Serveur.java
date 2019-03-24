@@ -69,6 +69,18 @@ public class Serveur {
 			}
 			
 		});
+		
+		serveur.addEventListener("ReçuCheck", String.class, new DataListener<String>(){
+
+			@Override
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+				if(data.equals("Reçu")) {
+					p.setRdyTour(getIndexFromSocket(client));
+				}
+				
+			}
+			
+		});
 		// Ajout de l'écouteur traitant l'événement d'une carte jouée de la part d'un joueur.
 		serveur.addEventListener("Carte Jouée", Carte.class, new DataListener<Carte>(){
 
