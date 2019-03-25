@@ -36,7 +36,7 @@ public class PartieTest {
 	void constructeurEtrecuperationDonnéesTest() {
 		p = new Partie(s, false);
 		
-		assertEquals(98, p.getC().length, "Il y a normalement 98 cartes dans le tableau");
+		assertEquals(148, p.getC().length, "Il y a normalement 148 cartes dans le tableau");
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class PartieTest {
 	
 	@Test
 	void estFinieTest() {
-		p.setAgeCourant(2);
+		p.setAgeCourant(3);
 		p.setTourCourant(7);
 		
 		assertEquals(true, p.estFinie(), "La partie est normalement terminée.");

@@ -26,7 +26,7 @@ public class Partie {
 	private Serveur s;
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
-	private final int NB_CARTES = 98;
+	private final int NB_CARTES = 148;
 	private final int NB_MERVEILLES = 4;
 	
 	// variables nécessaires au chargements des ressources
@@ -118,8 +118,12 @@ public class Partie {
 	
 	public void construireListes() {
 		// Construction d'une liste avec toutes les cartes
+		ArrayList listeCarteGuilde  = new ArrayList<Carte>();
 		for(int i=0;i<NB_CARTES;i++) {
-			if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
+			if(c[i].getConfigurationNumber() == 0) {
+				listeCarteGuilde.add(c[i]);
+			}
+			else if(c[i].getConfigurationNumber() <= NB_JOUEURS) {
 				switch(c[i].getAge()) {
 					case 1:
 						cartesAgeI.add(c[i]);
@@ -133,7 +137,12 @@ public class Partie {
 				}
 			}
 		}
-		
+		for (int i = 0;i<NB_JOUEURS+2;i++){
+			Collections.shuffle(listeCarteGuilde);
+			cartesAgeIII.add((Carte) listeCarteGuilde.get(0));
+			listeCarteGuilde.remove(0);
+		}
+
 		//Construction d'une liste avec toutes les merveilles
 		Merveilles = new ArrayList<Merveille>();
 		for(int i=0;i<NB_MERVEILLES;i++) {
@@ -147,9 +156,9 @@ public class Partie {
 		Collections.shuffle(Merveilles);
 	}
 	
-	// Fonction qui définit si la partie est terminée (pour l'âge 2 actuellement)
+	// Fonction qui définit si la partie est terminée
 	public boolean estFinie() {
-		return (getAgeCourant()==2 && getTourCourant()==7);
+		return (getAgeCourant()==3 && getTourCourant()==7);
 	}
 	
 	// Fonction qui traite le readycheck d'un joueur, démarre le tour si tout le monde est prêt
@@ -170,7 +179,6 @@ public class Partie {
 			}
 		return false;
 	}
-	
 
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(int index, Carte c) {
@@ -251,9 +259,7 @@ public class Partie {
 	}
 
 	public void changerAge() {
-		if(ageCourant<2) {
-			log("---- Conflits militaires ----");
-			conflitsMilitaires();
+		if(ageCourant<3) {
 			ageCourant ++;
 			tourCourant = 0;
 			log("Début de l'âge " + ageCourant + " !");
@@ -261,10 +267,17 @@ public class Partie {
 			Main main;
 			for(int i=0;i<listeJoueurs.size();i++) {
 				main = new Main();
+				ArrayList<Carte> listeCartes;
+				if (ageCourant == 2){
+					listeCartes = cartesAgeII;
+				}
+				else{
+					listeCartes = cartesAgeIII;
+				}
 				// Construction de la main
 				for(int j=0;j<7;j++) {
-					main.add(cartesAgeII.get(0));
-					cartesAgeII.remove(0);
+					main.add(listeCartes.get(0));
+					listeCartes.remove(0);
 				}
 			
 				// Mise à jour du joueur côté serveur
@@ -274,7 +287,7 @@ public class Partie {
 				// Envoi de la main au joueur 
 				s.sendEvent(i,"Main", main.getMain());
 			
-				log("Une nouvelle main (age 2) est distribuée à " + listeJoueurs.get(i).getNom() + ". " + main.toString());
+				log("Une nouvelle main (age " + ageCourant + ") est distribuée à " + listeJoueurs.get(i).getNom() + ". " + main.toString());
 				
 			}
 			demarrerTourSuivant();
@@ -426,7 +439,9 @@ public class Partie {
 	}
 	
 	public void goNext() {
+		log("goNext");
 		if(tourEstFini()) {
+			log("tourEstFini");
 				if(estFinie()) {
 					int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
@@ -436,6 +451,8 @@ public class Partie {
 				}
 				else if(ageEstFini())
 				{
+					log("---- Conflits militaires ----");
+					conflitsMilitaires();
 					changerAge();
 
 				}
@@ -444,6 +461,7 @@ public class Partie {
 				}
 				else
 				{
+					log("tourSuivant");
 					demarrerTourSuivant();
 				}
 		}
