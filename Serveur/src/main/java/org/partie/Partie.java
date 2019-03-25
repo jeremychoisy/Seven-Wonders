@@ -190,7 +190,7 @@ public class Partie {
 		}
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.)");
-		nbCartesJouées += 1;
+		setNbCartesJouées(getNbCartesJouées() + 1);
 		goNext();
 	}
 
@@ -234,7 +234,7 @@ public class Partie {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
-		nbCartesJouées += 1;
+		setNbCartesJouées(getNbCartesJouées() + 1);
 		if(ageEstFini()) {
 				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		} 
@@ -439,9 +439,7 @@ public class Partie {
 	}
 	
 	public void goNext() {
-		log("goNext");
 		if(tourEstFini()) {
-			log("tourEstFini");
 				if(estFinie()) {
 					int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
@@ -461,7 +459,6 @@ public class Partie {
 				}
 				else
 				{
-					log("tourSuivant");
 					demarrerTourSuivant();
 				}
 		}
@@ -599,11 +596,11 @@ public class Partie {
 		this.m = m;
 	}
 
-	public int getNbCartesJouées() {
+	public synchronized int getNbCartesJouées() {
 		return nbCartesJouées;
 	}
 
-	public void setNbCartesJouées(int nbCartesJouées) {
+	public synchronized void  setNbCartesJouées(int nbCartesJouées) {
 		this.nbCartesJouées = nbCartesJouées;
 	}
 
