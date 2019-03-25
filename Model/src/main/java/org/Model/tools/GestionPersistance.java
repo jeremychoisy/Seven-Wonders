@@ -686,18 +686,78 @@ public class GestionPersistance {
 			c[136] = new Carte("Sénat","Batiment Civil",effet,ressources, 3,3);
 			c[137] = new Carte("Sénat","Batiment Civil",effet,ressources, 5,3);
 
+			ressources = new HashMap<String, Integer>();
+			ressources.put("minerai", 2);
+			ressources.put("argile", 1);
+			ressources.put("pierre", 1);
+			ressources.put("bois", 1);
 
-			/*
-            c[] = new Carte("Guide des Travailleurs","Guilde",0);
-            c[] = new Carte("Guilde des Artisans","Guilde",0);
-            c[] = new Carte("Guilde des Commerçants","Guilde",0);
-            c[] = new Carte("Guilde des Philosophes","Guilde",0);
-            c[] = new Carte("Guilde des Espions","Guilde",0);
-            c[] = new Carte("Guilde des Stratèges","Guilde",0);
-            c[] = new Carte("Guilde des Armateurs","Guilde",0);
-            c[] = new Carte("Guilde des Scientifiques","Guilde",0);
-            c[] = new Carte("Guilde des Magistrats","Guilde",0);
-            c[] = new Carte("Guilde des Bâtisseurs","Guilde",0);*/
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire");
+			effet.put("valeurEffet", "5");
+
+            c[138] = new Carte("Guide des Travailleurs","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("minerai", 2);
+			ressources.put("pierre", 2);
+
+            c[139] = new Carte("Guilde des Artisans","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("papier", 1);
+			ressources.put("tissu", 1);
+			ressources.put("verre", 1);
+
+            c[140] = new Carte("Guilde des Commerçants","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("argile", 3);
+			ressources.put("tissu", 1);
+			ressources.put("papier", 1);
+
+            c[141] = new Carte("Guilde des Philosophes","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("argile", 3);
+			ressources.put("verre", 1);
+
+            c[142] = new Carte("Guilde des Espions","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("minerai", 2);
+			ressources.put("pierre", 1);
+			ressources.put("tissu", 1);
+
+            c[143] = new Carte("Guilde des Stratèges","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("bois", 3);
+			ressources.put("papier", 1);
+			ressources.put("verre", 1);
+
+            c[144] = new Carte("Guilde des Armateurs","Guilde",null,ressources,0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("bois", 3);
+			ressources.put("papier", 1);
+			ressources.put("verre", 1);
+
+            c[145] = new Carte("Guilde des Scientifiques","Guilde",null,ressources, 0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("bois", 3);
+			ressources.put("pierre", 1);
+			ressources.put("tissu", 1);
+
+            c[146] = new Carte("Guilde des Magistrats","Guilde",null,ressources, 0, 3);
+
+			ressources = new HashMap<String, Integer>();
+			ressources.put("pierre", 2);
+			ressources.put("argile", 2);
+			ressources.put("verre", 1);
+
+            c[147] = new Carte("Guilde des Bâtisseurs","Guilde",null,ressources, 0, 3);
 
 			mapper.writeValue(new File("./../Assets/cartes.json"),c);
 
