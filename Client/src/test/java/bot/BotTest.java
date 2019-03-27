@@ -183,28 +183,48 @@ public class BotTest {
             }
         }).when(c).emit(eq("Etape Merveille"),any(JSONObject.class));
 
+        doAnswer(new Answer(){
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                JSONObject j = invocation.getArgument(1);
+                assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée devrait être 'Ecuries'.");
+                return null;
+            }
+        }).when(c).emit(eq("Carte Jouée avec commerce"),any(JSONObject.class));
+
+        // Cas de la carte défaussée
         Map<String,Integer> ressources = new HashMap<String,Integer>();
+        Map<String,Integer> ressourcesVoisins = new HashMap<String,Integer>();
+
         ressources.put("bois",2);
 
-        b.jouerTour(ressources);
+        b.jouerTour(ressourcesVoisins);
 
-
+        // Cas d'une étape de merveille débloquée
         ressources = new HashMap<String,Integer>();
         ressources.put("pierre",2);
 
         b.getJ().ajouterRessources(ressources);
 
 
-        b.jouerTour(ressources);
+        b.jouerTour(ressourcesVoisins);
 
-
+        // Cas du commerce
         ressources = new HashMap<String,Integer>();
         ressources.put("minerai",1);
         ressources.put("bois",1);
+
+        ressourcesVoisins.put("argile",1);
+        b.getJ().addPièces(2);
+        b.getJ().ajouterRessources(ressources);
+
+        b.jouerTour(ressourcesVoisins);
+        // Cas de la carte jouée
+        ressources = new HashMap<String,Integer>();
         ressources.put("argile",1);
 
         b.getJ().ajouterRessources(ressources);
 
-        b.jouerTour(ressources);
+        b.jouerTour(ressourcesVoisins);
     }
 }
