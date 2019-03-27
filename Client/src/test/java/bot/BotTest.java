@@ -213,7 +213,6 @@ public class BotTest {
         ressources = new HashMap<String,Integer>();
         ressources.put("minerai",1);
         ressources.put("bois",1);
-
         ressourcesVoisins.put("argile",1);
         b.getJ().addPièces(2);
         b.getJ().ajouterRessources(ressources);
