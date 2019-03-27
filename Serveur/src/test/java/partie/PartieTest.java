@@ -18,7 +18,7 @@ import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
 import org.Serveur.Serveur;
 
-
+import org.Model.assets.Main;
 @ExtendWith(MockitoExtension.class)
 
 public class PartieTest {
@@ -181,9 +181,29 @@ public class PartieTest {
 	void demarrerTourSuivantTest() {
 		p.setNbCartesJouées(4);
 		p.setTourCourant(2);
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		Main mainBot1 = new Main();
+		Main mainBot2 = new Main();
+		Carte un = new Carte();
+		Carte deux = new Carte();
+		Carte trois = new Carte();
+		Carte quatre = new Carte();
+		mainBot1.add(un);
+		mainBot1.add(deux);
+		mainBot2.add(trois);
+		mainBot2.add(quatre);
+		
+		p.getListeJoueurs().get(0).setM(mainBot1);
+		p.getListeJoueurs().get(1).setM(mainBot2);
+		
+		assertEquals(mainBot2,p.getListeJoueurs().get(1).getM());
+		assertEquals(mainBot1,p.getListeJoueurs().get(0).getM());
 		
 		p.demarrerTourSuivant();
 		
+		assertEquals(mainBot2,p.getListeJoueurs().get(0).getM());
+		assertEquals(mainBot1,p.getListeJoueurs().get(1).getM());
 		assertEquals(0,p.getNbCartesJouées(),"Le nombre de cartes jouées est normalement de 0.");
 		assertEquals(3,p.getTourCourant(),"Le tour courant est normalement de 3.");
 	}
