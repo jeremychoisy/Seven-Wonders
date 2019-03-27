@@ -318,11 +318,8 @@ public class Partie {
 					listeJoueurs.get(i).setM(listeJoueurs.get(i+1).getM());
 				}
 			}
-			
-			//s.sendEvent(i, "Change main", listeJoueurs.get(i).getM().getMain());
-			
-			log(listeJoueurs.get(i).getNom() + " : " + listeJoueurs.get(i).getM().toString());
-		    s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i),listeJoueurs.get(i).getM().getMain());
+
+			s.sendEvent(i,"Ton tour", buildRessourcesVoisinsList(i),listeJoueurs.get(i).getM().getMain());
         }
 	}
 
