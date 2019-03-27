@@ -24,13 +24,10 @@ import org.Serveur.Serveur;
 public class PartieTest {
 	
 	Partie p;
-	
-	@Mock
-	SocketIOClient socket;
-	
+
 	@Mock
 	Serveur s;
-			
+
 	@BeforeEach
 	@Test
 	void constructeurEtrecuperationDonnéesTest() {
@@ -63,6 +60,7 @@ public class PartieTest {
 		
 		assertEquals(28,p.getCartesAgeI().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge I");
 		assertEquals(28,p.getCartesAgeII().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge II");
+		assertEquals(28,p.getCartesAgeIII().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge II");
 		assertEquals(4,p.getMerveilles().size(),"Il y a normalement 4 plateaux merveille dans le tas de plateaux de merveilles.");
 	}
 	
@@ -126,7 +124,7 @@ public class PartieTest {
 		assertEquals(2,j.getPièces(),"Le joueur ne dispose normalement plus que de 2 pièces.");
 		assertEquals(3,j.getPointsVictoire(),"Le joueur a normalement gagné 3 points de victoires.");
 		assertEquals(1,p.getNbCartesJouées(),"Le nombre de cartes jouées est normalement de 1.");
-		assertEquals(0,j.getM().size(),"La main du joueur est normalement vide.");		
+		assertEquals(0,j.getM().size(),"La main du joueur est normalement vide.");
 	}
 	
 	@Test
@@ -170,11 +168,19 @@ public class PartieTest {
 	void changerAgeTest() {
 		p.ajouterJoueur("bot_1");
 		p.construireListes();
+
+		// Passage vers l'âge II
 		p.changerAge();
 		
 		assertEquals(2,p.getAgeCourant(),"L'âge courant est normalement maintenant de 2.");
-		assertEquals(1,p.getTourCourant(),"Il y'a normalement maintenant une carte dans la défausse.");
-		assertEquals(7,p.getListeJoueurs().get(0).getM().size(),"Le nombre de cartes dans la main du joueur est normalement de 7.");		
+		assertEquals(1,p.getTourCourant(),"Le tour courant est normalement le premier.");
+		assertEquals(7,p.getListeJoueurs().get(0).getM().size(),"Le nombre de cartes dans la main du joueur est normalement de 7.");
+
+		// Passage vers l'âge III
+		p.changerAge();
+		assertEquals(3,p.getAgeCourant(),"L'âge courant est normalement maintenant de 2.");
+		assertEquals(1,p.getTourCourant(),"Le tour courant est normalement le premier.");
+		assertEquals(7,p.getListeJoueurs().get(0).getM().size(),"Le nombre de cartes dans la main du joueur est normalement de 7.");
 	}
 	
 	@Test
@@ -252,7 +258,6 @@ public class PartieTest {
 		for(int i = 0; i < 7; i++) {
 			j.getM().add(c);
 		}
-		System.out.println(j.getM().size());
 
 		j.ajouterRessources("bois",2);
 
