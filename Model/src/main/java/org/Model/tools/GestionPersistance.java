@@ -694,12 +694,20 @@ public class GestionPersistance {
 
 			effet = new HashMap<String,String>();
 			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Matières Premières");
+			effet.put("valeurEffet", "1");
 
             c[138] = new Carte("Guide des Travailleurs","Guilde",effet,ressources,0, 3);
 
 			ressources = new HashMap<String, Integer>();
 			ressources.put("minerai", 2);
 			ressources.put("pierre", 2);
+			effet.put("valeurEffet", "1");
+
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Produit Manufacturé");
+			effet.put("valeurEffet", "1");
 
             c[139] = new Carte("Guilde des Artisans","Guilde",effet,ressources,0, 3);
 
@@ -708,6 +716,11 @@ public class GestionPersistance {
 			ressources.put("tissu", 1);
 			ressources.put("verre", 1);
 
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Batiment Commercial");
+			effet.put("valeurEffet", "1");
+
             c[140] = new Carte("Guilde des Commerçants","Guilde",effet,ressources,0, 3);
 
 			ressources = new HashMap<String, Integer>();
@@ -715,11 +728,21 @@ public class GestionPersistance {
 			ressources.put("tissu", 1);
 			ressources.put("papier", 1);
 
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Batiment Scientifique");
+			effet.put("valeurEffet", "1");
+
             c[141] = new Carte("Guilde des Philosophes","Guilde",effet,ressources,0, 3);
 
 			ressources = new HashMap<String, Integer>();
 			ressources.put("argile", 3);
 			ressources.put("verre", 1);
+
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Conflit Militaire");
+			effet.put("valeurEffet", "1");
 
             c[142] = new Carte("Guilde des Espions","Guilde",effet,ressources,0, 3);
 
@@ -728,12 +751,20 @@ public class GestionPersistance {
 			ressources.put("pierre", 1);
 			ressources.put("tissu", 1);
 
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_jetons_défaites");
+			effet.put("Type", "Jeton Défaite");
+
             c[143] = new Carte("Guilde des Stratèges","Guilde",effet,ressources,0, 3);
 
 			ressources = new HashMap<String, Integer>();
 			ressources.put("bois", 3);
 			ressources.put("papier", 1);
 			ressources.put("verre", 1);
+
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes_multiples");
+			effet.put("Type", "Multiples");
 
             c[144] = new Carte("Guilde des Armateurs","Guilde",effet,ressources,0, 3);
 
@@ -742,6 +773,10 @@ public class GestionPersistance {
 			ressources.put("papier", 1);
 			ressources.put("verre", 1);
 
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "choix_symbole_scientifique");
+			effet.put("Type", "Symbole_Scientifique");
+
             c[145] = new Carte("Guilde des Scientifiques","Guilde",effet,ressources, 0, 3);
 
 			ressources = new HashMap<String, Integer>();
@@ -749,12 +784,21 @@ public class GestionPersistance {
 			ressources.put("pierre", 1);
 			ressources.put("tissu", 1);
 
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+			effet.put("Type", "Batiment Civil");
+			effet.put("valeurEffet", "1");
+
             c[146] = new Carte("Guilde des Magistrats","Guilde",effet,ressources, 0, 3);
 
 			ressources = new HashMap<String, Integer>();
 			ressources.put("pierre", 2);
 			ressources.put("argile", 2);
 			ressources.put("verre", 1);
+
+			effet = new HashMap<String,String>();
+			effet.put("nomEffet", "gain_pointsVictoire_par_étapes_merveilles");
+			effet.put("Type", "Etapes Merveilles");
 
             c[147] = new Carte("Guilde des Bâtisseurs","Guilde",effet,ressources, 0, 3);
 
