@@ -2,6 +2,7 @@ package org.Model.tools;
 
 import java.util.Map;
 
+import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
 
 public abstract class GestionEffets
@@ -37,23 +38,35 @@ public abstract class GestionEffets
 		if(effet.get("nomEffet").equals("gain_ressources_multiples")) {
 			// TODO
 		}
-		if(effet.get("nomEffet").equals("gain_pièces_par_cartes")) {
-			// TODO
+	}
+
+	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j) {
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")){
+			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Conflit Militaire") || effet.get("Type").equals("Batiment Scientifique") || effet.get("Type").equals("Batiment Commercial") || effet.get("Type").equals("Produit Manufacturé")){
+				for(Carte carte : j.getCartesPosees()){
+					if(carte.getType().equals("Matières Premières")){
+						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+					}
+				}
+			}
+
 		}
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_cartes")) {
+
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
 			// TODO
+
 		}
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étape_de_merveille")) {
+
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes_multiples")){
 			// TODO
+
 		}
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étape_de_merveille")) {
+
+		if(effet.get("nomEffet").equals("choix_symbole_scientifique")){
 			// TODO
+
 		}
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")) {
-			// TODO
-		}
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_de_merveille_voisins")) {
-			// TODO
-		}
+
+
 	}
 }
