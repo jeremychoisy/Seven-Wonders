@@ -1,5 +1,6 @@
 package org.Model.assets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class Joueur {
 	private int pointsMilitaires;
 	
 	private Map<String,Integer> ressources;
+	private ArrayList<Carte> cartesPosees;
 
 	
 	public Joueur() {}
@@ -25,6 +27,7 @@ public class Joueur {
 		this.nom = nom;
 
         this.m = new Main();
+        this.cartesPosees = new ArrayList<Carte>();
         this.isRdy = false;
         this.setcommerceRessourcesPrimaires(false);
         this.setcommerceRessourcesSecondaires(false);
@@ -41,6 +44,18 @@ public class Joueur {
         ressources.put("tissu", 0);
         ressources.put("verre", 0);
         ressources.put("papier", 0);
+	}
+
+	public ArrayList<Carte> getCartesPosees() {
+		return cartesPosees;
+	}
+
+	public void setCartesPosees(ArrayList<Carte> cartesPosees) {
+		this.cartesPosees = cartesPosees;
+	}
+
+	public void ajouterCartePosee(Carte c){
+		this.cartesPosees.add(c);
 	}
 
 	public boolean checkRessources(String nomRessource, int quantité){

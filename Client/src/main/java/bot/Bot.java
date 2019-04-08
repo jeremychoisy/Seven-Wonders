@@ -193,6 +193,7 @@ public class Bot {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			j.ajouterCartePosee(carte);
 			if(isTradeUsed){
                 c.emit("Carte Jouée avec commerce", carteJouéeJSON);
             } else {

@@ -188,7 +188,9 @@ public class Partie {
 		if(c.getCout().get("pièces") != null) {
 			listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
 		}
+		//supprime la carte jouée de la main du joueur
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
+		listeJoueurs.get(index).ajouterCartePosee(c);
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.)");
 		setNbCartesJouées(getNbCartesJouées() + 1);
 		goNext();
