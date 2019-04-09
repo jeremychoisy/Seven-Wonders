@@ -43,22 +43,38 @@ public abstract class GestionEffets
 	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j) {
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")){
 			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Conflit Militaire") || effet.get("Type").equals("Batiment Scientifique") || effet.get("Type").equals("Batiment Commercial") || effet.get("Type").equals("Produit Manufacturé")){
-				for(Carte carte : j.getCartesPosees()){
+				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+				/*for(Carte carte : j.getCartesPosees()){
 					if(carte.getType().equals("Matières Premières")){
 						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
 					}
-				}
+					if(carte.getType().equals("Conflit Militaire")){
+						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+					}
+					if(carte.getType().equals("Batiment Scientifique")){
+						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+					}
+					if(carte.getType().equals("Batiment Commercial")){
+						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+					}
+					if(carte.getType().equals("Produit Manufacturé")){
+						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+					}
+				}*/
+			}
+		}
+
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
+			if(effet.get("Type").equals("Etapes Merveilles")){
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 			}
 
 		}
 
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
-			// TODO
-
-		}
-
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes_multiples")){
-			// TODO
+			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Multiples") || effet.get("Type").equals("Produit Manufacturé")){
+				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+			}
 
 		}
 
