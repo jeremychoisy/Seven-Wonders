@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class Joueur {
 	private String nom;
 	private Main m;
@@ -180,6 +181,8 @@ public class Joueur {
 		this.merveille = merveille;
 		this.ressources.put(merveille.getRessource(),1);
 	}
+
+
 
 	public String toString(){
 	    return "" + nom;
