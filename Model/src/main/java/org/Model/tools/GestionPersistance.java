@@ -707,7 +707,7 @@ public class GestionPersistance {
 			effet = new HashMap<String,String>();
 			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
 			effet.put("Type", "Produit Manufacturé");
-			effet.put("valeurEffet", "1");
+			effet.put("valeurEffet", "2");
 
             c[139] = new Carte("Guilde des Artisans","Guilde",effet,ressources,0, 3);
 
