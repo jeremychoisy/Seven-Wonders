@@ -210,22 +210,21 @@ public class Partie {
                     // Si le voisin de gauche a assez de ressource pour couvrir le besoin
                     if( listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) >= ressourceCarte - ressourceJoueur){
                         listeJoueurs.get(getIndexVoisinGauche(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        log("" + name + " achète " + (ressourceCarte - ressourceJoueur) + " [" + key + "] à son voisin de gauche pour " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
                         // Sinon, cela signifie que le voisin de droite est en mesure de combler le besoin restant.
                     } else {
                         listeJoueurs.get(getIndexVoisinGauche(index)).addPièces(listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        log("" + name + " achète " + listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) + " [" + key + "] à son voisin de gauche pour " + (listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2) + " pièces.");
                         listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur - listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key)) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de droite.");
+                        log("" + name + " achète " + (ressourceCarte - ressourceJoueur - listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key)) + " [" + key + "] à son voisin de droite pour " + (listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2) + " pièces.");
                     }
                 } else {
                     // Sinon, cela signifie que le voisin de droite comble entièrement le besoin
                     listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
-                    log("" + name + " achète [" + key + "] à son voisin de droite.");
+                    log("" + name + " achète " + (ressourceCarte - ressourceJoueur) + " [" + key + "] à son voisin de droite pour " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
                 }
                 // le bot doit payer le quantité totale de ressources achetées
                 listeJoueurs.get(index).substractPièces((ressourceCarte - ressourceJoueur) * 2);
-                log("" + name + " perd " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
             }
         }
 	    jouerCarte(index,c);
