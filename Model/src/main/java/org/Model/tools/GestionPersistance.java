@@ -798,6 +798,7 @@ public class GestionPersistance {
 
 			effet = new HashMap<String,String>();
 			effet.put("nomEffet", "gain_pointsVictoire_par_étapes_merveilles");
+			effet.put("valeurEffet", "1");
 
 
             c[147] = new Carte("Guilde des Bâtisseurs","Guilde",effet,ressources, 0, 3);

@@ -42,7 +42,7 @@ public abstract class GestionEffets
 		}
 	}
 
-	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j, ArrayList<Carte> cartesPoseesGauche, ArrayList<Carte> cartesPoseesDroit) {
+	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j, ArrayList<Carte> cartesPoseesGauche, ArrayList<Carte> cartesPoseesDroit, Joueur joueurGauche, Joueur joueurDroit) {
 		if (effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")) {
 			if (effet.get("Type").equals("Matières Premières")) {
 				int compteurGauche = 0;
@@ -181,9 +181,21 @@ public abstract class GestionEffets
 
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
+			for (int i = 0; i < j.getMerveille().getEtapeCourante(); i++){
 
-			j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 
+			}
+			for (int i = 0; i < joueurGauche.getMerveille().getEtapeCourante(); i++){
+
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+
+			}
+			for (int i = 0; i < joueurDroit.getMerveille().getEtapeCourante(); i++){
+
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+
+			}
 		}
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes_multiples")){
