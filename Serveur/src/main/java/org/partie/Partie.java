@@ -467,6 +467,12 @@ public class Partie {
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public int getIndexGagnant() {
 		int indexMax = 0;
+		// là on applique les effets des cartes guildes posées
+		for(int i=1;i < listeJoueurs.size();i++) {
+			for (int k = 1; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
+				GestionEffets.appliquerEffetGuilde(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i),listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees());
+			}
+		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();
 		for(int i=1;i < listeJoueurs.size();i++) {
 			if(listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + listeJoueurs.get(0).getpointsMilitaires()> max) {
