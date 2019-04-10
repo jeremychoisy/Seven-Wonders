@@ -65,9 +65,9 @@ public abstract class GestionEffets
 		}
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
-			if(effet.get("Type").equals("Etapes Merveilles")){
+
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
-			}
+
 
 		}
 
