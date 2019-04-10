@@ -43,7 +43,7 @@ public class Partie {
 	private int ageCourant;
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated;
-    private boolean hasGameStarted ;
+    private boolean isGameOn ;
 
 	public Partie() {}
 	
@@ -61,7 +61,7 @@ public class Partie {
 		tourCourant = 0;
 		ageCourant = 1;
         isEveryoneReadyStated = false;
-        hasGameStarted = false;
+        isGameOn = false;
 		if(!isData()){
 			generateData();
 		}
@@ -80,7 +80,7 @@ public class Partie {
 			initPartie();
 		}
 	}
-	
+
 	//Fonction responsable de de la distribution des ressources aux joueurs
 	public void initPartie() {
 		Main main;
@@ -113,7 +113,7 @@ public class Partie {
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
 		}
-        this.hasGameStarted = true;
+        this.isGameOn = true;
 	}
 	
 	public void construireListes() {
@@ -192,7 +192,7 @@ public class Partie {
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		listeJoueurs.get(index).ajouterCartePosee(c);
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.)");
-		setNbCartesJouées(getNbCartesJouées() + 1);
+		synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		goNext();
 	}
 
@@ -236,7 +236,7 @@ public class Partie {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
-		setNbCartesJouées(getNbCartesJouées() + 1);
+        synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		if(ageEstFini()) {
 				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		} 
@@ -255,7 +255,7 @@ public class Partie {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
 		défausse.add(carte);
-		nbCartesJouées += 1;
+        synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		log(name + " a défaussé " + carte.getNom() + " pour debloquer une étape de sa merveille  ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		goNext();
 	}
@@ -440,18 +440,18 @@ public class Partie {
 	public void goNext() {
 		if(tourEstFini()) {
 				if(estFinie()) {
-					int index = getIndexGagnant();
+                    int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
 					int score = JoueurGagnant.getPointsVictoire() + JoueurGagnant.getPièces() + JoueurGagnant.getpointsMilitaires();
-					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");;
+					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");
+					this.isGameOn = false;
 					s.stop();
 				}
 				else if(ageEstFini())
 				{
-					log("---- Conflits militaires ----");
+                    log("---- Conflits militaires ----");
 					conflitsMilitaires();
 					changerAge();
-
 				}
 				else if(getTourCourant() == 6){
 					demarrerDernierTour();
@@ -513,8 +513,8 @@ public class Partie {
 
 	// Getters & Setters
 
-    public boolean HasGameStarted() {
-        return hasGameStarted;
+    public boolean isGameOn() {
+        return isGameOn;
     }
 	
 	public Carte[] getC() {

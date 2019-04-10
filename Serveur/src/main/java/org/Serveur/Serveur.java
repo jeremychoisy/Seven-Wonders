@@ -31,10 +31,8 @@ public class Serveur {
 	public Serveur(Configuration config){
 		// Initialisation
 		serveur = new SocketIOServer(config);
-
 		clients = new ArrayList<ClientID>();
 		id = 0;
-
 		p = new Partie(this, true);
 
 		log("Attente de connexion des joueur...");

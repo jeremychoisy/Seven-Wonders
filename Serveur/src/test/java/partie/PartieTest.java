@@ -5,12 +5,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.partie.Partie;
 
-import com.corundumstudio.socketio.SocketIOClient;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doAnswer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +54,7 @@ public class PartieTest {
 		p.ajouterJoueur("bot_3");
 		p.ajouterJoueur("bot_4");
 
-		assertEquals(true, p.HasGameStarted(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
+		assertEquals(true, p.isGameOn(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
 	}
 
 	@Test
@@ -346,5 +349,83 @@ public class PartieTest {
 		
 		assertEquals(1,p.getIndexGagnant(),"Le joueur gagnant correspond normalement à l'index 1.");
 				
+	}
+
+	@Test
+	void jouerCarteCommerceTest(){
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		p.ajouterJoueur("bot_3");
+
+		p.getListeJoueurs().get(1).ajouterRessources("bois",2);
+		p.getListeJoueurs().get(0).addPièces(4);
+
+		Map effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_boucliers");
+		effet.put("valeurEffet", "1");
+
+		Map ressources = new HashMap<String,Integer>();
+		ressources.put("bois",1);
+
+		Carte c = new Carte("Palissade","Conflit Militaire",effet,ressources, 7,1);
+
+		p.jouerCarteCommerce(0,c);
+
+		assertEquals(2, p.getListeJoueurs().get(0).getPièces(),"Le joueur 1 devrait maintenant avoir 3 pièces restantes.");
+		assertEquals(2, p.getListeJoueurs().get(1).getPièces(),"Le joueur 2 devrait maintenant avoir gagné 2 pièces.");
+
+		ressources = new HashMap<String,Integer>();
+		ressources.put("bois",3);
+
+		c = new Carte("Palissade","Conflit Militaire",effet,ressources, 7,1);
+
+		p.getListeJoueurs().get(2).ajouterRessources("bois",1);
+		p.getListeJoueurs().get(0).addPièces(4);
+
+		p.jouerCarteCommerce(0, c);
+
+		assertEquals(0, p.getListeJoueurs().get(0).getPièces(),"Le joueur 1 devrait maintenant avoir 0 pièces restantes.");
+		assertEquals(6, p.getListeJoueurs().get(1).getPièces(),"Le joueur 2 devrait maintenant avoir gagné 6 pièces.");
+		assertEquals(2, p.getListeJoueurs().get(2).getPièces(),"Le joueur 3 devrait maintenant avoir gagné 2 pièces.");
+	}
+
+	@Test
+	void goNextTest(){
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		p.ajouterJoueur("bot_3");
+
+		p.construireListes();
+
+		doAnswer(new Answer(){
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				String s = invocation.getArgument(0);
+				assertEquals("Ton dernier tour",s,"La classe Partie a normalement envoyé l'évènement 'Ton dernier Tour' en broadcast aux clients via la classe Serveur.");
+				return null;
+			}
+		}).when(s).broadcast("Ton dernier tour");
+
+
+		p.setTourCourant(6);
+		p.setAgeCourant(2);
+		p.setNbCartesJouées(4);
+
+		p.goNext();
+
+		assertEquals(7, p.getTourCourant(),"Le tour courant devrait normalement être le 7ème");
+
+		p.setNbCartesJouées(4);
+		p.goNext();
+
+		assertEquals(3, p.getAgeCourant(), "La partie se déroule maintenant normalement au 3ème âge.");
+		assertEquals(1, p.getTourCourant(), "La partie commence maintenant normalement le 1er tour.");
+
+		p.setNbCartesJouées(4);
+		p.setTourCourant(7);
+		p.goNext();
+
+		assertEquals(false, p.isGameOn(), "La partie est normalement maintenant terminée.");
+
 	}
 }
