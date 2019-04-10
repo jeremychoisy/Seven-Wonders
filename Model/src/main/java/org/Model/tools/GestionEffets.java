@@ -181,17 +181,17 @@ public abstract class GestionEffets
 
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
-			for (int i = 0; i < j.getMerveille().getEtapeCourante(); i++){
+			for (int i = 1; i < j.getMerveille().getEtapeCourante(); i++){
 
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 
 			}
-			for (int i = 0; i < joueurGauche.getMerveille().getEtapeCourante(); i++){
+			for (int i = 1; i < joueurGauche.getMerveille().getEtapeCourante(); i++){
 
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 
 			}
-			for (int i = 0; i < joueurDroit.getMerveille().getEtapeCourante(); i++){
+			for (int i = 1; i < joueurDroit.getMerveille().getEtapeCourante(); i++){
 
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 
