@@ -1,9 +1,11 @@
 package org.Model.tools;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
+
 
 public abstract class GestionEffets
 {
@@ -40,7 +42,7 @@ public abstract class GestionEffets
 		}
 	}
 
-	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j) {
+	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j, ArrayList<Carte> cartePoseesGauche, ArrayList<Carte> cartesPosessDroit) {
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")){
 			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Conflit Militaire") || effet.get("Type").equals("Batiment Scientifique") || effet.get("Type").equals("Batiment Commercial") || effet.get("Type").equals("Produit Manufacturé")){
 				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
@@ -67,7 +69,6 @@ public abstract class GestionEffets
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
 
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
-
 
 		}
 
