@@ -1,9 +1,11 @@
 package org.Model.tools;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.Model.assets.Carte;
 import org.Model.assets.Joueur;
+
 
 public abstract class GestionEffets
 {
@@ -40,35 +42,160 @@ public abstract class GestionEffets
 		}
 	}
 
-	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j) {
-		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")){
-			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Conflit Militaire") || effet.get("Type").equals("Batiment Scientifique") || effet.get("Type").equals("Batiment Commercial") || effet.get("Type").equals("Produit Manufacturé")){
-				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
-				/*for(Carte carte : j.getCartesPosees()){
-					if(carte.getType().equals("Matières Premières")){
-						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+	public static void appliquerEffetGuilde(Map<String,String> effet, Joueur j, ArrayList<Carte> cartesPoseesGauche, ArrayList<Carte> cartesPoseesDroit, Joueur joueurGauche, Joueur joueurDroit) {
+		if (effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes")) {
+			if (effet.get("Type").equals("Matières Premières")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Matières Premières")) {
+						compteurGauche += 1;
+
 					}
-					if(carte.getType().equals("Conflit Militaire")){
-						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Matières Premières")) {
+						compteurDroit += 1;
+
 					}
-					if(carte.getType().equals("Batiment Scientifique")){
-						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
-					}
-					if(carte.getType().equals("Batiment Commercial")){
-						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
-					}
-					if(carte.getType().equals("Produit Manufacturé")){
-						j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
-					}
-				}*/
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
 			}
+
+			if (effet.get("Type").equals("Produit Manufacturé")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Produit Manufacturé")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Produit Manufacturé")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+			}
+
+			if (effet.get("Type").equals("Batiment Commercial")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Batiment Commercial")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Batiment Commercial")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+			}
+
+			if (effet.get("Type").equals("Batiment Scientifique")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Batiment Scientifique")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Batiment Scientifique")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+			}
+
+			if (effet.get("Type").equals("Conflit Militaire")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Conflit Militaire")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Conflit Militaire")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+			}
+
+			if (effet.get("Type").equals("Batiment Civil")) {
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Batiment Civil")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Batiment Civil")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 && compteurGauche >= 1) {
+					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				}
+
+			}
+
+
 		}
 
+
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_étapes_merveilles")){
+			for (int i = 1; i < j.getMerveille().getEtapeCourante(); i++){
 
 				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 
+			}
+			for (int i = 1; i < joueurGauche.getMerveille().getEtapeCourante(); i++){
 
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+
+			}
+			for (int i = 1; i < joueurDroit.getMerveille().getEtapeCourante(); i++){
+
+				j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+
+			}
 		}
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes_multiples")){
