@@ -428,4 +428,111 @@ public class PartieTest {
 		assertEquals(false, p.isGameOn(), "La partie est normalement maintenant terminée.");
 
 	}
+
+	@Test
+	void appliquerEffetGuildesTest(){
+		p.ajouterJoueur("bot_1");
+		p.ajouterJoueur("bot_2");
+		p.ajouterJoueur("bot_3");
+
+
+
+		Map effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_ressources");
+		effet.put("ressourceEffet", "bois");
+		effet.put("valeurEffet", "2");
+
+		Map ressources = new HashMap<String,Integer>();
+		ressources.put("pièces",1);
+
+
+		Carte carteMatièresPremières= new Carte("Scierie","Matières Premières",effet,ressources,4,2);
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("minerai", 2);
+		ressources.put("argile", 1);
+		ressources.put("pierre", 1);
+		ressources.put("bois", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Matières Premières");
+		effet.put("valeurEffet", "1");
+
+
+		Carte guilde = new Carte("Guilde des Travailleurs","Guilde",effet,ressources,0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteMatièresPremières);
+		p.jouerCarte(2, carteMatièresPremières);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
+		ressources = new HashMap<String,Integer>();
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_ressources");
+		effet.put("ressourceEffet", "papier");
+		effet.put("valeurEffet", "1");
+
+		Carte carteProduitsManufacturés= new Carte("Presse","Produit Manufacturé",effet,ressources, 3,2);
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("minerai", 2);
+		ressources.put("pierre", 2);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Produit Manufacturé");
+		effet.put("valeurEffet", "2");
+
+		guilde = new Carte("Guilde des Artisans","Guilde",effet,ressources,0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteProduitsManufacturés);
+		p.jouerCarte(2, carteProduitsManufacturés);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(8, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 4 points de victoires supplémentaires");
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_ressource_multiples");
+		effet.put("valeurEffet", "1");
+		effet.put("ressourceEffet1", "bois");
+		effet.put("ressourceEffet2","minerai");
+		effet.put("ressourceEffet3", "pierre");
+		effet.put("ressourceEffet4","argile");
+
+		ressources = new HashMap<String,Integer>();
+		ressources.put("bois", 2);
+
+		Carte carteCommerce = new Carte("Arène","Batiment Commercial",effet,ressources, 3,3);
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("papier", 1);
+		ressources.put("tissu", 1);
+		ressources.put("verre", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Batiment Commercial");
+		effet.put("valeurEffet", "1");
+
+		guilde = new Carte("Guilde des Commerçants","Guilde",effet,ressources,0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteProduitsManufacturés);
+		p.jouerCarte(2, carteProduitsManufacturés);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(18, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
+	}
 }

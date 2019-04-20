@@ -697,12 +697,11 @@ public class GestionPersistance {
 			effet.put("Type", "Matières Premières");
 			effet.put("valeurEffet", "1");
 
-            c[138] = new Carte("Guide des Travailleurs","Guilde",effet,ressources,0, 3);
+            c[138] = new Carte("Guilde des Travailleurs","Guilde",effet,ressources,0, 3);
 
 			ressources = new HashMap<String, Integer>();
 			ressources.put("minerai", 2);
 			ressources.put("pierre", 2);
-			effet.put("valeurEffet", "1");
 
 			effet = new HashMap<String,String>();
 			effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");

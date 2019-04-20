@@ -117,8 +117,12 @@ public class Joueur {
 		return pointsVictoire;
 	}
 
-	public void setPointsVictoire(int gain_pointsVictoire) {
-		this.pointsVictoire = gain_pointsVictoire;
+	public void setPointsVictoire(int pointsVictoire) {
+		this.pointsVictoire = pointsVictoire;
+	}
+
+	public void addPointsVictoire(int gain_pointsVictoire){
+		this.pointsVictoire += gain_pointsVictoire;
 	}
 
 	public int getBouclier() {

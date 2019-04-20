@@ -60,8 +60,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
@@ -82,8 +82,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
@@ -104,8 +104,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
@@ -126,8 +126,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
@@ -148,8 +148,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
@@ -170,8 +170,8 @@ public abstract class GestionEffets
 
 					}
 				}
-				if (compteurDroit >= 1 && compteurGauche >= 1) {
-					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
 				}
 
 			}
