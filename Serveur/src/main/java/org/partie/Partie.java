@@ -373,6 +373,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() +".");
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -386,6 +387,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ".");
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -484,8 +486,9 @@ public class Partie {
 		// là on applique les effets des cartes guildes posées
 		for(int i=0;i < listeJoueurs.size();i++) {
 			for (int k = 0; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
-				if(listeJoueurs.get(i).getCartesPosees().get(k).getEffet().get("nomEffetFinDePartie") != null)
-					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i),listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinGauche(i)),listeJoueurs.get(getIndexVoisinDroite(i)));
+				if (listeJoueurs.get(i).getCartesPosees().get(k).getEffet().get("nomEffetFinDePartie") != null) {
+					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i), listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinGauche(i)), listeJoueurs.get(getIndexVoisinDroite(i)));
+				}
 			}
 		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();

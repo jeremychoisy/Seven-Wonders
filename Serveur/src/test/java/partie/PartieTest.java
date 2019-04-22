@@ -437,7 +437,7 @@ public class PartieTest {
 	}
 
 	@Test
-	void appliquerEffetGuildesTest(){
+	void appliquerEffetFinDePartie(){
 		p.ajouterJoueur("bot_1");
 		p.ajouterJoueur("bot_2");
 		p.ajouterJoueur("bot_3");
@@ -671,6 +671,36 @@ public class PartieTest {
 		p.getIndexGagnant();
 
 		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
+
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("minerai", 2);
+		ressources.put("pierre", 1);
+		ressources.put("tissu", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_jetons_défaites");
+		effet.put("ValeurEffetFinDePartie", "1");
+
+		guilde = new Carte("Guilde des Stratèges","Guilde",effet,ressources,0, 3);
+
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
+
+		p.jouerCarte(1,guilde);
+		//p.jouerCarte(0,carteMilitaire);
+		//p.jouerCarte(2,carteCommerce);
+		p.getListeJoueurs().get(0).setJetonsDefaites(2);
+		p.getListeJoueurs().get(2).setJetonsDefaites(1);
+
+		p.getIndexGagnant();
+
+		assertEquals(3, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
 
 	}
 }

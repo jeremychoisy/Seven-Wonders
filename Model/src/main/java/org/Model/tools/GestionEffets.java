@@ -246,13 +246,20 @@ public abstract class GestionEffets
 
 		}
 
-		else if(effet.get("nomEffet").equals("choix_symbole_scientifique")){
+		else if(effet.get("nomEffetFinDePartie").equals("choix_symbole_scientifique")){
 			// TODO
 
 		}
 
-		else if(effet.get("nomEffet").equals("gain_pointsVictoire_par_jetons_défaites")){
-			// TODO
+		else if(effet.get("nomEffetFinDePartie").equals("gain_pointsVictoire_par_jetons_défaites")){
+			if(joueurDroit.getJetonsDefaites() > 0){
+				j.addPointsVictoire(joueurDroit.getJetonsDefaites());
+
+			}
+			if(joueurGauche.getJetonsDefaites() > 0){
+				j.addPointsVictoire(joueurGauche.getJetonsDefaites());
+
+			}
 
 		}
 
