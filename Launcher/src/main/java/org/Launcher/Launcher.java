@@ -73,7 +73,31 @@ public class Launcher
 				Client.main(new String[] {"bot_4"});
 			}        	
         });
-        
+
+        Thread bot_5 = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Client.main(new String[] {"bot_5"});
+            }
+
+        });
+
+        Thread bot_6 = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Client.main(new String[] {"bot_6"});
+            }
+
+        });
+
+        Thread bot_7 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Client.main(new String[] {"bot_7"});
+            }
+        });
         
 
         serveur.start();
@@ -81,6 +105,9 @@ public class Launcher
         bot_2.start();
         bot_3.start();
         bot_4.start();
+        bot_5.start();
+        bot_6.start();
+        bot_7.start();
         
     }
 }

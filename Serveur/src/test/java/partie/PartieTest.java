@@ -14,6 +14,7 @@ import org.partie.Partie;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +54,9 @@ public class PartieTest {
 
 		p.ajouterJoueur("bot_3");
 		p.ajouterJoueur("bot_4");
+		p.ajouterJoueur("bot_5");
+		p.ajouterJoueur("bot_6");
+		p.ajouterJoueur("bot_7");
 
 		assertEquals(true, p.isGameOn(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
 	}
@@ -61,10 +65,10 @@ public class PartieTest {
 	void construireTest() {
 		p.construireListes();
 		
-		assertEquals(28,p.getCartesAgeI().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge I");
-		assertEquals(28,p.getCartesAgeII().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge II");
-		assertEquals(28,p.getCartesAgeIII().size(),"Il y a normalement 28 cartes dans le paquet de cartes de l'âge II");
-		assertEquals(4,p.getMerveilles().size(),"Il y a normalement 4 plateaux merveille dans le tas de plateaux de merveilles.");
+		assertEquals(49,p.getCartesAgeI().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge I");
+		assertEquals(49,p.getCartesAgeII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
+		assertEquals(49,p.getCartesAgeIII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
+		assertEquals(7,p.getMerveilles().size(),"Il y a normalement 7 plateaux merveille dans le tas de plateaux de merveilles.");
 	}
 	
 	@Test
@@ -73,6 +77,9 @@ public class PartieTest {
 		p.ajouterJoueur("Bot_2");
 		p.ajouterJoueur("Bot_3");
 		p.ajouterJoueur("Bot_4");
+		p.ajouterJoueur("Bot_5");
+		p.ajouterJoueur("Bot_6");
+		p.ajouterJoueur("Bot_7");
 
 		// 4 Joueurs ont rejoint la partie, initPartie() est appelée automatiquement.
 		
@@ -120,7 +127,7 @@ public class PartieTest {
 		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 		
-		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
+		Carte c = new Carte("Prêteur sur gage","Bâtiment Civil",effet,ressources, 4,1);
 		j.getM().add(c);
 		p.jouerCarte(0, c);
 		
@@ -146,7 +153,7 @@ public class PartieTest {
 		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 		
-		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
+		Carte c = new Carte("Prêteur sur gage","Bâtiment Civil",effet,ressources, 4,1);
 		j.getM().add(c);
 		p.défausserCarte(0, c);
 
@@ -237,7 +244,7 @@ public class PartieTest {
 		
 		assertEquals(false, p.tourEstFini(), "Le tour n'est normalement pas fini.");
 		
-		p.setNbCartesJouées(4);
+		p.setNbCartesJouées(7);
 		
 		assertEquals(true, p.tourEstFini(), "Le tour est normalement fini.");
 	}
@@ -260,7 +267,7 @@ public class PartieTest {
 
 		effetEtapeUne.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeUne.put("valeurEffet", "3");
-		effetEtapeDeux.put("nomEffet", "batiment_gratuit");
+		effetEtapeDeux.put("nomEffet", "Bâtiment_gratuit");
 		effetEtapeTrois.put("nomEffet", "gain_pointsVictoire");
 		effetEtapeTrois.put("valeurEffet", "7");
 
@@ -274,7 +281,7 @@ public class PartieTest {
 		effet.put("nomEffet", "gain_pointsVictoire");
 		effet.put("valeurEffet","3");
 
-		Carte c = new Carte("Prêteur sur gage","Batiment Civil",effet,ressources, 4,1);
+		Carte c = new Carte("Prêteur sur gage","Bâtiment Civil",effet,ressources, 4,1);
 
 		j.setMerveille(m);
 
@@ -409,19 +416,19 @@ public class PartieTest {
 
 		p.setTourCourant(6);
 		p.setAgeCourant(2);
-		p.setNbCartesJouées(4);
+		p.setNbCartesJouées(7);
 
 		p.goNext();
 
 		assertEquals(7, p.getTourCourant(),"Le tour courant devrait normalement être le 7ème");
 
-		p.setNbCartesJouées(4);
+		p.setNbCartesJouées(7);
 		p.goNext();
 
 		assertEquals(3, p.getAgeCourant(), "La partie se déroule maintenant normalement au 3ème âge.");
 		assertEquals(1, p.getTourCourant(), "La partie commence maintenant normalement le 1er tour.");
 
-		p.setNbCartesJouées(4);
+		p.setNbCartesJouées(7);
 		p.setTourCourant(7);
 		p.goNext();
 
@@ -455,9 +462,9 @@ public class PartieTest {
 		ressources.put("bois", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Matières Premières");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Matières Premières");
+		effet.put("valeurEffetFinDePartie", "1");
 
 
 		Carte guilde = new Carte("Guilde des Travailleurs","Guilde",effet,ressources,0, 3);
@@ -485,11 +492,18 @@ public class PartieTest {
 		ressources.put("pierre", 2);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Produit Manufacturé");
-		effet.put("valeurEffet", "2");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Produit Manufacturé");
+		effet.put("valeurEffetFinDePartie", "2");
 
 		guilde = new Carte("Guilde des Artisans","Guilde",effet,ressources,0, 3);
+
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
+
 
 		p.jouerCarte(1,guilde);
 		p.jouerCarte(0, carteProduitsManufacturés);
@@ -498,7 +512,7 @@ public class PartieTest {
 
 		p.getIndexGagnant();
 
-		assertEquals(8, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 4 points de victoires supplémentaires");
+		assertEquals(4, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 4 points de victoires supplémentaires");
 
 		effet = new HashMap<String,String>();
 		effet.put("nomEffet", "gain_ressource_multiples");
@@ -511,7 +525,7 @@ public class PartieTest {
 		ressources = new HashMap<String,Integer>();
 		ressources.put("bois", 2);
 
-		Carte carteCommerce = new Carte("Arène","Batiment Commercial",effet,ressources, 3,3);
+		Carte carteCommerce = new Carte("Arène","Bâtiment Commercial",effet,ressources, 3,3);
 
 		ressources = new HashMap<String, Integer>();
 		ressources.put("papier", 1);
@@ -519,20 +533,26 @@ public class PartieTest {
 		ressources.put("verre", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Batiment Commercial");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Bâtiment Commercial");
+		effet.put("valeurEffetFinDePartie", "1");
 
 		guilde = new Carte("Guilde des Commerçants","Guilde",effet,ressources,0, 3);
 
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
+
 		p.jouerCarte(1,guilde);
-		p.jouerCarte(0, carteProduitsManufacturés);
-		p.jouerCarte(2, carteProduitsManufacturés);
+		p.jouerCarte(0, carteCommerce);
+		p.jouerCarte(2, carteCommerce);
 
 
 		p.getIndexGagnant();
 
-		assertEquals(18, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
 
 		ressources = new HashMap<String, Integer>();
 		ressources.put("argile", 3);
@@ -540,11 +560,11 @@ public class PartieTest {
 		ressources.put("papier", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Batiment Scientifique");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Bâtiment Scientifique");
+		effet.put("valeurEffetFinDePartie", "1");
 
-		Carte carteScientifique = new Carte("Université","Batiment Scientifique",effet,ressources, 3,3);
+		Carte carteScientifique = new Carte("Université","Bâtiment Scientifique",effet,ressources, 3,3);
 
 		ressources = new HashMap<String, Integer>();
 		ressources.put("papier", 1);
@@ -552,11 +572,17 @@ public class PartieTest {
 		ressources.put("verre", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Batiment Scientifique");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Bâtiment Scientifique");
+		effet.put("valeurEffetFinDePartie", "1");
 
 		guilde = new Carte("Guilde des Philosophes","Guilde",effet,ressources,0, 3);
+
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
 
 		p.jouerCarte(1,guilde);
 		p.jouerCarte(0, carteScientifique);
@@ -565,7 +591,7 @@ public class PartieTest {
 
 		p.getIndexGagnant();
 
-		assertEquals(30, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
 
 
 		ressources = new HashMap<String, Integer>();
@@ -584,11 +610,17 @@ public class PartieTest {
 		ressources.put("verre", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Conflit Militaire");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Conflit Militaire");
+		effet.put("valeurEffetFinDePartie", "1");
 
 		guilde = new Carte("Guilde des Espions","Guilde",effet,ressources,0, 3);
+
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
 
 		p.jouerCarte(1,guilde);
 		p.jouerCarte(0, carteMilitaire);
@@ -597,7 +629,7 @@ public class PartieTest {
 
 		p.getIndexGagnant();
 
-		assertEquals(44, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
 
 
 		effet = new HashMap<String,String>();
@@ -611,7 +643,7 @@ public class PartieTest {
 		ressources.put("tissu",1);
 		ressources.put("verre",1);
 
-		Carte carteCivil = new Carte("Panthéon","Batiment Civil",effet,ressources, 3,3);
+		Carte carteCivil = new Carte("Panthéon","Bâtiment Civil",effet,ressources, 3,3);
 
 		ressources = new HashMap<String, Integer>();
 		ressources.put("bois", 3);
@@ -619,11 +651,17 @@ public class PartieTest {
 		ressources.put("tissu", 1);
 
 		effet = new HashMap<String,String>();
-		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
-		effet.put("Type", "Batiment Civil");
-		effet.put("valeurEffet", "1");
+		effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes");
+		effet.put("TypeEffetFinDePartie", "Bâtiment Civil");
+		effet.put("valeurEffetFinDePartie", "1");
 
 		guilde = new Carte("Guilde des Magistrats","Guilde",effet,ressources, 0, 3);
+
+		p.getListeJoueurs().get(1).setPointsVictoire(0);
+
+		p.getListeJoueurs().get(0).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(1).setCartesPosees(new ArrayList<>());
+		p.getListeJoueurs().get(2).setCartesPosees(new ArrayList<>());
 
 		p.jouerCarte(1,guilde);
 		p.jouerCarte(0, carteCivil);
@@ -632,7 +670,7 @@ public class PartieTest {
 
 		p.getIndexGagnant();
 
-		assertEquals(60, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+		assertEquals(2, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
 
 	}
 }

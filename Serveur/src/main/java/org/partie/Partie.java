@@ -25,9 +25,9 @@ public class Partie {
 	// variable serveur
 	private Serveur s;
 	// variables constantes de configuration d'une partie
-	private final int NB_JOUEURS = 4;
+	private final int NB_JOUEURS = 7;
 	private final int NB_CARTES = 148;
-	private final int NB_MERVEILLES = 4;
+	private final int NB_MERVEILLES = 7;
 	
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
@@ -183,10 +183,23 @@ public class Partie {
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(int index, Carte c) {
 		String name = listeJoueurs.get(index).getNom();
+		boolean isFree = false;
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
 		// MaJ du joueur côté serveur
-		if(c.getCout().get("pièces") != null) {
-			listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+		// Si le joueur a déjà posé une carte liée à celle-ci par chaînage => gratuite
+		if(c.getEffet().get("chaînage") != null){
+			for(int i = 0; i < listeJoueurs.get(index).getCartesPosees().size();i++){
+				if(listeJoueurs.get(index).getCartesPosees().get(i).getNom().equals(c.getEffet().get("chainage"))){
+					isFree = true;
+					break;
+				}
+			}
+
+		}
+		if(!isFree) {
+			if (c.getCout().get("pièces") != null) {
+				listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+			}
 		}
 		//supprime la carte jouée de la main du joueur
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
@@ -439,6 +452,8 @@ public class Partie {
 	public void goNext() {
 		if(tourEstFini()) {
 				if(estFinie()) {
+					log("---- Conflits militaires ----");
+					conflitsMilitaires();
                     int index = getIndexGagnant();
 					Joueur JoueurGagnant = listeJoueurs.get(index);
 					int score = JoueurGagnant.getPointsVictoire() + JoueurGagnant.getPièces() + JoueurGagnant.getpointsMilitaires();
@@ -469,7 +484,8 @@ public class Partie {
 		// là on applique les effets des cartes guildes posées
 		for(int i=0;i < listeJoueurs.size();i++) {
 			for (int k = 0; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
-				GestionEffets.appliquerEffetGuilde(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i),listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinGauche(i)),listeJoueurs.get(getIndexVoisinDroite(i)));
+				if(listeJoueurs.get(i).getCartesPosees().get(k).getEffet().get("nomEffetFinDePartie") != null)
+					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i),listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinGauche(i)),listeJoueurs.get(getIndexVoisinDroite(i)));
 			}
 		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();

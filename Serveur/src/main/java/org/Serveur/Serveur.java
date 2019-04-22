@@ -35,7 +35,7 @@ public class Serveur {
 		id = 0;
 		p = new Partie(this, true);
 
-		log("Attente de connexion des joueur...");
+		log("Attente de connexion des joueurs...");
 		// Ajout de l'écouteur gérant la connexion d'un client
 		serveur.addConnectListener(new ConnectListener() {
 			public void onConnect(SocketIOClient socketIOClient) {
@@ -49,10 +49,10 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				// On ajoute le client à la liste des clients
-				clients.add(new ClientID(id,client));
-				id++;
-				// On ajoute le joueur à la partie
-				p.ajouterJoueur(data);
+					clients.add(new ClientID(id, client));
+					id++;
+					// On ajoute le joueur à la partie
+					p.ajouterJoueur(data);
 			}
 			
 		});
