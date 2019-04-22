@@ -534,5 +534,105 @@ public class PartieTest {
 
 		assertEquals(18, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
 
+		ressources = new HashMap<String, Integer>();
+		ressources.put("argile", 3);
+		ressources.put("tissu", 1);
+		ressources.put("papier", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Batiment Scientifique");
+		effet.put("valeurEffet", "1");
+
+		Carte carteScientifique = new Carte("Université","Batiment Scientifique",effet,ressources, 3,3);
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("papier", 1);
+		ressources.put("tissu", 1);
+		ressources.put("verre", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Batiment Scientifique");
+		effet.put("valeurEffet", "1");
+
+		guilde = new Carte("Guilde des Philosophes","Guilde",effet,ressources,0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteScientifique);
+		p.jouerCarte(2, carteScientifique);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(30, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("pierre", 1);
+		ressources.put("minerai", 3);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_boucliers");
+		effet.put("valeurEffet", "3");
+
+		Carte carteMilitaire = new Carte("Fortifications","Conflit Militaire",effet,ressources, 3,3);
+
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("argile", 3);
+		ressources.put("verre", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Conflit Militaire");
+		effet.put("valeurEffet", "1");
+
+		guilde = new Carte("Guilde des Espions","Guilde",effet,ressources,0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteMilitaire);
+		p.jouerCarte(2, carteMilitaire);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(44, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire");
+		effet.put("valeurEffet", "7");
+
+		ressources = new HashMap<String,Integer>();
+		ressources.put("argile",2);
+		ressources.put("minerai",1);
+		ressources.put("papier",1);
+		ressources.put("tissu",1);
+		ressources.put("verre",1);
+
+		Carte carteCivil = new Carte("Panthéon","Batiment Civil",effet,ressources, 3,3);
+
+		ressources = new HashMap<String, Integer>();
+		ressources.put("bois", 3);
+		ressources.put("pierre", 1);
+		ressources.put("tissu", 1);
+
+		effet = new HashMap<String,String>();
+		effet.put("nomEffet", "gain_pointsVictoire_par_types_cartes");
+		effet.put("Type", "Batiment Civil");
+		effet.put("valeurEffet", "1");
+
+		guilde = new Carte("Guilde des Magistrats","Guilde",effet,ressources, 0, 3);
+
+		p.jouerCarte(1,guilde);
+		p.jouerCarte(0, carteCivil);
+		p.jouerCarte(2, carteCivil);
+
+
+		p.getIndexGagnant();
+
+		assertEquals(60, p.getListeJoueurs().get(1).getPointsVictoire(), "Le joueur 2 doit avoir 2 points de victoires supplémentaires");
+
 	}
 }

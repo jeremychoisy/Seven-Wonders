@@ -210,6 +210,11 @@ public abstract class GestionEffets
 
 		}
 
+		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_jetons_défaites")){
+			// TODO
+
+		}
+
 
 	}
 }
