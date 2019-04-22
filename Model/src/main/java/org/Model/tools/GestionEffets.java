@@ -200,7 +200,24 @@ public abstract class GestionEffets
 
 		if(effet.get("nomEffet").equals("gain_pointsVictoire_par_types_cartes_multiples")){
 			if(effet.get("Type").equals("Matières Premières") || effet.get("Type").equals("Multiples") || effet.get("Type").equals("Produit Manufacturé")){
-				j.getRessources().put(effet.get("ressourceEffet"),Integer.parseInt(effet.get("valeurEffet")));
+				int compteurGauche = 0;
+				for (Carte carte : cartesPoseesGauche) {
+					if (carte.getType().equals("Matières Premières") || effet.get("Type").equals("Multiples") || effet.get("Type").equals("Produit Manufacturé")) {
+						compteurGauche += 1;
+
+					}
+				}
+
+				int compteurDroit = 0;
+				for (Carte carte : cartesPoseesDroit) {
+					if (carte.getType().equals("Matières Premières") || effet.get("Type").equals("Multiples") || effet.get("Type").equals("Produit Manufacturé")) {
+						compteurDroit += 1;
+
+					}
+				}
+				if (compteurDroit >= 1 || compteurGauche >= 1) {
+					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffet")));
+				}
 			}
 
 		}
