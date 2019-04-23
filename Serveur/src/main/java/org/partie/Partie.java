@@ -25,10 +25,10 @@ public class Partie {
 	// variable serveur
 	private Serveur s;
 	// variables constantes de configuration d'une partie
-	private final int NB_JOUEURS = 7;
+	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 148;
 	private final int NB_MERVEILLES = 7;
-	
+
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;

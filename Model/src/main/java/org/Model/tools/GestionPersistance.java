@@ -626,7 +626,7 @@ public class GestionPersistance {
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes_perso");
 			effet.put("TypeEffetFinDePartie","Matières Premières");
-			effet.put("valeurEffetDePartie", "1");
+			effet.put("valeurEffetFinDePartie", "1");
 			effet.put("nomEffet", "gain_pièces_par_cartes");
 			effet.put("valeurEffet", "1");
 			effet.put("chaînage","Forum");
@@ -642,7 +642,7 @@ public class GestionPersistance {
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes_perso");
 			effet.put("TypeEffetFinDePartie","Bâtiment Commercial");
-			effet.put("valeurEffetDePartie", "1");
+			effet.put("valeurEffetFinDePartie", "1");
 			effet.put("nomEffet", "gain_pièces_par_cartes");
 			effet.put("valeurEffet", "1");
 			effet.put("chaînage","Caravansérail");
@@ -657,7 +657,7 @@ public class GestionPersistance {
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes_perso");
 			effet.put("TypeEffetFinDePartie","Produit Manufacturé");
-			effet.put("valeurEffetDePartie", "2");
+			effet.put("valeurEffetFinDePartie", "2");
 			effet.put("nomEffet", "gain_pièces_par_cartes");
 			effet.put("valeurEffet", "2");
 
@@ -828,7 +828,7 @@ public class GestionPersistance {
 
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_jetons_défaites");
-			effet.put("ValeurEffetFinDePartie", "1");
+			effet.put("valeurEffetFinDePartie", "1");
 
             c[143] = new Carte("Guilde des Stratèges","Guilde",effet,ressources,0, 3);
 
@@ -840,7 +840,7 @@ public class GestionPersistance {
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes_multiples");
 			effet.put("TypeEffetFinDePartie", "Multiples");
-			effet.put("ValeurEffetFinDePartie", "1");
+			effet.put("valeurEffetFinDePartie", "1");
 
             c[144] = new Carte("Guilde des Armateurs","Guilde",effet,ressources,0, 3);
 
