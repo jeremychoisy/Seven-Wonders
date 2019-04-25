@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Map;
 import org.Model.assets.*;
 public class Bot {
@@ -66,140 +67,54 @@ public class Bot {
 
 	@SuppressWarnings("Duplicates")
 	public void jouerTour(Map<String,Integer> ressourcesVoisinsList) {
-		Carte carte = null;
-		JSONObject carteJouéeJSON=null;
-		JSONObject carteDéfausséeJSON=null;
-		Map<String, Integer> ressources = j.getRessources();
-        boolean isTradeUsed = false;
-		//là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
-
-		/*
-		il faut se servir de getQuantitéRessource(String nomRessource) de la classe joueur
-		et de getCout() de la classe carte pour comparer les ressources dispo / needed
-
-		ressources de joueur : HashMap<String,Integer>()
-
-		cout de carte : Map<String, Integer>
+        JSONObject carteJouéeJSON = null;
+        JSONObject carteDéfausséeJSON = null;
+        Strategie strategieMilitaire = new Strategie("Conflit Militaire","Batiment Commercial","Bâtiment Scientifique");
+        Action action = strategieMilitaire.stratBot(strategieMilitaire.listCartePlayable(ressourcesVoisinsList,j),j);
+        int indexCarte = j.getM().getMain().indexOf(action.getCarte());
 
 
-		*/
-
-		//on itère sur les cartes
-		for(int i = 0; i < j.getM().getMain().size(); i++)
-		{
-			Map<String, Integer> cout = j.getM().getMain().get(i).getCout();
-			isTradeUsed = false;
-			boolean isPlayable = true;
-			boolean isTradeable;
-
-			int pièces = j.getPièces();
-			//on itère sur les coûts des cartes et on compare avec les ressources du bot
-			for (Map.Entry<String,Integer> entry : cout.entrySet()){
-				String key = entry.getKey();
-				Integer ressourceCarte = entry.getValue();
-				Integer ressourceJoueur = ressources.get(key);
-				//si le bot n'a pas assez de ressources, on regarde les ressources voisine
-				if (ressourceCarte > ressourceJoueur){
-				    isTradeable = false;
-				    // Si les voisins disposent de la ressource
-				    if(ressourcesVoisinsList.get(key) != null){
-				        // Si les voisins peuvent combler le besoin et que le bot est en mesure de payer
-				        if((ressourceCarte <= ressourceJoueur + ressourcesVoisinsList.get(key)) && ((ressourceCarte - ressourceJoueur) * 2 <= pièces)){
-				            // On diminue le stock de pièce crée spécialement pour l'itération sur les ressources.
-                            pièces -= (ressourceCarte - ressourceJoueur) * 2;
-                            // On déclare que la ressource sera compensée grâce au commerce
-                            isTradeable = true;
-                            // On déclarer que le commerce a été utilisé, dans le cas où la carte est finalement jouable.
-                            isTradeUsed = true;
-                        }
-                    }
-				    // Si la ressource n'est pas compensée, la carte est injouable
-				    if(!isTradeable){
-				        isPlayable = false;
-                    }
-				}
-			}
-			// Si isPlayable est true à ce moment là, les ressources du joueur ont été comparées à toutes les ressources
-			// nécessaires pour jouer la carte et le résultat est positif.
-			if(isPlayable) {
-                carte = j.getM().get(i);
-                // Si le commerce a été utilisé, le bot vérifie qu'il est en mesure de payer le prix du commerce + le prix de la carte
-                // si elle a un coût en pièces.
-			    if(isTradeUsed){
-                    if(carte.getCout().get("pièces") != null){
-                        if(j.getPièces() >= (j.getPièces() - pièces) + carte.getCout().get("pièces")) {
-                            carte = j.getM().get(i);
-                            j.substractPièces((j.getPièces() - pièces) + carte.getCout().get("pièces"));
-                            j.getM().remove(i); // pour remove de la main la carte (c) jouée
-                            break;
-                        }
-                    } else {
-                        if(j.getPièces() >= j.getPièces() - pièces) {
-                            carte = j.getM().get(i);
-                            j.substractPièces(j.getPièces() - pièces);
-                            j.getM().remove(i); // pour remove de la main la carte (c) jouée
-                            break;
-                        }
-                    }
-                } else {
-                    if(carte.getCout().get("pièces") != null) {
-                        j.substractPièces(carte.getCout().get("pièces"));
-                    }
-                    j.getM().remove(i); // pour remove de la main la carte (c) jouée
-                    break;
-                }
-			    // Si aucun break n'a été appelé, les conditions ne sont pas remplies, on remet carte à null et on continue à boucler sur la main.
-			    carte = null;
-
-			}
-		}
-
-
-		// On vérifie que le bot est capable de jouer une carte, si ce n'est pas le cas, on essaie de débloquer une étape de merveille sinon on défausse la première.
-		if( carte == null) {
-
-			Map<String, Integer> coutMerveille = j.getMerveille().getressourceEtapeCourante();
-			boolean isCreatable = true;
-
-			for (Map.Entry<String,Integer> entry : coutMerveille.entrySet()){
-				String key = entry.getKey();
-				Integer ressourceMerveille = entry.getValue();
-				Integer ressourceJoueur = ressources.get(key);
-				if (ressourceJoueur < ressourceMerveille){
-					isCreatable = false;
-				}
-			}
-
-			try {
-				carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString( j.getM().get(0)));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			j.getM().remove(0);
-
-			if(isCreatable){
-				j.getMerveille().etapeSuivante(j);
-				c.emit("Etape Merveille", carteDéfausséeJSON);
-			}
-			else {
-				c.emit("Carte Défaussée", carteDéfausséeJSON);
-			}
-		}
-		else
-		{
-			try {
-				carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(carte));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(isTradeUsed){
+        if (action.getType().equals("Etape Merveille") || action.getType().equals("Carte Défaussée")){
+            try {
+                carteDéfausséeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(action.getCarte()));
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (action.getType().equals("Etape Merveille")){
+                j.getM().remove(indexCarte);
+                j.getMerveille().etapeSuivante(j);
+                c.emit("Etape Merveille", carteDéfausséeJSON);
+            }
+            else {
+                j.getM().remove(indexCarte);
+                j.substractPièces(action.getCout());
+                c.emit("Carte Défaussée", carteDéfausséeJSON);
+            }
+        }
+        else{
+            try {
+                carteJouéeJSON = new JSONObject(GestionPersistance.ObjectToJSONString(action.getCarte()));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if(action.getType().equals("Carte Jouée avec commerce")){
+                j.substractPièces(action.getCout());
+                j.getM().remove(indexCarte);
                 c.emit("Carte Jouée avec commerce", carteJouéeJSON);
-            } else {
+            }
+            else{
+                j.getM().remove(indexCarte);
                 c.emit("Carte Jouée", carteJouéeJSON);
             }
-		}
-	}
+        }
+
+
+
+
+
+    }
 
 
 

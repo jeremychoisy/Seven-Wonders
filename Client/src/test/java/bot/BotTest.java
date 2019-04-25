@@ -153,7 +153,7 @@ public class BotTest {
         }
     }
 
-    @Test
+    //@Test
     void jouerTourTest(){
         doAnswer(new Answer(){
             @Override
