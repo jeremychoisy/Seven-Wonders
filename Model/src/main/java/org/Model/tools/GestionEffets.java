@@ -33,6 +33,16 @@ public abstract class GestionEffets
 					j.getRessources().put(effet.get("ressourceEffet"), Integer.parseInt(effet.get("valeurEffet")));
 				}
 			}
+
+			if ( effet.get("nomEffet").equals("gain_symboles")){
+				if(effet.get("symboleEffet").equals("ingénieur")){
+					j.addSymboleIngenieur(1);
+				} else if(effet.get("symboleEffet").equals("science")){
+					j.addSymboleScience(1);
+				} else {
+					j.addSymboleTablette(1);
+				}
+			}
 			if (effet.get("nomEffet").equals("gain_ressources_multiples")) {
 				// TODO
 			}
@@ -223,32 +233,21 @@ public abstract class GestionEffets
 		}
 
 		else if(effet.get("nomEffetFinDePartie").equals("gain_pointsVictoire_par_types_cartes_multiples")){
-			if(effet.get("TypeEffetFinDePartie").equals("Matières Premières") || effet.get("TypeEffetFinDePartie").equals("Multiples") || effet.get("TypeEffetFinDePartie").equals("Produit Manufacturé")){
-				int compteurGauche = 0;
-				for (Carte carte : cartesPoseesGauche) {
-					if (carte.getType().equals("Matières Premières") || effet.get("Type").equals("Multiples") || effet.get("Type").equals("Produit Manufacturé")) {
-						compteurGauche += 1;
-
-					}
-				}
-
-				int compteurDroit = 0;
-				for (Carte carte : cartesPoseesDroit) {
-					if (carte.getType().equals("Matières Premières") || effet.get("TypeEffetFinDePartie").equals("Multiples") || effet.get("TypeEffetFinDePartie").equals("Produit Manufacturé")) {
-						compteurDroit += 1;
-
-					}
-				}
-				if (compteurDroit >= 1 || compteurGauche >= 1) {
-					j.addPointsVictoire((compteurDroit + compteurGauche) * Integer.parseInt(effet.get("valeurEffetFinDePartie")));
+			for (Carte carte : j.getCartesPosees()) {
+				if (carte.getType().equals("Matières Premières") || carte.getType().equals("Produit Manufacturé") || carte.getType().equals("Guilde")) {
+					j.addPointsVictoire(Integer.parseInt(effet.get("valeurEffetFinDePartie")));
 				}
 			}
-
 		}
 
 		else if(effet.get("nomEffetFinDePartie").equals("choix_symbole_scientifique")){
-			// TODO
-
+			if(j.getSymboleIngenieur() <= j.getSymboleScience() && j.getSymboleIngenieur() <= j.getSymboleTablette()){
+				j.addSymboleIngenieur(1);
+			} else if(j.getSymboleScience() <= j.getSymboleIngenieur() && j.getSymboleScience() <= j.getSymboleTablette()){
+				j.addSymboleScience(1);
+			} else {
+				j.addSymboleTablette(1);
+			}
 		}
 
 		else if(effet.get("nomEffetFinDePartie").equals("gain_pointsVictoire_par_jetons_défaites")){

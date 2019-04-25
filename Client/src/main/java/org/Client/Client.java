@@ -19,9 +19,11 @@ import io.socket.emitter.Emitter;
 public class Client{
 	private Socket connexion;
 	private Bot b;
+	private String name;
 
 	
 	public Client(String url, final String name) {
+		this.name = name;
 		this.b = new Bot(name, this);
 		try {
 			IO.Options opts = new IO.Options();
@@ -37,6 +39,16 @@ public class Client{
 					
 				}
 				
+			});
+
+			connexion.on("Reset",new Emitter.Listener() {
+
+				@Override
+				public void call(Object... args) {
+					reset();
+					connexion.emit("Reset","Done");
+				}
+
 			});
 			
 			connexion.on("disconnect", new Emitter.Listener() {
@@ -55,8 +67,7 @@ public class Client{
 					JSONArray cJson = (JSONArray) args[0];
 				    
 					b.setMain(cJson);
-					
-					connexion.emit("ReadyCheck", "Prêt");
+
 				}
 				
 			});
@@ -93,10 +104,11 @@ public class Client{
 
 					JSONObject Json = (JSONObject)args[0];
 					
-					b.setMerveille(Json);	
+					b.setMerveille(Json);
+					connexion.emit("ReadyCheck", "Prêt");
 				}
 			});
-			
+
 			// Traitement de l'événement "c'est ton tour de jouer" venant du serveur
 			connexion.on("Ton tour", new Emitter.Listener() {
 				@Override
@@ -133,6 +145,10 @@ public class Client{
 	
 	public void emit(String event, Object...args) {
 		connexion.emit(event, args);
+	}
+
+	public void reset(){
+		b = new Bot(name,this);
 	}
 	
 	public void demarrer() {

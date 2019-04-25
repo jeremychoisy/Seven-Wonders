@@ -27,13 +27,20 @@ public class Serveur {
 	private int id;
 	
 	private Partie p;
+	private boolean loop;
+	int loopNumber = 0;
+	int loops;
+	int rdycheck = 0;
 	
-	public Serveur(Configuration config){
+	public Serveur(Configuration config, boolean loop, int loops){
 		// Initialisation
 		serveur = new SocketIOServer(config);
 		clients = new ArrayList<ClientID>();
+		this.loop = loop;
+		this.loops = loops;
 		id = 0;
-		p = new Partie(this, true);
+		p = new Partie(this, !loop);
+
 
 		log("Attente de connexion des joueurs...");
 		// Ajout de l'écouteur gérant la connexion d'un client
@@ -49,7 +56,8 @@ public class Serveur {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				// On ajoute le client à la liste des clients
-					clients.add(new ClientID(id, client));
+
+					clients.add(new ClientID(id, data, client));
 					id++;
 					// On ajoute le joueur à la partie
 					p.ajouterJoueur(data);
@@ -108,6 +116,23 @@ public class Serveur {
 			}
 
 		});
+
+		serveur.addEventListener("Reset", String.class, new DataListener<String>(){
+
+			@Override
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+				if(data.equals("Done")) {
+					synchronized (this) {
+						rdycheck += 1;
+						if (rdycheck == clients.size()) {
+							rdycheck = 0;
+							newGame();
+						}
+					}
+				}
+			}
+
+		});
 		
 	}
 
@@ -128,24 +153,41 @@ public class Serveur {
 		}
 	}
 
-	public void broadcast(String message, Object data){
-		for(int i = 0; i < clients.size();i++) {
-			clients.get(i).getSocket().sendEvent(message, data);
-		}
-	}
 	public void sendEvent(int index, String event, Object...data) {
 		clients.get(index).getSocket().sendEvent(event, data);
 	}
 	
 	public void stop() {
-		log("Fin de la connexion.");
-		serveur.stop();
+		if(!loop || loopNumber == loops) {
+			if(loop){
+				log("**** BILAN ****");
+				for(int i=0;i<clients.size();i++){
+					log("" + clients.get(i).getName() + " : ");
+					log("\tVictoires : " + clients.get(i).getVictoires());
+					log("\tMoyenne des scores : " + clients.get(i).getScoresAverage());
+				}
+			}
+			log("Fin de la connexion.");
+			serveur.stop();
+		} else {
+			clients.get(p.getIndexGagnant()).addVictoire(p.getScoreJoueurGagnant());
+			broadcast("Reset");
+		}
 	}
 	
 
 	// Formatage des sorties textes
 	public void log(String s) {
 		System.out.println(CouleurSorties.ANSI_BLUE + "Serveur : " + s + CouleurSorties.ANSI_RESET);
+	}
+
+	public void newGame(){
+		loopNumber += 1;
+		log("Partie n°= " + (loopNumber+1));
+		this.p = new Partie(this,false);
+		for(int i=0;i<clients.size();i++){
+			p.ajouterJoueur(clients.get(i).getName());
+		}
 	}
 
 	
@@ -160,15 +202,20 @@ public class Serveur {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        boolean loop = false;
+        int loops = Integer.parseInt(args[1]);
+        if(Integer.parseInt(args[0]) == 1){
+        	loop = true;
+		}
         
         Configuration config = new Configuration();
         config.setHostname("127.0.0.1");
         config.setPort(10101);
         SocketConfig s = config.getSocketConfig();
         s.setReuseAddress(true);
+
         
-        
-        Serveur serveur = new Serveur(config);
+        Serveur serveur = new Serveur(config,loop, loops);
         serveur.demarrer();
 	}
 	

@@ -839,7 +839,6 @@ public class GestionPersistance {
 
 			effet = new HashMap<String,String>();
 			effet.put("nomEffetFinDePartie", "gain_pointsVictoire_par_types_cartes_multiples");
-			effet.put("TypeEffetFinDePartie", "Multiples");
 			effet.put("valeurEffetFinDePartie", "1");
 
             c[144] = new Carte("Guilde des Armateurs","Guilde",effet,ressources,0, 3);
@@ -881,7 +880,7 @@ public class GestionPersistance {
 
 			mapper.writeValue(new File("./../Assets/cartes.json"),c);
 
-			Merveille[] m = new Merveille[7];
+			Merveille[] m = new Merveille[4];
 			Map<String,Integer> ressourceEtapeUne = new HashMap<String,Integer>();
 			ressourceEtapeUne.put("bois", 2);
 			Map<String,Integer> ressourceEtapeDeux = new HashMap<String,Integer>();
@@ -965,9 +964,6 @@ public class GestionPersistance {
 			effetEtapeTrois.put("valeurEffet", "7");
 			
 			m[3] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
-			m[4] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
-			m[5] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
-			m[6] = new Merveille("Ephesos","papyrus",ressourceEtapeUne,ressourceEtapeDeux,ressourceEtapeTrois, effetEtapeUne, effetEtapeDeux, effetEtapeTrois);
 
 			mapper.writeValue(new File("./../Assets/merveilles.json"),m);
 

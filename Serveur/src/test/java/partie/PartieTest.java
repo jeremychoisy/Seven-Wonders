@@ -2,6 +2,7 @@ package partie;
 
 import org.Model.assets.Merveille;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -71,15 +72,13 @@ public class PartieTest {
 		assertEquals(7,p.getMerveilles().size(),"Il y a normalement 7 plateaux merveille dans le tas de plateaux de merveilles.");
 	}
 	
-	//@Test
+	@Test
 	void initPartieTest() {
 		p.ajouterJoueur("Bot_1");
 		p.ajouterJoueur("Bot_2");
 		p.ajouterJoueur("Bot_3");
 		p.ajouterJoueur("Bot_4");
-		p.ajouterJoueur("Bot_5");
-		p.ajouterJoueur("Bot_6");
-		p.ajouterJoueur("Bot_7");
+
 
 		// 4 Joueurs ont rejoint la partie, initPartie() est appelée automatiquement.
 		
@@ -238,13 +237,13 @@ public class PartieTest {
 		assertEquals(true,p.isEveryoneRdy(),"Tout le monde est normalement prêt.");
 	}
 	
-	//@Test
+	@Test
 	void tourEstFiniTest() {
 		p.setNbCartesJouées(3);
 		
 		assertEquals(false, p.tourEstFini(), "Le tour n'est normalement pas fini.");
 		
-		p.setNbCartesJouées(7);
+		p.setNbCartesJouées(4);
 		
 		assertEquals(true, p.tourEstFini(), "Le tour est normalement fini.");
 	}
@@ -351,12 +350,14 @@ public class PartieTest {
 		p.getListeJoueurs().get(1).setPointsVictoire(2);
 		p.ajouterJoueur("bot_3");
 		p.getListeJoueurs().get(2).addPièces(8);
+
 		p.getListeJoueurs().get(2).setPointsVictoire(3);
 
 		
 		assertEquals(1,p.getIndexGagnant(),"Le joueur gagnant correspond normalement à l'index 1.");
 				
 	}
+
 
 	@Test
 	void jouerCarteCommerceTest(){
@@ -396,11 +397,13 @@ public class PartieTest {
 		assertEquals(2, p.getListeJoueurs().get(2).getPièces(),"Le joueur 3 devrait maintenant avoir gagné 2 pièces.");
 	}
 
-	//@Test
+	@Test
 	void goNextTest(){
 		p.ajouterJoueur("bot_1");
 		p.ajouterJoueur("bot_2");
 		p.ajouterJoueur("bot_3");
+		p.ajouterJoueur("bot_4");
+
 
 		p.construireListes();
 
@@ -416,19 +419,19 @@ public class PartieTest {
 
 		p.setTourCourant(6);
 		p.setAgeCourant(2);
-		p.setNbCartesJouées(7);
+		p.setNbCartesJouées(4);
 
 		p.goNext();
 
 		assertEquals(7, p.getTourCourant(),"Le tour courant devrait normalement être le 7ème");
 
-		p.setNbCartesJouées(7);
+		p.setNbCartesJouées(4);
 		p.goNext();
 
 		assertEquals(3, p.getAgeCourant(), "La partie se déroule maintenant normalement au 3ème âge.");
 		assertEquals(1, p.getTourCourant(), "La partie commence maintenant normalement le 1er tour.");
 
-		p.setNbCartesJouées(7);
+		p.setNbCartesJouées(4);
 		p.setTourCourant(7);
 		p.goNext();
 

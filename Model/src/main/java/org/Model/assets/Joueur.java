@@ -19,6 +19,10 @@ public class Joueur {
 	private int pointsMilitaires;
 	private int jetonsDefaites;
 
+	private int symboleIngenieur;
+	private int symboleScience;
+	private int symboleTablette;
+
 	
 	private Map<String,Integer> ressources;
 	private ArrayList<Carte> cartesPosees;
@@ -38,6 +42,9 @@ public class Joueur {
         this.boucliers = 0;
         this.setpointsMilitaires(0);
         this.jetonsDefaites = 0;
+        this.symboleIngenieur = 0;
+        this.symboleScience = 0;
+        this.symboleTablette = 0;
 
         ressources = new HashMap<String,Integer>();
         ressources.put("pièces", 0);
@@ -115,6 +122,28 @@ public class Joueur {
 	        ressources.put("pièces",0);
         }
     }
+
+    public void addSymboleIngenieur(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+	public void addSymboleScience(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+	public void addSymboleTablette(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+
+	public int getSymboleIngenieur() {
+		return symboleIngenieur;
+	}
+
+	public int getSymboleScience() {
+		return symboleScience;
+	}
+
+	public int getSymboleTablette() {
+		return symboleTablette;
+	}
 
 	public int getPointsVictoire() {
 		return pointsVictoire;

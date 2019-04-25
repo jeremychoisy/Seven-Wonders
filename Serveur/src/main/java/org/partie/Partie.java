@@ -27,7 +27,7 @@ public class Partie {
 	// variables constantes de configuration d'une partie
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 148;
-	private final int NB_MERVEILLES = 7;
+	private final int NB_MERVEILLES = 4;
 
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
@@ -44,6 +44,8 @@ public class Partie {
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated;
     private boolean isGameOn ;
+	private int indexJoueurGagnant;
+	private int scoreJoueurGagnant;
 
 	public Partie() {}
 	
@@ -456,8 +458,8 @@ public class Partie {
 				if(estFinie()) {
 					log("---- Conflits militaires ----");
 					conflitsMilitaires();
-                    int index = getIndexGagnant();
-					Joueur JoueurGagnant = listeJoueurs.get(index);
+                    indexJoueurGagnant = getIndexGagnant();
+					Joueur JoueurGagnant = listeJoueurs.get(indexJoueurGagnant);
 					int score = JoueurGagnant.getPointsVictoire() + JoueurGagnant.getPièces() + JoueurGagnant.getpointsMilitaires();
 					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");
 					this.isGameOn = false;
@@ -479,6 +481,19 @@ public class Partie {
 		}
 
 	}
+	public void addPointsDeVictoiresParSymboles(Joueur j){
+		j.addPointsVictoire(j.getSymboleIngenieur()*j.getSymboleIngenieur());
+		j.addPointsVictoire(j.getSymboleScience()*j.getSymboleScience());
+		j.addPointsVictoire(j.getSymboleTablette()*j.getSymboleTablette());
+
+		if(j.getSymboleIngenieur() <= j.getSymboleScience() && j.getSymboleIngenieur() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleIngenieur()*7);
+		} else if(j.getSymboleScience() <= j.getSymboleIngenieur() && j.getSymboleScience() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleScience()*7);
+		} else {
+			j.addPointsVictoire(j.getSymboleTablette()*7);
+		}
+	}
 	
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public int getIndexGagnant() {
@@ -490,6 +505,7 @@ public class Partie {
 					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i), listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinGauche(i)), listeJoueurs.get(getIndexVoisinDroite(i)));
 				}
 			}
+			addPointsDeVictoiresParSymboles(listeJoueurs.get(i));
 		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();
 		for(int i=0;i < listeJoueurs.size();i++) {
@@ -498,6 +514,7 @@ public class Partie {
 				max = listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + + listeJoueurs.get(0).getpointsMilitaires();
 			}
 		}
+		scoreJoueurGagnant = max;
 		return indexMax;
 
 	}
@@ -536,6 +553,14 @@ public class Partie {
 
 
 	// Getters & Setters
+	public int getScoreJoueurGagnant(){
+		return scoreJoueurGagnant;
+	}
+
+	public int getIndexJoueurGagnant() {
+		return indexJoueurGagnant;
+	}
+
 
     public boolean isGameOn() {
         return isGameOn;
