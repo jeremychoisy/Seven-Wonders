@@ -28,7 +28,7 @@ public class Partie {
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 148;
 	private final int NB_MERVEILLES = 4;
-	
+
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;
@@ -43,7 +43,9 @@ public class Partie {
 	private int ageCourant;
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated;
-    private boolean hasGameStarted ;
+    private boolean isGameOn ;
+	private int indexJoueurGagnant;
+	private int scoreJoueurGagnant;
 
 	public Partie() {}
 	
@@ -61,7 +63,7 @@ public class Partie {
 		tourCourant = 0;
 		ageCourant = 1;
         isEveryoneReadyStated = false;
-        hasGameStarted = false;
+        isGameOn = false;
 		if(!isData()){
 			generateData();
 		}
@@ -80,7 +82,7 @@ public class Partie {
 			initPartie();
 		}
 	}
-	
+
 	//Fonction responsable de de la distribution des ressources aux joueurs
 	public void initPartie() {
 		Main main;
@@ -113,7 +115,7 @@ public class Partie {
 			
 			log("Une main, une merveille ainsi que 3 pièces sont distribuées à " + listeJoueurs.get(i).getNom() + ".");
 		}
-        this.hasGameStarted = true;
+        this.isGameOn = true;
 	}
 	
 	public void construireListes() {
@@ -183,14 +185,29 @@ public class Partie {
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(int index, Carte c) {
 		String name = listeJoueurs.get(index).getNom();
+		boolean isFree = false;
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
 		// MaJ du joueur côté serveur
-		if(c.getCout().get("pièces") != null) {
-			listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+		// Si le joueur a déjà posé une carte liée à celle-ci par chaînage => gratuite
+		if(c.getEffet().get("chaînage") != null){
+			for(int i = 0; i < listeJoueurs.get(index).getCartesPosees().size();i++){
+				if(listeJoueurs.get(index).getCartesPosees().get(i).getNom().equals(c.getEffet().get("chainage"))){
+					isFree = true;
+					break;
+				}
+			}
+
 		}
+		if(!isFree) {
+			if (c.getCout().get("pièces") != null) {
+				listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+			}
+		}
+		//supprime la carte jouée de la main du joueur
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
+		listeJoueurs.get(index).ajouterCartePosee(c);
 		log(name + " a joué " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires.)");
-		setNbCartesJouées(getNbCartesJouées() + 1);
+		synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		goNext();
 	}
 
@@ -208,22 +225,21 @@ public class Partie {
                     // Si le voisin de gauche a assez de ressource pour couvrir le besoin
                     if( listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) >= ressourceCarte - ressourceJoueur){
                         listeJoueurs.get(getIndexVoisinGauche(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        log("" + name + " achète " + (ressourceCarte - ressourceJoueur) + " [" + key + "] à son voisin de gauche pour " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
                         // Sinon, cela signifie que le voisin de droite est en mesure de combler le besoin restant.
                     } else {
                         listeJoueurs.get(getIndexVoisinGauche(index)).addPièces(listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de gauche.");
+                        log("" + name + " achète " + listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) + " [" + key + "] à son voisin de gauche pour " + (listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2) + " pièces.");
                         listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur - listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key)) * 2);
-                        log("" + name + " achète [" + key + "] à son voisin de droite.");
+                        log("" + name + " achète " + (ressourceCarte - ressourceJoueur - listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key)) + " [" + key + "] à son voisin de droite pour " + (listeJoueurs.get(getIndexVoisinGauche(index)).getRessources().get(key) * 2) + " pièces.");
                     }
                 } else {
                     // Sinon, cela signifie que le voisin de droite comble entièrement le besoin
                     listeJoueurs.get(getIndexVoisinDroite(index)).addPièces((ressourceCarte - ressourceJoueur) * 2);
-                    log("" + name + " achète [" + key + "] à son voisin de droite.");
+                    log("" + name + " achète " + (ressourceCarte - ressourceJoueur) + " [" + key + "] à son voisin de droite pour " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
                 }
                 // le bot doit payer le quantité totale de ressources achetées
                 listeJoueurs.get(index).substractPièces((ressourceCarte - ressourceJoueur) * 2);
-                log("" + name + " perd " + ((ressourceCarte - ressourceJoueur) * 2) + " pièces.");
             }
         }
 	    jouerCarte(index,c);
@@ -234,7 +250,7 @@ public class Partie {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
 		défausse.add(c);
-		setNbCartesJouées(getNbCartesJouées() + 1);
+        synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		if(ageEstFini()) {
 				log(name + " a défaussé " + c.getNom() + " ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		} 
@@ -253,7 +269,7 @@ public class Partie {
 		String name = listeJoueurs.get(index).getNom();
 		listeJoueurs.get(index).getM().RemoveCardFromName(carte.getNom());
 		défausse.add(carte);
-		nbCartesJouées += 1;
+        synchronized(this) { setNbCartesJouées(getNbCartesJouées() + 1); }
 		log(name + " a défaussé " + carte.getNom() + " pour debloquer une étape de sa merveille  ( score actuel : " + listeJoueurs.get(index).getPointsVictoire()  +" point(s) de victoire | " + listeJoueurs.get(index).getPièces() + " pièce(s) | " + listeJoueurs.get(index).getpointsMilitaires() + " points militaires (fin de l'âge).");
 		goNext();
 	}
@@ -359,6 +375,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() +".");
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -372,6 +389,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ".");
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -438,18 +456,20 @@ public class Partie {
 	public void goNext() {
 		if(tourEstFini()) {
 				if(estFinie()) {
-					int index = getIndexGagnant();
-					Joueur JoueurGagnant = listeJoueurs.get(index);
+					log("---- Conflits militaires ----");
+					conflitsMilitaires();
+                    indexJoueurGagnant = getIndexGagnant();
+					Joueur JoueurGagnant = listeJoueurs.get(indexJoueurGagnant);
 					int score = JoueurGagnant.getPointsVictoire() + JoueurGagnant.getPièces() + JoueurGagnant.getpointsMilitaires();
-					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");;
+					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");
+					this.isGameOn = false;
 					s.stop();
 				}
 				else if(ageEstFini())
 				{
-					log("---- Conflits militaires ----");
+                    log("---- Conflits militaires ----");
 					conflitsMilitaires();
 					changerAge();
-
 				}
 				else if(getTourCourant() == 6){
 					demarrerDernierTour();
@@ -461,17 +481,40 @@ public class Partie {
 		}
 
 	}
+	public void addPointsDeVictoiresParSymboles(Joueur j){
+		j.addPointsVictoire(j.getSymboleIngenieur()*j.getSymboleIngenieur());
+		j.addPointsVictoire(j.getSymboleScience()*j.getSymboleScience());
+		j.addPointsVictoire(j.getSymboleTablette()*j.getSymboleTablette());
+
+		if(j.getSymboleIngenieur() <= j.getSymboleScience() && j.getSymboleIngenieur() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleIngenieur()*7);
+		} else if(j.getSymboleScience() <= j.getSymboleIngenieur() && j.getSymboleScience() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleScience()*7);
+		} else {
+			j.addPointsVictoire(j.getSymboleTablette()*7);
+		}
+	}
 	
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public int getIndexGagnant() {
 		int indexMax = 0;
+		// là on applique les effets des cartes guildes posées
+		for(int i=0;i < listeJoueurs.size();i++) {
+			for (int k = 0; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
+				if (listeJoueurs.get(i).getCartesPosees().get(k).getEffet().get("nomEffetFinDePartie") != null) {
+					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i), listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinGauche(i)), listeJoueurs.get(getIndexVoisinDroite(i)));
+				}
+			}
+			addPointsDeVictoiresParSymboles(listeJoueurs.get(i));
+		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();
-		for(int i=1;i < listeJoueurs.size();i++) {
+		for(int i=0;i < listeJoueurs.size();i++) {
 			if(listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + listeJoueurs.get(0).getpointsMilitaires()> max) {
 				indexMax = i;
 				max = listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + + listeJoueurs.get(0).getpointsMilitaires();
 			}
 		}
+		scoreJoueurGagnant = max;
 		return indexMax;
 
 	}
@@ -510,9 +553,17 @@ public class Partie {
 
 
 	// Getters & Setters
+	public int getScoreJoueurGagnant(){
+		return scoreJoueurGagnant;
+	}
 
-    public boolean HasGameStarted() {
-        return hasGameStarted;
+	public int getIndexJoueurGagnant() {
+		return indexJoueurGagnant;
+	}
+
+
+    public boolean isGameOn() {
+        return isGameOn;
     }
 	
 	public Carte[] getC() {
