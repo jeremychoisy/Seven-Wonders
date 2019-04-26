@@ -1,11 +1,6 @@
 package org.Model.assets;
 
 
-import org.Model.tools.GestionPersistance;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +63,7 @@ public class Strategie {
                 return new Action(j.getM().get(0), "Etape Merveille",coutAction);
             }
             else {
-                return new Action(j.getM().get(0), "Défaussée Carte",-3);
+                return new Action(j.getM().get(0), "Carte Défaussée",0);
             }
         }
 
@@ -149,18 +144,7 @@ public class Strategie {
         Map<Carte, Integer> isPlayableList = new HashMap<>();
         Map<String, Integer> ressources = j.getRessources();
         boolean isTradeUsed = false;
-        //là le bot choisit la carte à jouer selon les ressources nécessaires et les res dont il dispose
 
-    /*
-    il faut se servir de getQuantitéRessource(String nomRessource) de la classe joueur
-    et de getCout() de la classe carte pour comparer les listressources dispo / needed
-
-    ressources de joueur : HashMap<String,Integer>()
-
-    cout de carte : Map<String, Integer>
-
-
-    */
 
         //on itère sur les cartes
         for (int i = 0; i < j.getM().getMain().size(); i++) {

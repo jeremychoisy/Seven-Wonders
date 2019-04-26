@@ -1,17 +1,13 @@
 package bot;
 
 import org.Client.Client;
-import org.Model.assets.Carte;
-import org.Model.assets.Joueur;
-import org.Model.assets.Merveille;
+import org.Model.assets.*;
 import org.Model.tools.GestionPersistance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Map;
-import org.Model.assets.*;
 public class Bot {
 	private Client c;
 	private Joueur j;
@@ -69,7 +65,7 @@ public class Bot {
 	public void jouerTour(Map<String,Integer> ressourcesVoisinsList) {
         JSONObject carteJouéeJSON = null;
         JSONObject carteDéfausséeJSON = null;
-        Strategie strategieMilitaire = new Strategie("Conflit Militaire","Batiment Commercial","Bâtiment Scientifique");
+        Strategie strategieMilitaire = new Strategie("Conflit Militaire","Bâtiment Commercial","Bâtiment Scientifique");
         Action action = strategieMilitaire.stratBot(strategieMilitaire.listCartePlayable(ressourcesVoisinsList,j),j);
         int indexCarte = j.getM().getMain().indexOf(action.getCarte());
 
@@ -88,7 +84,6 @@ public class Bot {
             }
             else {
                 j.getM().remove(indexCarte);
-                j.substractPièces(action.getCout());
                 c.emit("Carte Défaussée", carteDéfausséeJSON);
             }
         }
@@ -106,6 +101,7 @@ public class Bot {
             }
             else{
                 j.getM().remove(indexCarte);
+				j.substractPièces(action.getCout());
                 c.emit("Carte Jouée", carteJouéeJSON);
             }
         }

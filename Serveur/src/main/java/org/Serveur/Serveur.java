@@ -1,22 +1,16 @@
 package org.Serveur;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-
+import com.corundumstudio.socketio.*;
+import com.corundumstudio.socketio.listener.ConnectListener;
+import com.corundumstudio.socketio.listener.DataListener;
 import org.Model.assets.Carte;
 import org.Model.assets.ClientID;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.MyPrintStream;
-
-import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.Configuration;
-import com.corundumstudio.socketio.SocketConfig;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.listener.ConnectListener;
-import com.corundumstudio.socketio.listener.DataListener;
-
 import org.partie.Partie;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 
 public class Serveur {

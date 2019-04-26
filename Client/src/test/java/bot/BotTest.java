@@ -17,14 +17,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -153,13 +152,13 @@ public class BotTest {
         }
     }
 
-    //@Test
+    @Test
     void jouerTourTest(){
         doAnswer(new Answer(){
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 JSONObject j = invocation.getArgument(1);
-                assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée devrait être 'Ecuries'.");
+                assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée devrait  être 'Ecuries'.");
                 return null;
             }
         }).when(c).emit(eq("Carte Jouée"),any(JSONObject.class));
@@ -187,7 +186,7 @@ public class BotTest {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 JSONObject j = invocation.getArgument(1);
-                assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée devrait être 'Ecuries'.");
+                assertEquals("Ecuries",j.getString("nom"),"Le nom de la carte jouée avec commerce devrait être 'Ecuries'.");
                 return null;
             }
         }).when(c).emit(eq("Carte Jouée avec commerce"),any(JSONObject.class));
@@ -195,8 +194,6 @@ public class BotTest {
         // Cas de la carte défaussée
         Map<String,Integer> ressources = new HashMap<String,Integer>();
         Map<String,Integer> ressourcesVoisins = new HashMap<String,Integer>();
-
-        ressources.put("bois",2);
 
         b.jouerTour(ressourcesVoisins);
 
@@ -219,8 +216,14 @@ public class BotTest {
 
         b.jouerTour(ressourcesVoisins);
         // Cas de la carte jouée
+
         ressources = new HashMap<String,Integer>();
+        ressourcesVoisins = new HashMap<String,Integer>();
+
+        ressources.put("minerai",1);
+        ressources.put("bois",1);
         ressources.put("argile",1);
+        ressources.put("tissu",1);
 
         b.getJ().ajouterRessources(ressources);
 

@@ -1,18 +1,17 @@
 package org.Client;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-
+import bot.Bot;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import org.Model.tools.CouleurSorties;
 import org.Model.tools.GestionPersistance;
 import org.Model.tools.MyPrintStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import bot.Bot;
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 
 
 
@@ -71,19 +70,7 @@ public class Client{
 				}
 				
 			});
-			
-		/*	connexion.on("Change main", new Emitter.Listener() {
 
-				@Override
-				public void call(Object... args) {
-					JSONArray cJson = (JSONArray) args[0];
-					
-					b.setMain(cJson);
-					
-				
-				}
-				
-			});*/
 			// traitement de l'événement "voici tes pièces" venant du serveur
 			connexion.on("Pièces", new Emitter.Listener() {
 				

@@ -1,8 +1,11 @@
 package partie;
 
+import org.Model.assets.Carte;
+import org.Model.assets.Joueur;
+import org.Model.assets.Main;
 import org.Model.assets.Merveille;
+import org.Serveur.Serveur;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,19 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.partie.Partie;
 
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doAnswer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.Model.assets.Carte;
-import org.Model.assets.Joueur;
-import org.Serveur.Serveur;
-
-import org.Model.assets.Main;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doAnswer;
 @ExtendWith(MockitoExtension.class)
 
 public class PartieTest {
@@ -62,14 +58,14 @@ public class PartieTest {
 		assertEquals(true, p.isGameOn(), "Une fois les quatres joueurs ajoutés, la partie s'est initialisé");
 	}
 
-	//@Test
+	@Test
 	void construireTest() {
 		p.construireListes();
 		
-		assertEquals(49,p.getCartesAgeI().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge I");
-		assertEquals(49,p.getCartesAgeII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
-		assertEquals(49,p.getCartesAgeIII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
-		assertEquals(7,p.getMerveilles().size(),"Il y a normalement 7 plateaux merveille dans le tas de plateaux de merveilles.");
+		assertEquals(28,p.getCartesAgeI().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge I");
+		assertEquals(28,p.getCartesAgeII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
+		assertEquals(28,p.getCartesAgeIII().size(),"Il y a normalement 49 cartes dans le paquet de cartes de l'âge II");
+		assertEquals(4,p.getMerveilles().size(),"Il y a normalement 7 plateaux merveille dans le tas de plateaux de merveilles.");
 	}
 	
 	@Test
