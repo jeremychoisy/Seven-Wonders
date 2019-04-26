@@ -28,7 +28,7 @@ public class Partie {
 	private final int NB_JOUEURS = 4;
 	private final int NB_CARTES = 148;
 	private final int NB_MERVEILLES = 4;
-	
+
 	// variables nécessaires au chargements des ressources
 	private Carte[] c; 
 	private Merveille[] m;
@@ -44,6 +44,8 @@ public class Partie {
 	private int nbCartesJouées;
 	private boolean isEveryoneReadyStated;
     private boolean isGameOn ;
+	private int indexJoueurGagnant;
+	private int scoreJoueurGagnant;
 
 	public Partie() {}
 	
@@ -183,10 +185,23 @@ public class Partie {
 	// Fonction qui traite la carte joué par un joueur.
 	public void jouerCarte(int index, Carte c) {
 		String name = listeJoueurs.get(index).getNom();
+		boolean isFree = false;
 		GestionEffets.appliquerEffet(c.getEffet(), listeJoueurs.get(index));
 		// MaJ du joueur côté serveur
-		if(c.getCout().get("pièces") != null) {
-			listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+		// Si le joueur a déjà posé une carte liée à celle-ci par chaînage => gratuite
+		if(c.getEffet().get("chaînage") != null){
+			for(int i = 0; i < listeJoueurs.get(index).getCartesPosees().size();i++){
+				if(listeJoueurs.get(index).getCartesPosees().get(i).getNom().equals(c.getEffet().get("chainage"))){
+					isFree = true;
+					break;
+				}
+			}
+
+		}
+		if(!isFree) {
+			if (c.getCout().get("pièces") != null) {
+				listeJoueurs.get(index).substractPièces(c.getCout().get("pièces"));
+			}
 		}
 		//supprime la carte jouée de la main du joueur
 		listeJoueurs.get(index).getM().RemoveCardFromName(c.getNom());
@@ -360,6 +375,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " + listeJoueurs.get(getIndexVoisinDroite(i)).getNom() +".");
 			}
 			if (listeJoueurs.get(getIndexVoisinDroite(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -373,6 +389,7 @@ public class Partie {
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() > listeJoueurs.get(i).getBouclier()){
 				listeJoueurs.get(i).delpointsMilitaires();
+				listeJoueurs.get(i).addJetonsDefaites(1);
 				log(listeJoueurs.get(i).getNom()+" a perdu 1 point militaire contre " +  listeJoueurs.get(getIndexVoisinGauche(i)).getNom() + ".");
 			}
 			if (listeJoueurs.get(getIndexVoisinGauche(i)).getBouclier() == listeJoueurs.get(i).getBouclier()){
@@ -439,8 +456,10 @@ public class Partie {
 	public void goNext() {
 		if(tourEstFini()) {
 				if(estFinie()) {
-                    int index = getIndexGagnant();
-					Joueur JoueurGagnant = listeJoueurs.get(index);
+					log("---- Conflits militaires ----");
+					conflitsMilitaires();
+                    indexJoueurGagnant = getIndexGagnant();
+					Joueur JoueurGagnant = listeJoueurs.get(indexJoueurGagnant);
 					int score = JoueurGagnant.getPointsVictoire() + JoueurGagnant.getPièces() + JoueurGagnant.getpointsMilitaires();
 					log("Victoire de " + JoueurGagnant.getNom() + " avec " + score + " points de civilisation.");
 					this.isGameOn = false;
@@ -462,23 +481,40 @@ public class Partie {
 		}
 
 	}
+	public void addPointsDeVictoiresParSymboles(Joueur j){
+		j.addPointsVictoire(j.getSymboleIngenieur()*j.getSymboleIngenieur());
+		j.addPointsVictoire(j.getSymboleScience()*j.getSymboleScience());
+		j.addPointsVictoire(j.getSymboleTablette()*j.getSymboleTablette());
+
+		if(j.getSymboleIngenieur() <= j.getSymboleScience() && j.getSymboleIngenieur() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleIngenieur()*7);
+		} else if(j.getSymboleScience() <= j.getSymboleIngenieur() && j.getSymboleScience() <= j.getSymboleTablette()){
+			j.addPointsVictoire(j.getSymboleScience()*7);
+		} else {
+			j.addPointsVictoire(j.getSymboleTablette()*7);
+		}
+	}
 	
 	// Fonction qui détermine et afficher le gagnant de la partie
 	public int getIndexGagnant() {
 		int indexMax = 0;
 		// là on applique les effets des cartes guildes posées
-		for(int i=1;i < listeJoueurs.size();i++) {
-			for (int k = 1; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
-				GestionEffets.appliquerEffetGuilde(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i),listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(),listeJoueurs.get(getIndexVoisinGauche(i)),listeJoueurs.get(getIndexVoisinDroite(i)));
+		for(int i=0;i < listeJoueurs.size();i++) {
+			for (int k = 0; k < listeJoueurs.get(i).getCartesPosees().size(); k++) {
+				if (listeJoueurs.get(i).getCartesPosees().get(k).getEffet().get("nomEffetFinDePartie") != null) {
+					GestionEffets.appliquerEffetFinDePartie(listeJoueurs.get(i).getCartesPosees().get(k).getEffet(), listeJoueurs.get(i), listeJoueurs.get(getIndexVoisinGauche(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinDroite(i)).getCartesPosees(), listeJoueurs.get(getIndexVoisinGauche(i)), listeJoueurs.get(getIndexVoisinDroite(i)));
+				}
 			}
+			addPointsDeVictoiresParSymboles(listeJoueurs.get(i));
 		}
 		int max = listeJoueurs.get(0).getPointsVictoire() + listeJoueurs.get(0).getPièces() + listeJoueurs.get(0).getpointsMilitaires();
-		for(int i=1;i < listeJoueurs.size();i++) {
+		for(int i=0;i < listeJoueurs.size();i++) {
 			if(listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + listeJoueurs.get(0).getpointsMilitaires()> max) {
 				indexMax = i;
 				max = listeJoueurs.get(i).getPointsVictoire() + listeJoueurs.get(i).getPièces() + + listeJoueurs.get(0).getpointsMilitaires();
 			}
 		}
+		scoreJoueurGagnant = max;
 		return indexMax;
 
 	}
@@ -517,6 +553,14 @@ public class Partie {
 
 
 	// Getters & Setters
+	public int getScoreJoueurGagnant(){
+		return scoreJoueurGagnant;
+	}
+
+	public int getIndexJoueurGagnant() {
+		return indexJoueurGagnant;
+	}
+
 
     public boolean isGameOn() {
         return isGameOn;

@@ -23,7 +23,6 @@
   
   <build>
 	<sourceDirectory>src/main/java</sourceDirectory>
-	<testSourceDirectory>src/test/java</testSourceDirectory>
     <plugins>
     	<plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -31,14 +30,58 @@
             <version>1.6.0</version>
             <executions>
                 <execution>
+                    <id>stat100</id>
                     <goals>
                         <goal>java</goal>
                     </goals>
+                    <configuration>
+                        <mainClass>org.Launcher.Launcher</mainClass>
+                        <arguments>
+                            <argument>1</argument>
+                            <argument>99</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>stat200</id>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>org.Launcher.Launcher</mainClass>
+                        <arguments>
+                            <argument>1</argument>
+                            <argument>199</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>stat500</id>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>org.Launcher.Launcher</mainClass>
+                        <arguments>
+                            <argument>1</argument>
+                            <argument>499</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>partie</id>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>org.Launcher.Launcher</mainClass>
+                        <arguments>
+                            <argument>0</argument>
+                            <argument>0</argument>
+                        </arguments>
+                    </configuration>
                 </execution>
             </executions>
-            <configuration>
-                <mainClass>org.Launcher.Launcher</mainClass>
-            </configuration>
         </plugin>
     </plugins>	
   </build>

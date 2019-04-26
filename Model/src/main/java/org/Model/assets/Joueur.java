@@ -17,6 +17,12 @@ public class Joueur {
 	private int pointsVictoire;
 	private int boucliers;
 	private int pointsMilitaires;
+	private int jetonsDefaites;
+
+	private int symboleIngenieur;
+	private int symboleScience;
+	private int symboleTablette;
+
 	
 	private Map<String,Integer> ressources;
 	private ArrayList<Carte> cartesPosees;
@@ -35,6 +41,10 @@ public class Joueur {
         this.pointsVictoire = 0;
         this.boucliers = 0;
         this.setpointsMilitaires(0);
+        this.jetonsDefaites = 0;
+        this.symboleIngenieur = 0;
+        this.symboleScience = 0;
+        this.symboleTablette = 0;
 
         ressources = new HashMap<String,Integer>();
         ressources.put("pièces", 0);
@@ -113,12 +123,38 @@ public class Joueur {
         }
     }
 
+    public void addSymboleIngenieur(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+	public void addSymboleScience(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+	public void addSymboleTablette(int valeur){
+		this.symboleIngenieur += valeur;
+	}
+
+	public int getSymboleIngenieur() {
+		return symboleIngenieur;
+	}
+
+	public int getSymboleScience() {
+		return symboleScience;
+	}
+
+	public int getSymboleTablette() {
+		return symboleTablette;
+	}
+
 	public int getPointsVictoire() {
 		return pointsVictoire;
 	}
 
-	public void setPointsVictoire(int gain_pointsVictoire) {
-		this.pointsVictoire = gain_pointsVictoire;
+	public void setPointsVictoire(int pointsVictoire) {
+		this.pointsVictoire = pointsVictoire;
+	}
+
+	public void addPointsVictoire(int gain_pointsVictoire){
+		this.pointsVictoire += gain_pointsVictoire;
 	}
 
 	public int getBouclier() {
@@ -140,6 +176,22 @@ public class Joueur {
 	public void addpointsMilitaires(int point){this.pointsMilitaires += point;}
 
 	public void delpointsMilitaires(){this.pointsMilitaires -= 1;}
+
+	public int getJetonsDefaites() {
+		return jetonsDefaites;
+	}
+
+	public void setJetonsDefaites(int jetonsDefaites) {
+		this.jetonsDefaites = jetonsDefaites;
+	}
+
+	public void addJetonsDefaites(int gain_jetonsDefaites){
+		this.jetonsDefaites += gain_jetonsDefaites;
+	}
+
+	public void delJetonsDefaites(int perte_jetonsDefaites){
+		this.jetonsDefaites -= perte_jetonsDefaites;
+	}
 
 	public void setRessources(HashMap<String, Integer> gain_ressources) {
 		this.ressources = gain_ressources;

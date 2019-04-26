@@ -18,9 +18,9 @@ public class Carte {
 	public Carte(String nom, String type, Map<String,String> effet ,Map<String,Integer> cout, int configurationNumber, int age) {
 		this.nom = nom;
 		this.type = type;
-		this.effet=effet;
+		this.effet = effet;
 		this.cout = cout;
-		this.configurationNumber= configurationNumber;
+		this.configurationNumber = configurationNumber;
 		this.age = age;
 	}
 	

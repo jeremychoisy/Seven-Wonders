@@ -25,18 +25,31 @@ Depuis votre terminal, de commande déplacez vous dans le répertoire où se tro
 mvn install
 ```
 
-```
-mvn compile
-```
+
 
 
 ## Lancement des tests
 
-Toujours depuis le terminal et en étant dans le répertoire du jeu.
+Toujours depuis le terminal et en étant dans le répertoire du Launcher.
 
 ```
-mvn exec:java
+mvn exec:java@partie
 ```
+Pour l'exécution d'une partie avec logs.
+```
+mvn exec:java@stat100
+```
+Pour l'exécution de 100 parties sans logs avec statistiques à la fin.
+```
+mvn exec:java@stat200
+```
+Pour l'exécution de 200 parties sans logs avec statistiques à la fin.
+
+```
+mvn exec:java@stat500
+```
+Pour l'exécution de 500 parties sans logs avec statistiques à la fin.
+
 
 
 ## Built With
