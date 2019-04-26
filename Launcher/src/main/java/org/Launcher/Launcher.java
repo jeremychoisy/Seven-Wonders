@@ -1,11 +1,11 @@
 package org.Launcher;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-
 import org.Client.Client;
 import org.Model.tools.GestionPersistance;
 import org.Serveur.Serveur;
+
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 
 public class Launcher
@@ -72,30 +72,6 @@ public class Launcher
 			}
         });
 
-/*        Thread bot_5 = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                Client.main(new String[] {"bot_5"});
-            }
-
-        });
-
-        Thread bot_6 = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                Client.main(new String[] {"bot_6"});
-            }
-
-        });
-
-        Thread bot_7 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client.main(new String[] {"bot_7"});
-            }
-        });*/
 
 
         serveur.start();
@@ -103,10 +79,6 @@ public class Launcher
         bot_2.start();
         bot_3.start();
         bot_4.start();
-/*        bot_5.start();
-        bot_6.start();
-        bot_7.start();*/
-
 
     }
 }
